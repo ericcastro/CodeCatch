@@ -82,6 +82,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) { CLIServer.stop() }
 
+    /// Opened again while running (Finder, Spotlight): with no window to bring forward,
+    /// show the popover, or the app seems not to respond.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
+        guard !hasVisibleWindows else { return true }
+        MainActor.assumeIsolated { MenuBarPopover.open(query: nil) }
+        return false
+    }
+
     /// codecatch:// links. SwiftUI keeps `application(_:open:)` for its own scenes, so take the event directly.
     func applicationWillFinishLaunching(_ notification: Notification) {
         NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(openURL(_:reply:)),
