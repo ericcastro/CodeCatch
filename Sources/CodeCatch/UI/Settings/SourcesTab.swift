@@ -177,7 +177,7 @@ struct SourcesTab: View {
     @ViewBuilder private func diskAccessRow(_ status: SourceStatus) -> some View {
         if status == .attention(SourceStatus.needsDiskAccess) {
             SettingRow(symbol: "lock.shield.fill", color: .orange, title: "Full Disk Access Needed",
-                       subtitle: "Drag CodeCatch into the list that opens, then turn it on.") {
+                       subtitle: "Turn on CodeCatch in the list that opens.") {
                 Button("Open Settings") { SystemSettings.fullDiskAccess() }
             }
         }
