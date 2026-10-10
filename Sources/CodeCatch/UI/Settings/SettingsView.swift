@@ -15,6 +15,7 @@ extension OpenSettingsAction {
         tab?.select()
         NSApp.activate()
         callAsFunction()
+        MenuBarPopover.close()
     }
 }
 

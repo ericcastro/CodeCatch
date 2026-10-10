@@ -231,7 +231,7 @@ struct MenuContent: View {
             }
             Spacer(minLength: 6)
             Button("Fix…") {
-                if status == .attention(SourceStatus.needsDiskAccess) { return SystemSettings.fullDiskAccess() }
+                if status == .attention(SourceStatus.needsDiskAccess) { return leave(SystemSettings.fullDiskAccess) }
                 openSettings(at: .sources)
             }
             .controlSize(.small)
@@ -277,16 +277,20 @@ struct MenuContent: View {
         .padding(.bottom, 8)
     }
 
+    /// Runs an action that opens a window, then closes the popover, which macOS 27 would leave on top of it.
+    private func leave(_ action: () -> Void) {
+        NSApp.activate()
+        action()
+        MenuBarPopover.close()
+    }
+
     private var footer: some View {
         HStack(spacing: 6) {
             lockControl
             Spacer()
             // Recent Emails reads only mail: with Messages alone it would be an empty window.
             if model.monitoring(Prefs.receivedCodes), !model.mailSourceKeys.isEmpty {
-                Button("Can’t find your code?") {
-                    NSApp.activate()
-                    openWindow(id: "recovery")
-                }
+                Button("Can’t find your code?") { leave { openWindow(id: "recovery") } }
                 .buttonStyle(.plain)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -303,19 +307,13 @@ struct MenuContent: View {
                     .disabled(!model.hasHistory)
                 Divider()
                 Button("Settings…") { openSettings(at: nil) }.keyboardShortcut(",")
-                Button("Welcome Guide") {
-                    NSApp.activate()
-                    openWindow(id: WelcomeView.windowID)
-                }
-                Button("About CodeCatch", action: AppBrand.showAbout)
+                Button("Welcome Guide") { leave { openWindow(id: WelcomeView.windowID) } }
+                Button("About CodeCatch") { leave(AppBrand.showAbout) }
                 Divider()
                 Button("Report a Bug…") { AppBrand.openIssue(.bug) }
                 Button("Suggest a Feature…") { AppBrand.openIssue(.feature) }
                 Divider()
-                Button("Check for Updates…") {
-                    NSApp.activate()
-                    Updater.controller?.checkForUpdates(nil)
-                }
+                Button("Check for Updates…") { leave { Updater.controller?.checkForUpdates(nil) } }
                 .disabled(Updater.controller == nil)
                 Button("Quit CodeCatch") { NSApp.terminate(nil) }
             } label: {

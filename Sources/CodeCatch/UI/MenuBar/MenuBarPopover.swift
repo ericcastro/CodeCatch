@@ -13,10 +13,7 @@ enum MenuBarPopover {
     static func open(query: String? = "", retries: Int = 10) {
         if let query { AppModel.shared.searchRequest = query }
         guard !isOpen else { return }
-        // Only the status bar window has this key; asking any other window raises.
-        let statusItem = NSApp.windows.lazy.filter { $0.className == "NSStatusBarWindow" && $0.responds(to: NSSelectorFromString("statusItem")) }
-            .compactMap { $0.value(forKey: "statusItem") as? NSStatusItem }.first
-        guard let statusItem else {
+        guard let statusItem = Self.statusItem else {
             if retries > 0 { DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { open(query: query, retries: retries - 1) } }
             return
         }
@@ -31,6 +28,21 @@ enum MenuBarPopover {
         } else {
             statusItem.button?.performClick(nil)
         }
+    }
+
+    /// Closes the popover after an action that opens a window. macOS 27 otherwise keeps it
+    /// open on top of that window until the next click; earlier macOS closes it by itself.
+    static func close() {
+        // `expandedInterfaceSession?.cancel()`, public in the macOS 27 SDK: by name, as CI builds with an older one.
+        let session = "expandedInterfaceSession"
+        guard let statusItem, statusItem.responds(to: NSSelectorFromString(session)) else { return }
+        (statusItem.value(forKey: session) as? NSObject)?.perform(NSSelectorFromString("cancel"))
+    }
+
+    // Only the status bar window has this key; asking any other window raises.
+    private static var statusItem: NSStatusItem? {
+        NSApp.windows.lazy.filter { $0.className == "NSStatusBarWindow" && $0.responds(to: NSSelectorFromString("statusItem")) }
+            .compactMap { $0.value(forKey: "statusItem") as? NSStatusItem }.first
     }
 
     /// `codecatch://search?q=github`: for launchers (a Raycast or Alfred quicklink).
