@@ -4,30 +4,12 @@
         <title>CodeCatch</title>
         <item>
             <title>2.0</title>
-            <pubDate>Sat, 10 Oct 2026 19:51:46 +0200</pubDate>
+            <pubDate>Sat, 10 Oct 2026 20:28:01 +0200</pubDate>
             <sparkle:fullReleaseNotesLink>https://codecatch.app/changelog/</sparkle:fullReleaseNotesLink>
-            <sparkle:version>191</sparkle:version>
+            <sparkle:version>195</sparkle:version>
             <sparkle:shortVersionString>2.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/ugzv/CodeCatch/releases/download/v2.0.191/CodeCatch.dmg" length="5902253" type="application/octet-stream" sparkle:edSignature="g/zzOYELZ2y+ZXgkGUE7TXWKYDC9OLlKHXDJrLy0GmICRyYBRIf3AuDrbByPXMOX+dZBEolh1MU9Gl3Kbci+CQ=="/>
-        </item>
-        <item>
-            <title>2.0</title>
-            <pubDate>Sat, 10 Oct 2026 17:36:15 +0200</pubDate>
-            <sparkle:fullReleaseNotesLink>https://codecatch.app/changelog/</sparkle:fullReleaseNotesLink>
-            <sparkle:version>180</sparkle:version>
-            <sparkle:shortVersionString>2.0</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/ugzv/CodeCatch/releases/download/v2.0.180/CodeCatch.dmg" length="5849949" type="application/octet-stream" sparkle:edSignature="IoQHqyqsQsgErlHthU95sLh67A17UlWchUOpcPU8Jsh5JiGJKnmuLa2lpswRSuu4uNFdt96NfXGSZZTQNx5MBw=="/>
-        </item>
-        <item>
-            <title>1.0</title>
-            <pubDate>Sat, 10 Oct 2026 14:00:18 +0200</pubDate>
-            <sparkle:fullReleaseNotesLink>https://codecatch.app/changelog/</sparkle:fullReleaseNotesLink>
-            <sparkle:version>170</sparkle:version>
-            <sparkle:shortVersionString>1.0</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/ugzv/CodeCatch/releases/download/v1.0.170/CodeCatch.dmg" length="4521407" type="application/octet-stream" sparkle:edSignature="IQc5mXzdVpguFZVe71nZPrHpu/hzO67auD3MYJkpf54GCinrdXt2rwGPJ52Rs2UI4EvPDpCH6K3XWAmqKQBrBw=="/>
+            <enclosure url="https://github.com/ugzv/CodeCatch/releases/download/v2.0.195/CodeCatch.dmg" length="5589301" type="application/octet-stream" sparkle:edSignature="iDUrRyE/RVeVGdYhnDqEfwCJ9OjahvMrQOmRPDoOS1XVVcpWuHsMP7SZyTlrFONvorw5K27nmoXUKsCfj7eMDw=="/>
         </item>
     </channel>
 </rss>
