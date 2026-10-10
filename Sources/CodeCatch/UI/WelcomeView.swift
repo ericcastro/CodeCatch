@@ -82,10 +82,12 @@ struct WelcomeView: View {
             }
             .bottomBar()
         }
-        .frame(width: 500, height: 740)
+        // Shorter on a small screen, where the Dock would cover the Done bar; the form scrolls.
+        .frame(width: 500, height: min(740, (NSScreen.main?.visibleFrame.height ?? 740) - 40))
         .onAppear {
             UserDefaults.standard.set(true, forKey: Prefs.welcomed)
-            NSApp.activate()
+            // Next turn of the run loop: the window isn't on screen yet.
+            DispatchQueue.main.async { NSApp.comeForward() }
         }
     }
 }
