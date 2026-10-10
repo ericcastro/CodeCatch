@@ -49,7 +49,9 @@ fi
 scripts/test.sh --quiet --force-resolved-versions
 # Own scratch dir: a release build in .build breaks the debug macro plugins `swift test` needs.
 BUILD="${CODECATCH_BUILD_DIR:-.build-release}"
-BUILD_ARGS=(--force-resolved-versions -c release --scratch-path "$BUILD" --arch arm64 --arch x86_64)
+BUILD_ARGS=(--force-resolved-versions -c release --scratch-path "$BUILD" --arch arm64 --arch x86_64
+    -Xswiftc -debug-prefix-map -Xswiftc "$PWD=/src"
+    -Xswiftc -file-prefix-map -Xswiftc "$PWD=/src")
 # The Command Line Tools stamp the binary as built with the deployment target's SDK (15.0),
 # and macOS then gives it the pre-Liquid Glass look and behaviour. Stamp the SDK really used.
 swift build "${BUILD_ARGS[@]}" -Xlinker -platform_version -Xlinker macos -Xlinker 15.0 -Xlinker "$(xcrun --show-sdk-version)"
@@ -63,6 +65,8 @@ BIN="$(swift build "${BUILD_ARGS[@]}" --show-bin-path)"
 cp "$BIN/CodeCatch" "$APP/Contents/MacOS/"
 # Renamed here, never in MacOS/: `codecatch` and `CodeCatch` are one file on a case-insensitive disk.
 cp "$BIN/CodeCatchCLI" "$APP/Contents/Helpers/codecatch"
+# Object-file debug records contain absolute build paths even with source remapping.
+xcrun strip -S "$APP/Contents/MacOS/CodeCatch" "$APP/Contents/Helpers/codecatch"
 for ARCH in arm64 x86_64; do
     lipo "$APP/Contents/MacOS/CodeCatch" -verify_arch "$ARCH"
     lipo "$APP/Contents/Helpers/codecatch" -verify_arch "$ARCH"
@@ -82,6 +86,7 @@ if xcrun --find actool >/dev/null 2>&1; then
         --minimum-deployment-target 15.0 --output-partial-info-plist "$BUILD/AppIcon.plist" >/dev/null
     /usr/libexec/PlistBuddy -c "Add :CFBundleIconName string AppIcon" "$APP/Contents/Info.plist"
 fi
+python3 scripts/check-release-privacy.py "$APP"
 # Developer ID: Keychain items and privacy grants name the team, so every rebuild
 # keeps them. Override with CODECATCH_IDENTITY (any unique part of the name).
 SIGN=(codesign --force --options runtime --timestamp --sign "${CODECATCH_IDENTITY:-Developer ID Application}")

@@ -56,6 +56,10 @@ Preview the site with `python3 -m http.server --directory site`.
 CI then deploys `site/` to Cloudflare Pages, and installed copies update
 themselves from `https://codecatch.app/appcast.xml`.
 
+Release builds remap source paths, strip object-file debug records, and scan the
+app for embedded home directories before signing. Run the guard tests with
+`python3 scripts/test-release-privacy.py`.
+
 A release needs:
 
 - a Developer ID certificate (`Developer ID Application` in the login keychain;
