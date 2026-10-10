@@ -635,10 +635,10 @@ li.copied .tick { display: block; animation: draw-on 0.35s ease-out both; }
 .dot { width: 6px; height: 6px; border-radius: 50%; background: #34c759; }
 
 /* FAQ */
-/* The heading and the guides stay beside the questions as they open. */
+/* The guides stay beside the questions as they open. */
 .faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 4px 64px; padding-top: 72px !important; padding-bottom: 96px !important; max-width: none; }
-.faq-head { display: grid; gap: 24px; align-content: start; align-self: start; position: sticky; top: 84px; }
-.guide-card { justify-items: stretch; gap: 6px; padding: 14px 12px; }
+.faq h2 { margin-bottom: 8px; }
+.guide-card { justify-items: stretch; gap: 6px; padding: 14px 12px; align-self: start; position: sticky; top: 84px; }
 .guide-card > b { padding: 4px 8px; }
 .guide-card a { display: flex; align-items: flex-start; gap: 12px; padding: 8px; border-radius: 12px; color: var(--muted); font-size: 14px; line-height: 1.35; text-decoration: none; transition: background 0.15s; }
 .guide-card a:hover { background: var(--tint); }
@@ -700,7 +700,6 @@ li.copied .tick { display: block; animation: draw-on 0.35s ease-out both; }
   .privacy { padding-bottom: 72px !important; }
   .why { padding-top: 72px !important; padding-bottom: 72px !important; }
   .faq { grid-template-columns: minmax(0, 1fr); }
-  .faq-head { position: static; margin-bottom: 12px; }
   .guide-card { display: none; }  /* the footer lists the guides */
   .nav nav { display: none; }
   .nav .button { margin-left: auto; }
