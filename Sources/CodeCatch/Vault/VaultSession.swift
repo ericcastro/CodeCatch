@@ -14,7 +14,7 @@ final class VaultSession: ObservableObject {
     @Published private(set) var codes: [VaultCode] = []
     @Published private(set) var isUnlocked = false
     @Published private(set) var isBusy = false
-    var didLock: ([VaultCode]) -> Void = { _ in }
+    var didLock: () -> Void = {}
     var cancelAuthentication: () -> Void = {}
     private let authenticate: () async throws -> Void
     private let read: () throws -> [VaultCode]
@@ -43,7 +43,7 @@ final class VaultSession: ObservableObject {
     func lock() {
         generation += 1
         cancelAuthentication()
-        didLock(codes)
+        didLock()
         codes = []
         isUnlocked = false
         isBusy = false

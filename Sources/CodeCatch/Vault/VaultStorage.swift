@@ -30,7 +30,7 @@ enum VaultStorage {
             defaults.removeObject(forKey: Prefs.vaultImportedAt)
         })
         session.cancelAuthentication = { policy.cancelAuthentication() }
-        session.didLock = { _ in Clipboard.clearIfOurs() }
+        session.didLock = { Clipboard.clearIfOurs() }
         return session
     }
 }
