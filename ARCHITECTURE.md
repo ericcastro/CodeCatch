@@ -13,7 +13,8 @@ Inside `Sources/CodeCatch`:
 
 | Folder | What it holds |
 |---|---|
-| `App` | Entry point, plus debug-only tools (`--probe`, `--snapshot`, …) left out of release builds |
+| `App` | Entry point and app delegate |
+| `Debug` | Debug-only launch flags (`--probe`, `--snapshot`, …), left out of release builds |
 | `Model` | `AppModel`, received codes, search, preferences and the source monitor |
 | `Messages` | Reading the Messages database |
 | `Mail` | Apple Mail, IMAP, and Gmail / Outlook through their APIs, with sign-in |

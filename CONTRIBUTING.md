@@ -38,7 +38,7 @@ for permission, lock, sleep/wake and update checks.
 
 Debug builds have extra tools, such as `--probe` (prints the codes each mail
 account would give, masked), `--snapshot <dir>` (renders the UI to PNGs) and
-`--import-env`. The full list is in `Sources/CodeCatch/App`. Run them with
+`--import-env`. The full list is in `Sources/CodeCatch/Debug/DebugCommand.swift`. Run them with
 `scripts/debug.sh <flag>`; it signs the build like a release, so the Keychain
 doesn't ask for your password after every rebuild. Release builds leave these
 tools out.

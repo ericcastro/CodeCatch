@@ -5,7 +5,7 @@ import Foundation
 /// `CodeCatch --probe…`: end-to-end checks against the real accounts, printed, codes masked.
 enum Probe {
     static let all: [String: () async -> Void] = [
-        "--probe": sources, "--probe-google": google, "--probe-vault": vault,
+        "--probe": sources, "--probe-sign-in": signIn, "--probe-vault": vault,
         "--probe-apple-mail": appleMail, "--probe-messages": messages, "--probe-links": links, "--probe-caller": caller,
     ]
 
@@ -19,7 +19,7 @@ enum Probe {
 
     /// Checks Google and Microsoft sign-in without a consent: the built-in clients are accepted without a
     /// secret, the mail APIs refuse a bad token instead of hanging, and signed-in accounts can read their inbox.
-    static func google() async {
+    static func signIn() async {
         do { _ = try await GmailAPI(auth: .issued("invalid-token")).emailAddress() } catch {
             print("Gmail API with a bogus token: \(error.localizedDescription)")
         }
@@ -97,7 +97,8 @@ enum Probe {
     static func links() async {
         let terms = ["sign", "log", "verif", "confirm", "magic", "password", "reset", "activat", "approv", "prijav", "potrdi", "geslo"]
         let subjects = terms.dropFirst().reduce("SUBJECT \"\(terms[0])\"") { "OR \($0) SUBJECT \"\($1)\"" }
-        for account in MailAccount.load() where account.enabled && account.hasCredential {
+        // Signed-in accounts have no IMAP password; `--probe-sign-in` covers them.
+        for account in MailAccount.load() where account.enabled && !account.usesSignIn && account.hasCredential {
             guard let conn = try? IMAPConnection(account: account) else { continue }
             do {
                 try await conn.openInbox(account)
@@ -145,8 +146,8 @@ enum Probe {
     static func sources() async {
         let readable = FileManager.default.isReadableFile(atPath: MessagesStore.dbPath)
         print("Messages: chat.db \(readable ? "readable" : "not readable (needs Full Disk Access)")")
-        for account in MailAccount.load() where account.enabled {
-            guard account.hasCredential else { print("\(account.label): not signed in"); continue }
+        for account in MailAccount.load() where account.enabled && !account.usesSignIn {
+            guard account.hasCredential else { print("\(account.label): no app password saved"); continue }
             let conn: IMAPConnection
             do { conn = try IMAPConnection(account: account) }
             catch { print("\(account.label): \(error.localizedDescription)"); continue }
