@@ -4,53 +4,39 @@ import SwiftUI
 /// Settings → Sources → Ignored Senders: a list with + and −, like Mail's blocked senders.
 struct IgnoredSendersSheet: View {
     @ObservedObject private var model = AppModel.shared
-    @Environment(\.dismiss) private var dismiss
     @Local private var selection = Set<String>()
     @Local private var adding = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            SheetHeader(title: "Ignored Senders", about: "CodeCatch skips codes and links from these senders. To ignore one, right-click its code in the menu, or click +.")
-            VStack(spacing: 0) {
-                List(selection: $selection) {
-                    ForEach(entries, id: \.self) { IgnoredSenderRow(entry: $0) }
-                }
-                .scrollContentBackground(.hidden)
-                .contextMenu(forSelectionType: String.self) { picked in
-                    Button("Stop Ignoring") { stopIgnoring(picked) }
-                }
-                .onDeleteCommand { stopIgnoring(selection) }
-                .overlay {
-                    if entries.isEmpty {
-                        ContentUnavailableView("No Ignored Senders", systemImage: "nosign",
-                                               description: Text("Ignore an email address, a whole domain, or a phone number."))
-                    }
-                }
-                Divider()
-                HStack(spacing: 0) {
-                    Button { adding = true } label: { Image(systemName: "plus").frame(width: 24, height: 22) }
-                        .help("Ignore a sender")
-                        .accessibilityLabel("Ignore a sender")
-                        .popover(isPresented: $adding, arrowEdge: .bottom) { AddIgnoredSender { selection = [$0] } }
-                    Divider().frame(height: 14)
-                    Button { stopIgnoring(selection) } label: { Image(systemName: "minus").frame(width: 24, height: 22) }
-                        .help("Stop ignoring the selected senders")
-                        .accessibilityLabel("Stop ignoring")
-                        .disabled(selection.isEmpty)
-                    Spacer()
-                }
-                .buttonStyle(.borderless)
-                .padding(4)
+        ListSheet(title: "Ignored Senders", about: "CodeCatch skips codes and links from these senders. To ignore one, right-click its code in the menu, or click +.") {
+            List(selection: $selection) {
+                ForEach(entries, id: \.self) { IgnoredSenderRow(entry: $0) }
             }
-            .frame(height: 280)
-            .well()
-            HStack {
+            .contextMenu(forSelectionType: String.self) { picked in
+                Button("Stop Ignoring") { stopIgnoring(picked) }
+            }
+            .onDeleteCommand { stopIgnoring(selection) }
+            .overlay {
+                if entries.isEmpty {
+                    ContentUnavailableView("No Ignored Senders", systemImage: "nosign",
+                                           description: Text("Ignore an email address, a whole domain, or a phone number."))
+                }
+            }
+        } bar: {
+            HStack(spacing: 0) {
+                Button { adding = true } label: { Image(systemName: "plus").frame(width: 24, height: 22) }
+                    .help("Ignore a sender")
+                    .accessibilityLabel("Ignore a sender")
+                    .popover(isPresented: $adding, arrowEdge: .bottom) { AddIgnoredSender { selection = [$0] } }
+                Divider().frame(height: 14)
+                Button { stopIgnoring(selection) } label: { Image(systemName: "minus").frame(width: 24, height: 22) }
+                    .help("Stop ignoring the selected senders")
+                    .accessibilityLabel("Stop ignoring")
+                    .disabled(selection.isEmpty)
                 Spacer()
-                Button("Done") { dismiss() }.keyboardShortcut(.defaultAction)
             }
+            .padding(4)
         }
-        .padding(20)
-        .frame(width: 460)
     }
 
     /// By service, so a long list scans like the menu; then by entry, so an address and its domain sit together.
