@@ -38,10 +38,10 @@ private enum AccountRemovalFailure: Error { case denied }
         supplied.user = other.user
         var removed: [String] = []
 
-        try model.remove(supplied, removeSecret: { key in
+        try model.remove(supplied, keychain: .stub(remove: { key in
             #expect(Set(model.accounts.map(\.id)) == Set([saved.id, other.id]))
             removed.append(key)
-        })
+        }))
 
         #expect(removed.count == 2)
         #expect(Set(removed) == Set([saved.secretKey, saved.refreshTokenKey]))
@@ -59,7 +59,7 @@ private enum AccountRemovalFailure: Error { case denied }
         unknown.id = UUID()
         var removed: [String] = []
 
-        try model.remove(unknown, removeSecret: { removed.append($0) })
+        try model.remove(unknown, keychain: .stub(remove: { removed.append($0) }))
 
         #expect(removed.isEmpty)
         #expect(model.accounts.map(\.id) == [saved.id])
@@ -78,13 +78,13 @@ private enum AccountRemovalFailure: Error { case denied }
         model.save(second)
         var removed: [String] = []
 
-        try model.remove(first, removeSecret: { removed.append($0) })
+        try model.remove(first, keychain: .stub(remove: { removed.append($0) }))
 
         #expect(removed.isEmpty)
         #expect(model.accounts.map(\.id) == [second.id])
         #expect(fixture.makeModel().accounts.map(\.id) == [second.id])
 
-        try model.remove(second, removeSecret: { removed.append($0) })
+        try model.remove(second, keychain: .stub(remove: { removed.append($0) }))
         #expect(removed.count == 2)
         #expect(Set(removed) == Set([second.secretKey, second.refreshTokenKey]))
         #expect(fixture.makeModel().accounts.isEmpty)
@@ -100,10 +100,10 @@ private enum AccountRemovalFailure: Error { case denied }
         var attempted: [String] = []
 
         do {
-            try model.remove(saved, removeSecret: { key in
+            try model.remove(saved, keychain: .stub(remove: { key in
                 attempted.append(key)
                 if attempted.count == failingCall { throw AccountRemovalFailure.denied }
-            })
+            }))
             Issue.record("Credential deletion failure must propagate")
         } catch AccountRemovalFailure.denied {
         }
@@ -113,7 +113,7 @@ private enum AccountRemovalFailure: Error { case denied }
         #expect(fixture.makeModel().accounts.map(\.id) == [saved.id])
 
         var retried: [String] = []
-        try model.remove(saved, removeSecret: { retried.append($0) })
+        try model.remove(saved, keychain: .stub(remove: { retried.append($0) }))
         #expect(retried.count == 2)
         #expect(Set(retried) == Set([saved.secretKey, saved.refreshTokenKey]))
         #expect(model.accounts.isEmpty)
@@ -131,7 +131,7 @@ private enum AccountRemovalFailure: Error { case denied }
         model.save(saved)
         var removed: [String] = []
 
-        try model.removeUnusedCredentials(for: original, removeSecret: { removed.append($0) })
+        try model.removeUnusedCredentials(for: original, keychain: .stub(remove: { removed.append($0) }))
 
         #expect(removed.isEmpty)
         #expect(model.accounts.map(\.id) == [saved.id])
@@ -152,11 +152,11 @@ private enum AccountRemovalFailure: Error { case denied }
         model.save(edited)
         var removed: [String] = []
 
-        try model.removeUnusedCredentials(for: original, removeSecret: { key in
+        try model.removeUnusedCredentials(for: original, keychain: .stub(remove: { key in
             #expect(model.accounts.map(\.id) == [edited.id])
             #expect(model.accounts.map(\.secretKey) == [edited.secretKey])
             removed.append(key)
-        })
+        }))
 
         #expect(removed.count == 2)
         #expect(Set(removed) == Set([original.secretKey, original.refreshTokenKey]))
@@ -184,10 +184,10 @@ private enum AccountRemovalFailure: Error { case denied }
         var attempted: [String] = []
 
         do {
-            try model.removeUnusedCredentials(for: original, removeSecret: { key in
+            try model.removeUnusedCredentials(for: original, keychain: .stub(remove: { key in
                 attempted.append(key)
                 if attempted.count == failingCall { throw AccountRemovalFailure.denied }
-            })
+            }))
             Issue.record("Unused credential deletion failure must propagate")
         } catch AccountRemovalFailure.denied {
         }

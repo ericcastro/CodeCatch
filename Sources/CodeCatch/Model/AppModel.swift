@@ -242,45 +242,43 @@ final class AppModel: ObservableObject {
     }
 
     /// Persist credentials before publishing metadata; never mutate another account's keys.
-    func saveAccount(_ account: MailAccount, password: String, refreshToken: String?,
-                     setSecret: (String, String) throws -> Void = { try Secrets.set($0, for: $1) },
-                     removeSecret: (String) throws -> Void = Secrets.remove) throws {
+    func saveAccount(_ account: MailAccount, password: String, refreshToken: String?, keychain: AccountKeychain = .login) throws {
         guard !accounts.contains(where: { $0.id != account.id && $0.secretKey == account.secretKey }) else {
             throw AccountSaveError.duplicate
         }
         var account = account
         if let refreshToken {
-            try setSecret(refreshToken, account.refreshTokenKey)
+            try keychain.write(refreshToken, account.refreshTokenKey)
             account.signedIn = true
         } else if !account.usesSignIn {
-            if !password.isEmpty { try setSecret(password, account.secretKey) }
-            try forgetSignIn(account, removeSecret)
+            if !password.isEmpty { try keychain.write(password, account.secretKey) }
+            try forgetSignIn(account, keychain)
         }
         save(account)
     }
 
-    func remove(_ account: MailAccount, removeSecret: (String) throws -> Void = Secrets.remove) throws {
+    func remove(_ account: MailAccount, keychain: AccountKeychain = .login) throws {
         guard let saved = accounts.first(where: { $0.id == account.id }) else { return }
         if !accounts.contains(where: { $0.id != saved.id && $0.secretKey == saved.secretKey }) {
-            try removeSecret(saved.secretKey)
-            try forgetSignIn(saved, removeSecret)
+            try keychain.remove(saved.secretKey)
+            try forgetSignIn(saved, keychain)
         }
         accounts.removeAll { $0.id == saved.id }
     }
 
     /// After an identity edit, remove old credentials only when no saved account uses them.
-    func removeUnusedCredentials(for account: MailAccount, removeSecret: (String) throws -> Void = Secrets.remove) throws {
+    func removeUnusedCredentials(for account: MailAccount, keychain: AccountKeychain = .login) throws {
         guard !accounts.contains(where: { $0.secretKey == account.secretKey }) else { return }
-        try removeSecret(account.secretKey)
-        try forgetSignIn(account, removeSecret)
+        try keychain.remove(account.secretKey)
+        try forgetSignIn(account, keychain)
     }
 
     /// A sign-in CodeCatch forgets also ends on the provider's side, once it is gone from the Keychain.
-    private func forgetSignIn(_ account: MailAccount, _ removeSecret: (String) throws -> Void) throws {
-        let token = Secrets.get(account.refreshTokenKey)
-        try removeSecret(account.refreshTokenKey)
+    private func forgetSignIn(_ account: MailAccount, _ keychain: AccountKeychain) throws {
+        let token = keychain.read(account.refreshTokenKey)
+        try keychain.remove(account.refreshTokenKey)
         OAuth.forgetAccessToken(tokenKey: account.refreshTokenKey)
-        if let token, let provider = account.provider { Task { await provider.revoke(token) } }
+        if let token, let provider = account.provider { keychain.revoke(provider, token) }
     }
 
     // MARK: - Codes

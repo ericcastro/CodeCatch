@@ -12,6 +12,14 @@ private enum SaveMode: CaseIterable {
     var password: String { self == .emptyPassword ? "" : "new-password" }
 }
 
+extension AccountKeychain {
+    /// Records writes and removals; never reads the login Keychain or revokes a sign-in.
+    static func stub(write: @escaping (String, String) throws -> Void = { _, _ in },
+                     remove: @escaping (String) throws -> Void) -> AccountKeychain {
+        AccountKeychain(read: { _ in nil }, write: write, remove: remove, revoke: { _, _ in })
+    }
+}
+
 private enum SecretOperation: Equatable {
     case write(String, String)
     case remove(String)
@@ -53,8 +61,8 @@ private enum SecretOperation: Equatable {
 
         do {
             try model.saveAccount(duplicate, password: mode.password, refreshToken: mode.refreshToken,
-                                  setSecret: { operations.append(.write($0, $1)) },
-                                  removeSecret: { operations.append(.remove($0)) })
+                                  keychain: .stub(write: { operations.append(.write($0, $1)) },
+                                                  remove: { operations.append(.remove($0)) }))
         } catch {
             rejected = true
         }
@@ -81,15 +89,15 @@ private enum SecretOperation: Equatable {
         var operations: [SecretOperation] = []
 
         try model.saveAccount(edited, password: mode.password, refreshToken: mode.refreshToken,
-                              setSecret: { value, key in
+                              keychain: .stub(write: { value, key in
             #expect(model.accounts.map(\.label) == [saved.label])
             #expect(fixture.makeModel().accounts.map(\.label) == [saved.label])
             operations.append(.write(value, key))
-        }, removeSecret: { key in
+        }, remove: { key in
             #expect(model.accounts.map(\.label) == [saved.label])
             #expect(fixture.makeModel().accounts.map(\.label) == [saved.label])
             operations.append(.remove(key))
-        })
+        }))
 
         switch mode {
         case .stagedToken:
@@ -127,8 +135,8 @@ private enum SecretOperation: Equatable {
 
         do {
             try model.saveAccount(edited, password: mode.password, refreshToken: mode.refreshToken,
-                                  setSecret: { _, _ in try attempt() },
-                                  removeSecret: { _ in try attempt() })
+                                  keychain: .stub(write: { _, _ in try attempt() },
+                                                  remove: { _ in try attempt() }))
             Issue.record("Credential failure must propagate")
         } catch AccountSaveFailure.denied {
         }
