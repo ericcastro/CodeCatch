@@ -4,6 +4,15 @@
         <title>CodeCatch</title>
         <item>
             <title>2.0</title>
+            <pubDate>Sun, 11 Oct 2026 11:11:07 +0200</pubDate>
+            <sparkle:fullReleaseNotesLink>https://codecatch.app/changelog/</sparkle:fullReleaseNotesLink>
+            <sparkle:version>235</sparkle:version>
+            <sparkle:shortVersionString>2.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/ugzv/CodeCatch/releases/download/v2.0.235/CodeCatch.dmg" length="5587916" type="application/octet-stream" sparkle:edSignature="9yVPpux557jMv6LmB5g4b1suVfUzdWmCjiSiogY49SX2UNmCsiF7ZFjx54VD1sJu+guQZ+d+pKV3/iPN/qkgBg=="/>
+        </item>
+        <item>
+            <title>2.0</title>
             <pubDate>Sun, 11 Oct 2026 08:46:16 +0200</pubDate>
             <sparkle:fullReleaseNotesLink>https://codecatch.app/changelog/</sparkle:fullReleaseNotesLink>
             <sparkle:version>208</sparkle:version>
@@ -19,15 +28,6 @@
             <sparkle:shortVersionString>2.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/ugzv/CodeCatch/releases/download/v2.0.203/CodeCatch.dmg" length="5597330" type="application/octet-stream" sparkle:edSignature="XZHbA4XNvNWA2e7KMSdqUkM3UVjQItFSkv3DLhRu8urR+ldkLTnxxMAZseLw9pSy7BMoNU+1DQFn/E8Kis0hDw=="/>
-        </item>
-        <item>
-            <title>2.0</title>
-            <pubDate>Sat, 10 Oct 2026 20:33:49 +0200</pubDate>
-            <sparkle:fullReleaseNotesLink>https://codecatch.app/changelog/</sparkle:fullReleaseNotesLink>
-            <sparkle:version>197</sparkle:version>
-            <sparkle:shortVersionString>2.0</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/ugzv/CodeCatch/releases/download/v2.0.197/CodeCatch.dmg" length="5589318" type="application/octet-stream" sparkle:edSignature="rIhsmo4+oMxbze5vx3t1ozVRLLn3Z3wwZOIScO4AtyUXjOfTHb2C7qVlL1Fm5J991WxMODw/ymoKxdR4RqvXAA=="/>
         </item>
     </channel>
 </rss>
