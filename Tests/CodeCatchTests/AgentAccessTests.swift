@@ -139,11 +139,11 @@ private struct Boom: Error {}
 
     /// One request that shows the card, then the given decision.
     func decide(
-        _ new: CodeItem, caller: AgentCaller = verified,
+        _ new: CodeItem, caller: AgentCaller = verified, timeout: TimeInterval = 1,
         _ decision: (AgentAccess) async -> Void
     ) async throws -> Result<CodeItem, AgentError> {
         add(new)
-        let task = start(new.domain ?? "github.com", caller: caller)
+        let task = start(new.domain ?? "github.com", timeout: timeout, caller: caller)
         try await waitForCard()
         await decision(access)
         return await task.value
@@ -321,12 +321,14 @@ extension Result where Success == CodeItem, Failure == AgentError {
 
     @Test func shownCodeExpiringDuringAuthenticationFailsInsteadOfReleasingAnother() async throws {
         let h = Harness()
-        let shown = item(age: 5, expiresIn: 0.5)
+        // Two seconds leave a slow CI runner time to show the card before the code expires;
+        // the request's own deadline stays well past the authentication.
+        let shown = item(age: 5, expiresIn: 2)
         h.onAuthenticate = {
             h.add(item(age: 0))
-            try? await Task.sleep(nanoseconds: 700_000_000)
+            try? await Task.sleep(nanoseconds: 2_200_000_000)
         }
-        let result = try await h.decide(shown) { await $0.allow() }
+        let result = try await h.decide(shown, timeout: 5) { await $0.allow() }
         #expect(result.code != nil)
         #expect(h.marked.isEmpty)
     }
