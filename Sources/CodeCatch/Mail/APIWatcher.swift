@@ -22,28 +22,6 @@ enum MailAPIError: LocalizedError {
     }
 }
 
-extension APIAuth {
-    /// Sends `request` with the account's access token, refreshing it once if it was refused,
-    /// and maps the provider's errors. Returns the body of a successful answer.
-    func send(_ request: URLRequest, provider: String) async throws -> Data {
-        var request = request
-        request.setValue("Bearer \(try await accessToken())", forHTTPHeaderField: "Authorization")
-        let (data, response) = try await OAuth.session.data(for: request)
-        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
-        let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
-        let message = ((json["error"] as? [String: Any])?["message"] as? String) ?? HTTPURLResponse.localizedString(forStatusCode: status)
-        switch status {
-        case 200: return data
-        case 401 where forget(): return try await APIAuth.issued(try await accessToken()).send(request, provider: provider)
-        case 401: throw OAuth.Failure.token("unauthorized")
-        case 403 where message.localizedCaseInsensitiveContains("insufficient") || message.localizedCaseInsensitiveContains("denied"):
-            throw OAuth.Failure.noMailAccess(provider)
-        case 404: throw MailAPIError.gone
-        default: throw MailAPIError.http(status, message)
-        }
-    }
-}
-
 enum APIWatcher {
     /// The API for an account signed in with its provider.
     static func api(for account: MailAccount) -> any MailAPI {

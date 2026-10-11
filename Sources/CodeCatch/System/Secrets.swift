@@ -59,17 +59,3 @@ enum Secrets {
         guard status == errSecSuccess || status == errSecItemNotFound else { throw Failure(status: status) }
     }
 }
-
-/// The Keychain and provider calls that saving or removing a mail account makes; tests pass their own.
-struct AccountKeychain {
-    var read: (String) -> String?
-    var write: (String, String) throws -> Void
-    var remove: (String) throws -> Void
-    /// Ends a sign-in on the provider's side.
-    var revoke: (OAuth, String) -> Void
-
-    static var login: AccountKeychain {
-        AccountKeychain(read: Secrets.get, write: { try Secrets.set($0, for: $1) }, remove: Secrets.remove,
-                        revoke: { provider, token in Task { await provider.revoke(token) } })
-    }
-}
