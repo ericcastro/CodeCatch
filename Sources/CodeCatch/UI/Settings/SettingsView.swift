@@ -44,18 +44,12 @@ private struct SettingsBrandFooter: ViewModifier {
             HStack {
                 BrandHeading()
                 Spacer()
-                Menu {
+                GlyphMenu(symbol: "questionmark.circle", help: "About and feedback") {
                     Button("About CodeCatch", action: AppBrand.showAbout)
                     Divider()
                     Button("Report a Bug…") { AppBrand.openIssue(.bug) }
                     Button("Suggest a Feature…") { AppBrand.openIssue(.feature) }
-                } label: {
-                    GlyphLabel(symbol: "questionmark.circle")
                 }
-                .menuStyle(.borderlessButton)
-                .menuIndicator(.hidden)
-                .fixedSize()
-                .help("About and feedback")
             }
             .bottomBar()
         }

@@ -76,7 +76,7 @@ struct WelcomeView: View {
         .formStyle(.grouped)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             HStack {
-                Text("Reopen it from ••• → Welcome Guide.").font(.caption).foregroundStyle(.secondary)
+                Text("Reopen it from the gear menu → Welcome Guide.").font(.caption).foregroundStyle(.secondary)
                 Spacer()
                 Button("Done") { dismiss() }.keyboardShortcut(.defaultAction)
             }

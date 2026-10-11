@@ -195,30 +195,53 @@ struct MenuContent: View {
     private var header: some View {
         HStack {
             BrandHeading()
+            lockControl
             Spacer()
-            if let version = AppBrand.version {
-                Text("v\(version)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .accessibilityLabel("Version \(version)")
-            }
+            appMenu
         }
-        .padding(.horizontal, 16)
+        .padding(.leading, 16)
+        .padding(.trailing, 14)  // the gear sits in the rows' ••• column
         .padding(.top, 13)
         .padding(.bottom, 11)
     }
 
-    /// Bottom left, in both states: Unlock while codes are hidden, the open padlock to hide them again.
-    @ViewBuilder private var lockControl: some View {
-        if model.vaultSession.isUnlocked {
-            GlyphButton(symbol: "lock.open", help: "Lock: hide codes until you unlock again") { model.vaultSession.lock() }
-        } else {
-            // Unlocking here also copies the newest code, as a fresh one would be.
-            VaultUnlockButton(isBusy: model.vaultSession.isBusy) { Task { try? await model.unlock() } }
-                .controlSize(.small)
-                .help("Codes are hidden until you unlock")
-            if let error = model.unlockError { WarningText(message: error, compact: true).font(.caption) }
+    private var appMenu: some View {
+        GlyphMenu(symbol: "gearshape", help: "Settings and more") {
+            Button("Settings…") { openSettings(at: nil) }.keyboardShortcut(",")
+            Divider()
+            // Recent Emails reads only mail: with Messages alone it would be an empty window.
+            Button("Recent Emails") { leave { openWindow(id: "recovery") } }
+                .disabled(!model.monitoring(Prefs.receivedCodes) || model.mailSourceKeys.isEmpty)
+            Button("Clear Code") { clearable.map(model.dismiss) }
+                .keyboardShortcut(.delete)
+                .disabled(clearable == nil)
+            Button("Clear History…") { confirmClearHistory(model) }
+                .disabled(!model.hasHistory)
+            Divider()
+            Button("Welcome Guide") { leave { openWindow(id: WelcomeView.windowID) } }
+            Button("Show Test Code") { model.showTestCode() }
+                .disabled(!model.monitoring(Prefs.receivedCodes))
+            Divider()
+            Button("Report a Bug…") { AppBrand.openIssue(.bug) }
+            Button("Suggest a Feature…") { AppBrand.openIssue(.feature) }
+            Divider()
+            if let version = AppBrand.version { Text("Version \(version)") }
+            Button("About CodeCatch") { leave(AppBrand.showAbout) }
+            Button("Check for Updates…") { leave { Updater.controller?.checkForUpdates(nil) } }
+                .disabled(Updater.controller == nil)
+            Button("Quit CodeCatch") { NSApp.terminate(nil) }.keyboardShortcut("q")
         }
+    }
+
+    /// Beside the name: one padlock that swaps in place, so nothing moves when the state changes.
+    private var lockControl: some View {
+        let unlocked = model.vaultSession.isUnlocked
+        return GlyphButton(symbol: unlocked ? "lock.open" : "lock.fill",
+                           help: unlocked ? "Lock: hide codes until you unlock again" : "Codes are hidden. Click to unlock") {
+            // Unlocking here also copies the newest code, as a fresh one would be.
+            if unlocked { model.vaultSession.lock() } else { Task { try? await model.unlock() } }
+        }
+        .disabled(model.vaultSession.isBusy)
     }
 
     private func attention(_ label: String, _ status: SourceStatus) -> some View {
@@ -284,48 +307,27 @@ struct MenuContent: View {
         MenuBarPopover.close()
     }
 
-    private var footer: some View {
-        HStack(spacing: 6) {
-            lockControl
-            Spacer()
-            // Recent Emails reads only mail: with Messages alone it would be an empty window.
-            if model.monitoring(Prefs.receivedCodes), !model.mailSourceKeys.isEmpty {
-                Button("Can’t find your code?") { leave { openWindow(id: "recovery") } }
-                .buttonStyle(.plain)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+    /// Only when there's something to act on: an unlock that failed, or emails that may hold a code
+    /// CodeCatch missed (the gear menu always has Recent Emails).
+    @ViewBuilder private var footer: some View {
+        let count = model.recovery.entries.count
+        if model.unlockError != nil || count > 0 {
+            HStack(spacing: 6) {
+                if let error = model.unlockError { WarningText(message: error, compact: true).font(.caption) }
                 Spacer()
+                if count > 0 {
+                    Button("\(count) \(count == 1 ? "email" : "emails") may have your code") { leave { openWindow(id: "recovery") } }
+                    .buttonStyle(.plain)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
             }
-            GlyphButton(symbol: "gearshape", help: "Settings") { openSettings(at: nil) }
-            Menu {
-                Button("Show Test Code") { model.showTestCode() }
-                    .disabled(!model.monitoring(Prefs.receivedCodes))
-                Button("Clear Code") { clearable.map(model.dismiss) }
-                    .keyboardShortcut(.delete)
-                    .disabled(clearable == nil)
-                Button("Clear History…") { confirmClearHistory(model) }
-                    .disabled(!model.hasHistory)
-                Divider()
-                Button("Settings…") { openSettings(at: nil) }.keyboardShortcut(",")
-                Button("Welcome Guide") { leave { openWindow(id: WelcomeView.windowID) } }
-                Button("About CodeCatch") { leave(AppBrand.showAbout) }
-                Divider()
-                Button("Report a Bug…") { AppBrand.openIssue(.bug) }
-                Button("Suggest a Feature…") { AppBrand.openIssue(.feature) }
-                Divider()
-                Button("Check for Updates…") { leave { Updater.controller?.checkForUpdates(nil) } }
-                .disabled(Updater.controller == nil)
-                Button("Quit CodeCatch") { NSApp.terminate(nil) }
-            } label: {
-                GlyphLabel(symbol: "ellipsis")
-            }
-            .menuStyle(.borderlessButton)
-            .menuIndicator(.hidden)
-            .frame(width: 24, height: 24)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 9)
+            .overlay(alignment: .top) { Divider().padding(.horizontal, 12) }
+            .padding(.top, 8)
+        } else {
+            Spacer().frame(height: 10)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 9)
-        .overlay(alignment: .top) { Divider().padding(.horizontal, 12) }
-        .padding(.top, 8)
     }
 }

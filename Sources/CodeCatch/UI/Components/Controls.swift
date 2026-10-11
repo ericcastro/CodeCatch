@@ -5,7 +5,8 @@ import SwiftUI
 /// never-key banner panel as in a key window (system styles grey out there).
 struct ActionButtonStyle: ButtonStyle {
     var prominent = false
-    /// A list row's button: sized to its title, not stretched across the card.
+    /// A list row's button: one width for a 6-digit code, Open and Unlock alike, so the rows'
+    /// pills line up locked or not. Longer titles grow it.
     var compact = false
 
     func makeBody(configuration: Configuration) -> some View {
@@ -14,7 +15,7 @@ struct ActionButtonStyle: ButtonStyle {
             .labelStyle(.titleAndIcon)
             .contentTransition(.symbolEffect(.replace))
             .lineLimit(1)
-            .frame(maxWidth: compact ? nil : .infinity, minHeight: compact ? 24 : 30)
+            .frame(minWidth: compact ? 70 : nil, maxWidth: compact ? nil : .infinity, minHeight: compact ? 24 : 30)
             .padding(.horizontal, 10)
             .foregroundStyle(prominent ? Color.white : Color.primary)
             .background {
@@ -55,7 +56,7 @@ extension View {
 /// Hover eases in and ends at once, so a pointer sweeping down a list leaves no fading trail.
 @MainActor func hoverAnimation(_ on: Bool) -> Animation? { on ? .easeOut(duration: 0.12) : nil }
 
-/// A toolbar-weight glyph: the face of GlyphButton and of the ••• and ? menus.
+/// A toolbar-weight glyph: the face of GlyphButton and GlyphMenu.
 struct GlyphLabel: View {
     let symbol: String
 
@@ -63,6 +64,7 @@ struct GlyphLabel: View {
         Image(systemName: symbol)
             .font(.system(size: 12, weight: .medium))
             .foregroundStyle(.secondary)
+            .contentTransition(.symbolEffect(.replace))
             .frame(width: 24, height: 24)
     }
 }
@@ -82,6 +84,23 @@ struct GlyphButton: View {
         .buttonStyle(.plain)
         .help(help)
         .accessibilityLabel(help)
+    }
+}
+
+/// GlyphButton's twin for a menu: the same glyph, the same hover circle.
+struct GlyphMenu<Content: View>: View {
+    let symbol: String
+    let help: String
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        Menu(content: content) { GlyphLabel(symbol: symbol) }
+            .menuStyle(.borderlessButton)
+            .menuIndicator(.hidden)
+            .frame(width: 24, height: 24)
+            .hoverHighlight(in: Circle())
+            .help(help)
+            .accessibilityLabel(help)
     }
 }
 

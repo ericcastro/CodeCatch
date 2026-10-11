@@ -44,7 +44,7 @@ signed, notarized and updates itself. To build from source, run
 
 For SMS codes, turn on **Text Message Forwarding** on your iPhone.
 
-To check it works, open the menu → ⋯ → **Show Test Code**.
+To check it works, open the menu → gear → **Show Test Code**.
 
 ### Permissions
 

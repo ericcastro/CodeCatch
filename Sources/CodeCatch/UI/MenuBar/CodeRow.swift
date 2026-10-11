@@ -116,14 +116,9 @@ struct CodeRow: View {
                 }
             }
             // The right-click actions, findable. Always there, quiet until hovered: the rows end on one
-            // column, in line with the footer's ⋯, and nothing shifts under the pointer.
-            Menu { CodeMenu(item: item) } label: { GlyphLabel(symbol: "ellipsis") }
-                .menuStyle(.borderlessButton)
-                .menuIndicator(.hidden)
-                .frame(width: 24, height: 24)
+            // column, in line with the header's gear, and nothing shifts under the pointer.
+            GlyphMenu(symbol: "ellipsis", help: "More actions") { CodeMenu(item: item) }
                 .opacity(active ? 1 : 0.45)
-                .help("More")
-                .accessibilityLabel("More actions")
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 7)
