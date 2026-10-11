@@ -19,12 +19,13 @@ import Testing
 /// longer than the timeout, but within the deadline, must still be heard.
 @Test func readLineWaitsOutSocketTimeoutsUntilItsDeadline() throws {
     var fds: [Int32] = [0, 0]
-    #expect(socketpair(AF_UNIX, SOCK_STREAM, 0, &fds) == 0)
-    defer { close(fds[0]); close(fds[1]) }
+    try #require(socketpair(AF_UNIX, SOCK_STREAM, 0, &fds) == 0)
     var timeout = timeval(tv_sec: 0, tv_usec: 100_000)
-    setsockopt(fds[0], SOL_SOCKET, SO_RCVTIMEO, &timeout, socklen_t(MemoryLayout<timeval>.size))
-    let writer = fds[1]
-    DispatchQueue.global().asyncAfter(deadline: .now() + 0.3) { _ = write(writer, "hello\n", 6) }
+    try #require(setsockopt(fds[0], SOL_SOCKET, SO_RCVTIMEO, &timeout, socklen_t(MemoryLayout<timeval>.size)) == 0)
+    let writer = fds[1], wrote = DispatchSemaphore(value: 0)
+    DispatchQueue.global().asyncAfter(deadline: .now() + 0.3) { _ = write(writer, "hello\n", 6); wrote.signal() }
+    // Close only after the late write, so it can't land on a reused descriptor.
+    defer { wrote.wait(); close(fds[0]); close(fds[1]) }
     var buffer = Data()
     #expect(LocalSocket.readLine(from: fds[0], buffer: &buffer, within: 2) == Data("hello".utf8))
 }
