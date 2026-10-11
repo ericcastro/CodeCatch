@@ -1,7 +1,8 @@
 import Foundation
 import Security
 
-/// Mail passwords, Google sign-ins and the OAuth client, in the login Keychain.
+/// The login Keychain: mail passwords, Google and Microsoft sign-ins, Bitwarden codes, agent
+/// access settings and whether to unlock without asking (Privacy → Unlock).
 /// Builds signed with the same Developer ID team read them without asking (the
 /// items' access list names the team, not one binary); any other binary gets a prompt.
 enum Secrets {

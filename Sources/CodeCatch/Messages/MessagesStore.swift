@@ -43,7 +43,7 @@ final class MessagesStore: LocalStore {
             let date = Date(timeIntervalSinceReferenceDate: raw > 1_000_000_000_000 ? Double(raw) / 1e9 : Double(raw))
             let handle = String(cString: sqlite3_column_text(s, 4))
             return IncomingMessage(text: text, subject: nil, senderName: "", senderID: handle,
-                                   sourceKey: Self.sourceKey, sourceLabel: "Messages", date: date, isMail: false,
+                                   sourceKey: Self.sourceKey, sourceLabel: name, date: date, isMail: false,
                                    messageID: String(position))
         }.compactMap { $0 }
     }

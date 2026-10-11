@@ -1,6 +1,6 @@
 import Foundation
 
-/// Resumes a continuation at most once across NWConnection state callbacks.
+/// Runs its body at most once, for a continuation that callbacks may try to resume more than once.
 final class Once: @unchecked Sendable {
     private var done = false
     private let lock = NSLock()

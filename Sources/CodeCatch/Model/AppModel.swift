@@ -166,9 +166,9 @@ final class AppModel: ObservableObject {
 
     // MARK: - Settings
 
-    /// Any on/off setting in `Prefs`; Unlock with Mac lives in the Keychain instead.
+    /// Any on/off setting in `Prefs`; `unlockWithMac` (unlock without asking) is read from the Keychain.
     func isOn(_ key: String) -> Bool { key == Prefs.unlockWithMac ? unlockPolicy.enabled : defaults.bool(forKey: key) }
-    var receiving: Bool { Prefs.receiving.contains(where: isOn) }
+    var receiving: Bool { Prefs.isReceiving(in: defaults) }
 
     /// A switch that changes what is caught: drops what it no longer allows and restarts the sources.
     func set(_ key: String, on: Bool) {

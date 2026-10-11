@@ -21,7 +21,7 @@ final class MailSignIn: ObservableObject {
         credential?.key == account.secretKey ? credential?.token : nil
     }
 
-    /// Stages the token for the address Google signed in, which may differ from the one typed, and returns it.
+    /// Stages the token for the address the provider signed in, which may differ from the one typed, and returns it.
     @discardableResult
     func signIn(for account: MailAccount) async throws -> String {
         cancel()
