@@ -486,6 +486,9 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
 .prose-table table { width: 100%; border-collapse: collapse; font-size: 15.500px; }
 .prose-table th, .prose-table td { padding: 11px 14px; text-align: left; vertical-align: top; }
 :lang(de) :is(h1, .prose-table td) { hyphens: auto; }  /* long German words, so narrow screens and tables still fit */
+/* Japanese fonts on Windows too, strict kinsoku, and headings that break between phrases, not inside words. */
+:lang(ja) { --font: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", Meiryo, sans-serif; line-break: strict; }
+:lang(ja) :is(h1, h2, h3) { word-break: auto-phrase; }
 .prose-table thead th { font-size: 13px; font-weight: 650; color: var(--muted); vertical-align: bottom; }
 /* Equal value columns where there is room; narrow screens keep content-sized columns and scroll. */
 @media (min-width: 901px) { .prose-table table { table-layout: fixed; } .prose-table thead th:first-child { width: 24%; } }

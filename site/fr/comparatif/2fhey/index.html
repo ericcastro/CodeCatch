@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alternative à 2FHey sur Mac : CodeCatch vs 2FHey</title>
+<meta name="description" content="CodeCatch et 2FHey copient les codes 2FA de Messages sur Mac. Le comparatif : codes par e-mail, liens de connexion, historique, autorisations, langues.">
+<link rel="canonical" href="https://codecatch.app/fr/comparatif/2fhey/">
+<link rel="alternate" hreflang="en" href="https://codecatch.app/vs/2fhey/">
+<link rel="alternate" hreflang="de" href="https://codecatch.app/de/vergleich/2fhey/">
+<link rel="alternate" hreflang="es" href="https://codecatch.app/es/comparacion/2fhey/">
+<link rel="alternate" hreflang="fr" href="https://codecatch.app/fr/comparatif/2fhey/">
+<link rel="alternate" hreflang="it" href="https://codecatch.app/it/confronto/2fhey/">
+<link rel="alternate" hreflang="pt" href="https://codecatch.app/pt/comparacao/2fhey/">
+<link rel="alternate" hreflang="ja" href="https://codecatch.app/ja/vs/2fhey/">
+<link rel="alternate" hreflang="x-default" href="https://codecatch.app/vs/2fhey/">
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100d0e" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/icon-180.png">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="es_LA">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:site_name" content="CodeCatch">
+<meta property="og:url" content="https://codecatch.app/fr/comparatif/2fhey/">
+<meta property="og:title" content="Alternative à 2FHey sur Mac : CodeCatch vs 2FHey">
+<meta property="og:description" content="CodeCatch et 2FHey copient les codes 2FA de Messages sur Mac. Le comparatif : codes par e-mail, liens de connexion, historique, autorisations, langues.">
+<meta property="og:image" content="https://codecatch.app/assets/og/fr/2fhey.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="« CodeCatch vs 2FHey » à côté d’un code Stripe que CodeCatch a copié">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Article",
+   "@id": "https://codecatch.app/fr/comparatif/2fhey/#article",
+   "headline": "Alternative à 2FHey sur Mac : CodeCatch vs 2FHey",
+   "name": "CodeCatch vs 2FHey",
+   "description": "CodeCatch et 2FHey copient les codes 2FA de Messages sur Mac. Le comparatif : codes par e-mail, liens de connexion, historique, autorisations, langues.",
+   "image": "https://codecatch.app/assets/og/fr/2fhey.png",
+   "datePublished": "2026-10-03",
+   "dateModified": "2026-10-03",
+   "inLanguage": "fr",
+   "author": {
+    "@id": "https://codecatch.app/#author"
+   },
+   "publisher": {
+    "@id": "https://codecatch.app/#org"
+   },
+   "mainEntityOfPage": "https://codecatch.app/fr/comparatif/2fhey/",
+   "about": {
+    "@type": "SoftwareApplication",
+    "name": "CodeCatch",
+    "operatingSystem": "macOS",
+    "applicationCategory": "UtilitiesApplication",
+    "url": "https://codecatch.app/fr/"
+   }
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://codecatch.app/fr/comparatif/2fhey/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Qu’est-ce que 2FHey ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "2FHey est une app open source pour Mac. Elle repère les codes de vérification dans les SMS qui arrivent et les copie dans le presse-papiers. Vous les collez ensuite dans Chrome, Firefox, Arc ou toute autre app."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "2FHey récupère-t-il les codes reçus par e-mail ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Non. 2FHey ne lit que les SMS. La lecture des codes dans Apple Mail est une demande de fonctionnalité ouverte sur sa page GitHub depuis 2023. CodeCatch lit Apple Mail, Gmail et d’autres comptes mail."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "2FHey fonctionne-t-il avec Google Messages ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "D’après son site, oui, en plus d’iMessage. CodeCatch lit l’app Messages de votre Mac : pour les codes SMS, il faut donc un iPhone avec le Transfert de SMS activé."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "2FHey est-il gratuit ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "2FHey est open source, et son README indique que le téléchargement passe par Gumroad. Consultez son site pour connaître le prix actuel."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "2FHey fonctionne-t-il dans Chrome et Firefox ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Oui. Comme CodeCatch, il copie le code dans le presse-papiers : il fonctionne donc dans tous les navigateurs et toutes les apps."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Quelles autorisations demande chaque app ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Les deux ont besoin de l’accès complet au disque pour lire Messages. Le README de 2FHey cite aussi l’autorisation Accessibilité, pour le collage automatique et son raccourci clavier. CodeCatch ne la demande que si vous activez la saisie des codes à votre place."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Peut-on utiliser 2FHey et CodeCatch en même temps ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Oui, mais les deux copieront le même code SMS. Le plus simple : confiez les SMS à une seule des deux apps, et désactivez cette source dans l’autre."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Quelle alternative à 2FHey choisir ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Si vous voulez ce que fait 2FHey, plus les codes par e-mail, les liens de connexion, un historique avec recherche et les codes Bitwarden, essayez CodeCatch. Si vous cherchez un outil gratuit qui lit aussi Apple Mail et colle le code pour vous, MessAuto est une autre option open source."
+     }
+    }
+   ]
+  },
+  {
+   "@type": "Person",
+   "@id": "https://codecatch.app/#author",
+   "name": "Uros Gazvoda",
+   "url": "https://codecatch.app/#why",
+   "sameAs": [
+    "https://github.com/ugzv",
+    "https://uros.com"
+   ]
+  },
+  {
+   "@type": "Organization",
+   "@id": "https://codecatch.app/#org",
+   "name": "CodeCatch",
+   "url": "https://codecatch.app/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://codecatch.app/assets/icon-512.png",
+    "width": 512,
+    "height": 512
+   },
+   "founder": {
+    "@id": "https://codecatch.app/#author"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "CodeCatch",
+     "item": "https://codecatch.app/fr/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "CodeCatch vs 2FHey",
+     "item": "https://codecatch.app/fr/comparatif/2fhey/"
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/fr/" aria-label="Accueil CodeCatch">
+    <svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg>
+    <span>CodeCatch</span>
+  </a>
+  <nav aria-label="Sections">
+    <a href="/fr/#features">Fonctionnalités</a>
+    <a href="/fr/#privacy">Confidentialité</a>
+    <a href="/fr/#compare">Comparatif</a>
+    <a href="/fr/#faq">FAQ</a>
+  </nav>
+  <a class="button small" href="/download/CodeCatch.dmg" data-download>Télécharger</a>
+</header>
+
+<main>
+
+<section class="vs-hero">
+  <p class="eyebrow">Comparatif</p>
+  <h1>CodeCatch vs 2FHey</h1>
+  <p class="lede">Les deux apps copient les codes reçus dans Messages, et vous les collez dans n’importe quel navigateur. 2FHey s’en tient aux SMS. CodeCatch lit aussi vos e-mails, récupère les liens de connexion, garde un historique et se verrouille avec Touch ID.</p>
+  <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>Par <a href="/fr/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-03">Publié le 3 octobre 2026</time></span></p>
+</section>
+
+<section class="compare first" style="padding-bottom:48px !important">
+  <h2 class="sr-only">Comparatif des fonctions</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col"><span class="sr-only">Fonction</span></th>
+          <th scope="col" class="us"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg>CodeCatch</th>
+          <th scope="col">2FHey</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Codes SMS</th><td class="us" data-label="CodeCatch">iMessage et SMS</td><td class="has" data-label="2FHey">iMessage, SMS, Google Messages</td></tr>
+        <tr><th scope="row">Fonctionne dans</th><td class="us" data-label="CodeCatch">Toute app</td><td class="has" data-label="2FHey">Toute app</td></tr>
+        <tr><th scope="row">Codes par e-mail</th><td class="us" data-label="CodeCatch">Apple Mail, Gmail, autres</td><td class="no" data-label="2FHey">Non</td></tr>
+        <tr><th scope="row">Liens de connexion</th><td class="us" data-label="CodeCatch">Oui, avec leur destination</td><td class="no" data-label="2FHey">Non</td></tr>
+        <tr><th scope="row">Historique</th><td class="us" data-label="CodeCatch">7 jours, avec recherche</td><td class="no" data-label="2FHey">Non</td></tr>
+        <tr><th scope="row">Codes 2FA (TOTP)</th><td class="us" data-label="CodeCatch">Bitwarden</td><td class="no" data-label="2FHey">Non</td></tr>
+        <tr><th scope="row">Verrou Touch ID</th><td class="us" data-label="CodeCatch">Oui</td><td class="no" data-label="2FHey">Non</td></tr>
+        <tr><th scope="row">Tape le code pour vous</th><td class="us" data-label="CodeCatch">En option</td><td class="has" data-label="2FHey">En option</td></tr>
+        <tr><th scope="row">Demande l’Accessibilité</th><td class="us" data-label="CodeCatch">Seulement pour taper</td><td class="has" data-label="2FHey">Pour coller et pour son raccourci</td></tr>
+        <tr><th scope="row">Langues</th><td class="us" data-label="CodeCatch">35</td><td class="has" data-label="2FHey">6</td></tr>
+        <tr><th scope="row">Se connecte à</th><td class="us" data-label="CodeCatch">Mail, Google, Bitwarden (si activés) ; mises à jour</td><td class="has" data-label="2FHey">GitHub, pour les langues</td></tr>
+        <tr><th scope="row">Open source</th><td class="us" data-label="CodeCatch">Oui</td><td class="has" data-label="2FHey">Oui</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fine">La colonne 2FHey vient de <a href="https://github.com/SoFriendly/2fhey" rel="noopener">son README</a> et de <a href="https://2fhey.com/" rel="noopener">son site</a>, vérifiés en octobre 2026. « Non » veut dire que ces pages n’en parlent pas.</p>
+</section>
+
+<section class="article">
+  <div class="feature-art article-art" aria-hidden="true">
+    <div class="cc">
+      <div class="card floating">
+        <div class="card-head"><div class="tile bleed"><img src="/assets/services/stripe.png" alt="" loading="lazy"><img class="badge" src="/assets/services/mail.png" alt="" loading="lazy"></div><div class="card-who"><b>Stripe</b></div><span class="card-age">now</span></div>
+        <div class="well"><span class="code">482 913</span><span class="well-time">9:41<svg class="ring " viewBox="0 0 22 22" style="--p:.97"><circle class="track" cx="11" cy="11" r="9.5"/><circle class="arc" cx="11" cy="11" r="9.5" pathLength="1"/></svg></span></div>
+        <div class="card-actions"><span class="pill prominent"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg><span>Copied</span></span></div>
+      </div>
+    </div>
+  </div>
+  <aside class="rail">
+    <nav class="toc" aria-label="Sur cette page"><details open>
+      <summary>Sur cette page</summary>
+      <ol>
+        <li><a href="#what-is-2fhey">Qu’est-ce que 2FHey ?</a></li>
+        <li><a href="#same">Ce que les deux apps partagent</a></li>
+        <li><a href="#2fhey-better">Les points forts de 2FHey</a></li>
+        <li><a href="#codecatch-better">Les points forts de CodeCatch</a></li>
+        <li><a href="#permissions">Les autorisations de chaque app</a></li>
+        <li><a href="#switch">Passer à CodeCatch</a></li>
+        <li><a href="#questions">Questions fréquentes</a></li>
+      </ol>
+    </details></nav>
+    <div class="rail-card">
+      <img src="/assets/icon-256.png" width="56" height="56" alt="" loading="lazy">
+      <p><b>CodeCatch</b> Les codes de vérification et liens de connexion de Messages et des e-mails, copiés dès leur arrivée.</p>
+      <a class="button small" href="/download/CodeCatch.dmg" data-download><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Télécharger pour macOS</a>
+      <p class="fine">Gratuit · macOS 15+</p>
+    </div>
+  </aside>
+  <div class="prose">
+    <p class="callout"><b>En bref :</b> 2FHey est le meilleur choix si vos codes arrivent uniquement par SMS, ou si vous utilisez Google Messages. CodeCatch est le meilleur choix si vous recevez aussi des codes par e-mail ou des liens de connexion, ou si vous voulez retrouver un code plus tard.</p>
+
+    <h2 id="what-is-2fhey">Qu’est-ce que 2FHey ?</h2>
+    <p><a href="https://2fhey.com/" rel="noopener">2FHey</a> est une app open source pour la barre des menus du Mac, écrite en Swift par SoFriendly. Elle surveille les SMS qui arrivent. Quand l’un d’eux contient un code de vérification, 2FHey copie le code et affiche une notification. Vous pouvez alors le coller dans n’importe quel navigateur.</p>
+    <p>Elle fait une seule chose et reste légère : selon son site, l’app pèse moins de 10 Mo. Son <a href="https://github.com/SoFriendly/2fhey" rel="noopener">code est sur GitHub</a>, où il recevait encore des mises à jour en août 2026.</p>
+
+    <h2 id="same">Ce que les deux apps partagent</h2>
+    <ul class="ticks">
+      <li><b>Elles marchent dans toutes les apps.</b> Les deux copient le code dans le presse-papiers : il se colle donc dans Chrome, Arc, Firefox ou Edge. Aucune ne dépend du remplissage automatique du navigateur. Si c’est lui qui vous pose problème, lisez <a href="/fr/guides/codes-sms-remplissage-automatique-chrome-mac/">pourquoi Chrome sur Mac ne remplit pas les codes</a>.</li>
+      <li><b>Elles lisent les iMessage et les SMS</b> dans l’app Messages de votre Mac.</li>
+      <li><b>Elles demandent l’accès complet au disque.</b> macOS l’exige avant qu’une app puisse lire Messages.</li>
+      <li><b>Elles peuvent coller le code pour vous,</b> si vous activez l’option.</li>
+      <li><b>Elles sont open source</b> et tournent sur votre Mac, sans compte.</li>
+    </ul>
+
+    <h2 id="2fhey-better">Les points forts de 2FHey</h2>
+    <ul class="ticks">
+      <li><b>Google Messages.</b> Son site cite Google Messages à côté d’iMessage. CodeCatch a besoin que le SMS arrive dans l’app Messages, et donc d’un iPhone.</li>
+      <li><b>Un raccourci pour récupérer le dernier code.</b> <kbd>⇧</kbd><kbd>⌘</kbd><kbd>E</kbd> relit vos messages et copie de nouveau le code le plus récent.</li>
+      <li><b>La simplicité.</b> Aucun compte mail à ajouter, peu de réglages à apprendre.</li>
+      <li><b>Des règles de détection que chacun peut enrichir.</b> Ses fichiers de mots-clés sont sur GitHub, et l’app télécharge les plus récents à chaque démarrage.</li>
+    </ul>
+
+    <h2 id="codecatch-better">Les points forts de CodeCatch</h2>
+    <ul class="ticks">
+      <li><b>Les codes par e-mail.</b> 2FHey ne lit que les SMS. La lecture d’Apple Mail est une <a href="https://github.com/SoFriendly/2fhey/issues/32" rel="noopener">demande ouverte sur sa page GitHub</a> depuis 2023. CodeCatch lit Apple Mail, et se connecte à Gmail et à d’autres comptes avec un mot de passe d’application. Vos e-mails restent en lecture seule.</li>
+      <li><b>Les liens de connexion.</b> Beaucoup de services envoient désormais un lien à la place d’un code. CodeCatch affiche le lien à côté de vos codes, vous dit où il mène et vous prévient s’il pointe vers un autre site que celui de l’expéditeur.</li>
+      <li><b>L’historique.</b> Codes et liens restent 7 jours dans le menu. Tapez un nom, appuyez sur Retour, et le code est de nouveau copié.</li>
+      <li><b>Les codes Bitwarden.</b> CodeCatch affiche vos <a href="/fr/guides/codes-bitwarden-mac-barre-des-menus/">codes Bitwarden dans la barre des menus</a>, verrouillés par Touch ID.</li>
+      <li><b>Plus de langues.</b> CodeCatch reconnaît les codes dans 35 langues. Le README de 2FHey en cite six.</li>
+      <li><b>Moins d’autorisations par défaut.</b> CodeCatch ne demande l’autorisation Accessibilité que si vous voulez qu’il tape les codes pour vous.</li>
+    </ul>
+
+    <h2 id="permissions">Les autorisations de chaque app</h2>
+    <div class="prose-table"><table><thead><tr><th scope="col"></th><th scope="col">CodeCatch</th><th scope="col">2FHey</th></tr></thead><tbody>
+<tr><th scope="row">Accès complet au disque</th><td>Requis</td><td>Requis</td></tr>
+<tr><th scope="row">Accessibilité</th><td>Seulement s’il tape pour vous</td><td>Pour le collage automatique et son raccourci</td></tr>
+<tr><th scope="row">Réseau</th><td>Mail, Google et Bitwarden (si activés) ; recherche de mises à jour</td><td>GitHub, pour mettre à jour les langues</td></tr>
+</tbody></table></div>
+    <p>Avec l’autorisation Accessibilité, une app peut appuyer sur des touches dans d’autres apps. C’est ce qui rend le collage automatique possible, et c’est pour cela que CodeCatch la laisse désactivée tant que vous ne la demandez pas.</p>
+
+    <h2 id="switch">Passer de 2FHey à CodeCatch</h2>
+    <ul class="ticks">
+      <li><b>Quittez 2FHey</b> depuis son icône dans la barre des menus, pour que deux apps ne copient pas le même code.</li>
+      <li><b><a href="/download/CodeCatch.dmg" data-download>Téléchargez CodeCatch</a></b> et ouvrez-le. Il se loge dans la barre des menus.</li>
+      <li><b>Autorisez l’accès complet au disque.</b> CodeCatch ouvre le bon réglage pour vous.</li>
+      <li><b>Ajoutez vos comptes mail.</b> Activez Apple Mail, ou ajoutez Gmail avec un mot de passe d’application. C’est justement ce qui manque à 2FHey.</li>
+      <li><b>Vous utilisiez le collage automatique ?</b> Dans les réglages de CodeCatch, activez Automatically Type Codes. macOS vous demandera alors l’autorisation Accessibilité.</li>
+    </ul>
+
+    <h2 id="questions">Questions fréquentes</h2>
+    <div class="faq-list">
+      <details><summary>Qu’est-ce que 2FHey ?</summary><p>2FHey est une app open source pour Mac. Elle repère les codes de vérification dans les SMS qui arrivent et les copie dans le presse-papiers. Vous les collez ensuite dans Chrome, Firefox, Arc ou toute autre app.</p></details>
+      <details><summary>2FHey récupère-t-il les codes reçus par e-mail ?</summary><p>Non. 2FHey ne lit que les SMS. La lecture des codes dans Apple Mail est une demande de fonctionnalité ouverte sur sa page GitHub depuis 2023. CodeCatch lit Apple Mail, Gmail et d’autres comptes mail.</p></details>
+      <details><summary>2FHey fonctionne-t-il avec Google Messages ?</summary><p>D’après son site, oui, en plus d’iMessage. CodeCatch lit l’app Messages de votre Mac : pour les codes SMS, il faut donc un iPhone avec le Transfert de SMS activé.</p></details>
+      <details><summary>2FHey est-il gratuit ?</summary><p>2FHey est open source, et son README indique que le téléchargement passe par Gumroad. Consultez son site pour connaître le prix actuel.</p></details>
+      <details><summary>2FHey fonctionne-t-il dans Chrome et Firefox ?</summary><p>Oui. Comme CodeCatch, il copie le code dans le presse-papiers : il fonctionne donc dans tous les navigateurs et toutes les apps.</p></details>
+      <details><summary>Quelles autorisations demande chaque app ?</summary><p>Les deux ont besoin de l’accès complet au disque pour lire Messages. Le README de 2FHey cite aussi l’autorisation Accessibilité, pour le collage automatique et son raccourci clavier. CodeCatch ne la demande que si vous activez la saisie des codes à votre place.</p></details>
+      <details><summary>Peut-on utiliser 2FHey et CodeCatch en même temps ?</summary><p>Oui, mais les deux copieront le même code SMS. Le plus simple : confiez les SMS à une seule des deux apps, et désactivez cette source dans l’autre.</p></details>
+      <details><summary>Quelle alternative à 2FHey choisir ?</summary><p>Si vous voulez ce que fait 2FHey, plus les codes par e-mail, les liens de connexion, un historique avec recherche et les codes Bitwarden, essayez CodeCatch. Si vous cherchez un outil gratuit qui lit aussi Apple Mail et colle le code pour vous, <a href="/fr/comparatif/messauto/">MessAuto</a> est une autre option open source.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="picks">
+  <div>
+    <h2>Choisissez 2FHey si</h2>
+    <ul class="ticks plain">
+      <li>Vos codes arrivent uniquement par SMS</li>
+      <li>Vous utilisez Google Messages sur un téléphone Android</li>
+      <li>Vous voulez un outil simple, qui fait une seule chose</li>
+    </ul>
+    <p class="fine"><a href="https://2fhey.com/" rel="noopener">Le site de 2FHey</a></p>
+  </div>
+  <div class="ours">
+    <h2>Choisissez CodeCatch si</h2>
+    <ul class="ticks">
+      <li>Vous recevez aussi des codes par e-mail</li>
+      <li>Vous recevez des liens de connexion, pas seulement des codes</li>
+      <li>Vous voulez l’historique et les codes Bitwarden au même endroit</li>
+      <li>Vous voulez des codes verrouillés par Touch ID</li>
+    </ul>
+  </div>
+</section>
+
+<section class="cta">
+  <img src="/assets/icon-256.png" width="96" height="96" alt="Icône de l’app CodeCatch" loading="lazy">
+  <h2>Essayez CodeCatch.</h2>
+  <p>Les codes et liens de connexion de Messages et de vos e-mails, à portée de ⌘V.</p>
+  <div class="actions">
+    <a class="button" href="/download/CodeCatch.dmg" data-download>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Télécharger pour macOS
+    </a>
+    <a class="button quiet" href="/fr/">Voir comment ça marche</a>
+  </div>
+  <p class="fine">Gratuit · macOS 15+ · Puce Apple et Intel</p>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a class="brand" href="/fr/"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><span>CodeCatch</span></a>
+      <p>Vos codes de vérification, copiés dès leur arrivée.</p>
+      <a class="footer-gh" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>Open source sur GitHub</a>
+    </div>
+    <nav aria-label="Pied de page">
+      <div>
+        <h2>Produit</h2>
+        <a href="/fr/#features">Fonctionnalités</a>
+        <a href="/fr/#privacy">Réglages de confidentialité</a>
+        <a href="/fr/#faq">FAQ</a>
+      </div>
+      <div>
+        <h2>Guides</h2>
+        <a href="/fr/guides/codes-bitwarden-mac-barre-des-menus/">Codes Bitwarden sur Mac</a>
+        <a href="/fr/guides/codes-sms-remplissage-automatique-chrome-mac/">Codes SMS dans Chrome sur Mac</a>
+        <a href="/fr/guides/magic-link-fiable/">Ce magic link est-il fiable ?</a>
+        <a href="/fr/guides/codes-2fa-agents-ia/">Codes 2FA pour agents IA</a>
+      </div>
+      <div>
+        <h2>Comparatifs</h2>
+        <a href="/fr/#compare">Toutes les apps comparées</a>
+        <a href="/fr/comparatif/2fhey/">CodeCatch vs 2FHey</a>
+        <a href="/fr/comparatif/messauto/">CodeCatch vs MessAuto</a>
+      </div>
+      <div>
+        <h2>À propos</h2>
+        <a href="/fr/#why">Qui est derrière</a>
+        <a href="/fr/confidentialite/">Confidentialité</a>
+        <a href="/changelog/">Notes de version (en anglais)</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=bug_report.yml" rel="noopener">Signaler un bug</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=feature_request.yml" rel="noopener">Proposer une fonctionnalité</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CodeCatch</p>
+    <p>2FHey est une marque de son propriétaire. CodeCatch n’y est pas affilié.</p>
+    <nav class="languages" aria-label="Langue"><a href="/vs/2fhey/" hreflang="en" lang="en">English</a><a href="/de/vergleich/2fhey/" hreflang="de" lang="de">Deutsch</a><a href="/es/comparacion/2fhey/" hreflang="es" lang="es">Español</a><a href="/fr/comparatif/2fhey/" hreflang="fr" lang="fr" aria-current="page">Français</a><a href="/it/confronto/2fhey/" hreflang="it" lang="it">Italiano</a><a href="/pt/comparacao/2fhey/" hreflang="pt" lang="pt">Português</a><a href="/ja/vs/2fhey/" hreflang="ja" lang="ja">日本語</a></nav>
+  </div>
+</footer>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffa20f"/><stop offset="1" stop-color="#ff2d55"/></linearGradient>
+    <path id="mark" d="M428.0 732.0 L428.0 292.0 A84 84 0 0 1 596.0 292.0 L596.0 732.0 A84 84 0 0 1 428.0 732.0 Z M279.5 549.3 L660.5 329.3 A84 84 0 0 1 744.5 474.7 L363.5 694.7 A84 84 0 0 1 279.5 549.3 Z M363.5 329.3 L744.5 549.3 A84 84 0 0 1 660.5 694.7 L279.5 474.7 A84 84 0 0 1 363.5 329.3 Z"/>
+    <symbol id="i-github" viewBox="0 0 32 32"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M16 0C7.16 0 0 7.16 0 16C0 23.08 4.58 29.06 10.94 31.18C11.74 31.32 12.04 30.84 12.04 30.42C12.04 30.04 12.02 28.78 12.02 27.44C8 28.18 6.96 26.46 6.64 25.56C6.46 25.1 5.68 23.68 5 23.3C4.44 23 3.64 22.26 4.98 22.24C6.24 22.22 7.14 23.4 7.44 23.88C8.88 26.3 11.18 25.62 12.1 25.2C12.24 24.16 12.66 23.46 13.12 23.06C9.56 22.66 5.84 21.28 5.84 15.16C5.84 13.42 6.46 11.98 7.48 10.86C7.32 10.46 6.76 8.82 7.64 6.62C7.64 6.62 8.98 6.2 12.04 8.26C13.32 7.9 14.68 7.72 16.04 7.72C17.4 7.72 18.76 7.9 20.04 8.26C23.1 6.18 24.44 6.62 24.44 6.62C25.32 8.82 24.76 10.46 24.6 10.86C25.62 11.98 26.24 13.4 26.24 15.16C26.24 21.3 22.5 22.66 18.94 23.06C19.52 23.56 20.02 24.52 20.02 26.02C20.02 28.16 20 29.88 20 30.42C20 30.84 20.3 31.34 21.1 31.18C27.42 29.06 32 23.06 32 16C32 7.16 24.84 0 16 0V0Z"/></symbol>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4.500-4.500M12 15l4.500-4.500M5 19h14"/></g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7"/></g>
+  </defs>
+</svg>
+<script src="/toc.js" defer></script>
+</body>
+</html>

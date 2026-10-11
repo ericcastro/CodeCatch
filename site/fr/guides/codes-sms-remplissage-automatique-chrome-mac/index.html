@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Codes SMS non remplis dans Chrome sur Mac : que faire ?</title>
+<meta name="description" content="Pourquoi Chrome et Firefox sur Mac ne remplissent pas les codes de vérification reçus par SMS, ce qui aide sous macOS 26 et ce qui marche partout.">
+<link rel="canonical" href="https://codecatch.app/fr/guides/codes-sms-remplissage-automatique-chrome-mac/">
+<link rel="alternate" hreflang="en" href="https://codecatch.app/guides/verification-code-autofill-chrome-mac/">
+<link rel="alternate" hreflang="de" href="https://codecatch.app/de/anleitungen/sms-codes-automatisch-ausfuellen-chrome-mac/">
+<link rel="alternate" hreflang="es" href="https://codecatch.app/es/guias/autocompletar-codigos-sms-chrome-mac/">
+<link rel="alternate" hreflang="fr" href="https://codecatch.app/fr/guides/codes-sms-remplissage-automatique-chrome-mac/">
+<link rel="alternate" hreflang="it" href="https://codecatch.app/it/guide/codici-otp-chrome-mac/">
+<link rel="alternate" hreflang="pt" href="https://codecatch.app/pt/guias/preenchimento-automatico-codigo-sms-chrome-mac/">
+<link rel="alternate" hreflang="ja" href="https://codecatch.app/ja/guides/verification-code-autofill-chrome-mac/">
+<link rel="alternate" hreflang="x-default" href="https://codecatch.app/guides/verification-code-autofill-chrome-mac/">
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100d0e" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/icon-180.png">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="es_LA">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:site_name" content="CodeCatch">
+<meta property="og:url" content="https://codecatch.app/fr/guides/codes-sms-remplissage-automatique-chrome-mac/">
+<meta property="og:title" content="Codes SMS non remplis dans Chrome sur Mac : que faire ?">
+<meta property="og:description" content="Pourquoi Chrome et Firefox sur Mac ne remplissent pas les codes de vérification reçus par SMS, ce qui aide sous macOS 26 et ce qui marche partout.">
+<meta property="og:image" content="https://codecatch.app/assets/og/fr/codes-sms-remplissage-automatique-chrome-mac.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="« Codes SMS non remplis dans Chrome sur Mac » à côté d’un code Google que CodeCatch a copié">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "TechArticle",
+   "@id": "https://codecatch.app/fr/guides/codes-sms-remplissage-automatique-chrome-mac/#article",
+   "headline": "Codes SMS non remplis dans Chrome sur Mac : que faire ?",
+   "name": "Codes SMS non remplis dans Chrome sur Mac",
+   "description": "Pourquoi Chrome et Firefox sur Mac ne remplissent pas les codes de vérification reçus par SMS, ce qui aide sous macOS 26 et ce qui marche partout.",
+   "image": "https://codecatch.app/assets/og/fr/codes-sms-remplissage-automatique-chrome-mac.png",
+   "datePublished": "2026-10-03",
+   "dateModified": "2026-10-06",
+   "inLanguage": "fr",
+   "author": {
+    "@id": "https://codecatch.app/#author"
+   },
+   "publisher": {
+    "@id": "https://codecatch.app/#org"
+   },
+   "mainEntityOfPage": "https://codecatch.app/fr/guides/codes-sms-remplissage-automatique-chrome-mac/",
+   "about": {
+    "@type": "SoftwareApplication",
+    "name": "CodeCatch",
+    "operatingSystem": "macOS",
+    "applicationCategory": "UtilitiesApplication",
+    "url": "https://codecatch.app/fr/"
+   }
+  },
+  {
+   "@type": "Person",
+   "@id": "https://codecatch.app/#author",
+   "name": "Uros Gazvoda",
+   "url": "https://codecatch.app/#why",
+   "sameAs": [
+    "https://github.com/ugzv",
+    "https://uros.com"
+   ]
+  },
+  {
+   "@type": "Organization",
+   "@id": "https://codecatch.app/#org",
+   "name": "CodeCatch",
+   "url": "https://codecatch.app/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://codecatch.app/assets/icon-512.png",
+    "width": 512,
+    "height": 512
+   },
+   "founder": {
+    "@id": "https://codecatch.app/#author"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "CodeCatch",
+     "item": "https://codecatch.app/fr/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Codes SMS non remplis dans Chrome sur Mac : que faire ?",
+     "item": "https://codecatch.app/fr/guides/codes-sms-remplissage-automatique-chrome-mac/"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Pourquoi Safari remplit-il le code, et pas Chrome ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Le remplissage automatique des codes est une fonction de macOS qu’Apple a d’abord intégrée à Safari. Les autres navigateurs n’y ont eu accès qu’avec macOS 26, et elle y est peu fiable."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Chrome remplit-il les codes SMS sous macOS 15 ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Non. Sous macOS 15 et les versions antérieures, seul Safari remplit les codes automatiquement. Chrome, Firefox, Arc et Edge ne l’ont jamais fait : rien n’est cassé. Ce qui marche avec toutes les versions : copier le code et le coller avec ⌘V."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Faut-il un iPhone ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Pour les codes envoyés par SMS, oui. L’iPhone reçoit le SMS et le transfère à votre Mac. Avec un téléphone Android, le SMS n’arrive jamais dans Messages sur le Mac. Ni le remplissage automatique ni CodeCatch ne peuvent alors le voir."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Comment activer le Transfert de SMS ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Sur l’iPhone, ouvrez Réglages → Apps → Messages → Transfert de SMS, puis activez votre Mac. Les deux appareils doivent utiliser le même compte Apple. Si Messages sur iCloud est activé, le transfert est déjà actif pour ce Mac."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Et les codes envoyés par e-mail ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Dans Safari, macOS peut proposer les codes reçus dans l’app Mail. Il ne lit pas Gmail dans votre navigateur. CodeCatch lit directement Apple Mail, Gmail et vos autres comptes de messagerie."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Le code arrive en retard sur mon Mac. Pourquoi ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Les codes SMS arrivent d’abord sur votre iPhone, qui les transfère ensuite. L’iPhone doit donc être allumé et connecté. Laisser Messages ouvert sur le Mac aide aussi."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Peut-on laisser les codes se remplir tout seuls sans risque ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Un code n’est pas plus sûr que la page où vous le saisissez. Avant d’en demander un, vérifiez la barre d’adresse. C’est vrai pour le remplissage automatique comme pour le collage."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/fr/" aria-label="Accueil CodeCatch">
+    <svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg>
+    <span>CodeCatch</span>
+  </a>
+  <nav aria-label="Sections">
+    <a href="/fr/#features">Fonctionnalités</a>
+    <a href="/fr/#privacy">Confidentialité</a>
+    <a href="/fr/#compare">Comparatif</a>
+    <a href="/fr/#faq">FAQ</a>
+  </nav>
+  <a class="button small" href="/download/CodeCatch.dmg" data-download>Télécharger</a>
+</header>
+
+<main>
+<article class="article">
+  <header class="vs-hero">
+    <p class="eyebrow">Guide</p>
+    <h1>Codes SMS non remplis dans Chrome sur Mac</h1>
+    <p class="lede">Pourquoi les codes reçus par SMS ne s’affichent pas dans Chrome et les autres navigateurs sur Mac, et comment y remédier.</p>
+    <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>Par <a href="/fr/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-03">Publié le 3 octobre 2026</time></span></p>
+  </header>
+  <div class="feature-art article-art" aria-hidden="true">
+    <div class="cc">
+      <div class="card floating">
+        <div class="card-head"><div class="tile "><img src="/assets/services/google.png" alt="" loading="lazy"><img class="badge" src="/assets/services/messages.png" alt="" loading="lazy"></div><div class="card-who"><b>Google</b><span>Messages · 22000</span></div><span class="card-age">now</span></div>
+        <div class="well"><span class="code">482 913</span><span class="well-time">9:41<svg class="ring " viewBox="0 0 22 22" style="--p:.97"><circle class="track" cx="11" cy="11" r="9.5"/><circle class="arc" cx="11" cy="11" r="9.5" pathLength="1"/></svg></span></div>
+        <div class="card-actions"><span class="pill prominent"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg><span>Copied</span></span></div>
+      </div>
+    </div>
+  </div>
+  <aside class="rail">
+    <nav class="toc" aria-label="Sur cette page"><details open>
+      <summary>Sur cette page</summary>
+      <ol>
+        <li><a href="#what-works-where">Ce qui marche, et où</a></li>
+        <li><a href="#which-macos">Quelle version de macOS ?</a></li>
+        <li><a href="#sms-codes">Le code arrive-t-il sur le Mac ?</a></li>
+        <li><a href="#update-macos">Mettre à jour macOS 26</a></li>
+        <li><a href="#reported-fixes">Pistes vues sur les forums</a></li>
+        <li><a href="#why-no-code">Pages qui ne proposent rien</a></li>
+        <li><a href="#any-version">La méthode qui marche partout</a></li>
+        <li><a href="#questions">Questions fréquentes</a></li>
+      </ol>
+    </details></nav>
+    <div class="rail-card">
+      <img src="/assets/icon-256.png" width="56" height="56" alt="" loading="lazy">
+      <p><b>CodeCatch</b> Les codes de vérification et liens de connexion de Messages et des e-mails, copiés dès leur arrivée.</p>
+      <a class="button small" href="/download/CodeCatch.dmg" data-download><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Télécharger pour macOS</a>
+      <p class="fine">Gratuit · macOS 15+</p>
+    </div>
+  </aside>
+  <div class="prose">
+    <p>Sur iPhone, le code de vérification reçu par SMS s’affiche au-dessus du clavier. Sur Mac, le remplissage automatique (ou saisie automatique) des codes SMS est moins fiable. Dans Chrome, souvent, le code n’apparaît pas du tout. Voici pourquoi, et ce que vous pouvez faire.</p>
+
+    <p class="callout"><b>En bref :</b> avant macOS 26, seul Safari remplit les codes automatiquement. Sous macOS 26, installez la dernière mise à jour. Ou passez-vous du remplissage automatique et collez le code : ça marche partout.</p>
+
+    <h2 id="what-works-where">Ce qui marche, et où</h2>
+    <div class="prose-table"><table><thead><tr><th scope="col"></th><th scope="col">Safari</th><th scope="col">Chrome, Firefox, Arc, Edge</th></tr></thead><tbody>
+<tr><th scope="row">macOS 15 ou antérieur</th><td>Oui</td><td>Non</td></tr>
+<tr><th scope="row">macOS 26.0 et 26.1</th><td>Oui</td><td>En panne chez beaucoup</td></tr>
+<tr><th scope="row">macOS 26.2 ou ultérieur</th><td>Oui</td><td>Réparé, selon des utilisateurs</td></tr>
+</tbody></table></div>
+    <p>Les deux dernières lignes viennent de témoignages d’utilisateurs, cités plus bas. Votre version peut se comporter autrement.</p>
+
+    <h2 id="which-macos">D’abord : quelle version de macOS avez-vous ?</h2>
+    <p>Ouvrez <b>menu Apple → À propos de ce Mac</b>.</p>
+    <ul class="ticks">
+      <li><b>macOS 15 ou version antérieure :</b> les codes ne se remplissent automatiquement que dans Safari. Chrome, Firefox, Arc et Edge ne les ont jamais proposés, donc rien n’est cassé. Passez directement à <a href="#any-version">la méthode qui marche avec toutes les versions</a>.</li>
+      <li><b>macOS 26 (Tahoe) :</b> Apple a ouvert le remplissage automatique des codes aux autres navigateurs, comme l’a <a href="https://www.macrumors.com/2025/06/12/ios-26-macos-tahoe-expand-one-time-code-autofill/" rel="noopener">rapporté MacRumors</a>. Puis la fonction a cessé de marcher chez beaucoup d’utilisateurs. Lisez la suite.</li>
+    </ul>
+
+    <h2 id="sms-codes">1. Vérifiez que le code arrive sur votre Mac</h2>
+    <p>Ouvrez Messages sur votre Mac et demandez un nouveau code. Si le SMS n’y apparaît pas, aucun navigateur ne pourra le remplir.</p>
+    <p>Pour les codes envoyés par SMS, activez le transfert sur votre iPhone : <b>Réglages → Apps → Messages → Transfert de SMS</b>, puis activez votre Mac. Les deux appareils doivent utiliser le même compte Apple.</p>
+
+    <p>Si le SMS n’arrive toujours pas, ou si l’option Transfert de SMS n’apparaît pas, vérifiez ces points :</p>
+    <ul class="ticks plain">
+      <li><b>L’iPhone est allumé et connecté.</b> C’est lui qui reçoit le SMS et le transfère.</li>
+      <li><b>Même compte Apple.</b> Sur le Mac, ouvrez <b>Messages → Réglages → iMessage</b>. Le compte affiché doit être le même que sous <b>Envoi et réception</b> sur l’iPhone.</li>
+      <li><b>Votre Mac est activé</b> dans la liste Transfert de SMS.</li>
+      <li><b>Pas d’option Transfert de SMS, ou votre Mac n’y figure pas :</b> désactivez puis réactivez iMessage, touchez <b>Envoi et réception</b> et reconnectez-vous.</li>
+      <li><b>Messages sur iCloud est activé :</b> le transfert est alors déjà actif pour ce Mac.</li>
+      <li><b>Toujours rien :</b> redémarrez les deux appareils, installez les mises à jour et vérifiez la date et l’heure de votre Mac.</li>
+    </ul>
+    <p class="fine">Sur le site de l’Assistance Apple : <a href="https://support.apple.com/fr-fr/102545" rel="noopener">Transférer des SMS de votre iPhone vers d’autres appareils</a>.</p>
+
+    <h2 id="update-macos">2. Mettez à jour macOS 26</h2>
+    <p>Fin 2025, des utilisateurs du <a href="https://discussions.apple.com/thread/256153253" rel="noopener">forum d’assistance d’Apple</a> ont constaté que les codes n’apparaissaient plus dans Chrome, Firefox, Brave et Opera sous macOS 26, alors que Safari fonctionnait toujours. Ils ont ensuite indiqué qu’une version plus récente corrigeait le problème. Une <a href="https://forums.macrumors.com/threads/google-chrome-sms-totp-autofill.2467686/" rel="noopener">discussion sur le forum de MacRumors</a> indique que les codes sont revenus dans Chrome avec macOS 26.2.</p>
+    <p>Ouvrez donc <b>Réglages Système → Général → Mise à jour de logiciels</b> et installez ce qui est proposé.</p>
+
+    <h2 id="reported-fixes">3. Pistes signalées sur les forums, avec une mise en garde</h2>
+    <ul class="ticks">
+      <li><b>Siri et Apple Intelligence.</b> Certains ont vu les suggestions disparaître quand ces fonctions étaient désactivées, puis revenir une fois qu’ils les ont réactivées.</li>
+      <li><b>Un réglage dans Terminal.</b> La discussion du forum cite un réglage caché qui rétablit le remplissage automatique sur les versions touchées. La même discussion indique qu’il a causé des ralentissements et des plantages dans les apps basées sur Chrome. Nous ne le recommandons donc pas : la mise à jour est la solution la plus sûre.</li>
+    </ul>
+    <p class="callout">Je n’ai pas testé ces pistes sur toutes les versions. Elles viennent des discussions citées plus haut.</p>
+
+    <h2 id="why-no-code">Pourquoi certaines pages ne proposent jamais le code</h2>
+    <p>Même si tout est bien configuré, le navigateur ne propose un code que dans un champ qu’il reconnaît comme champ de code. C’est au site de signaler ce champ au navigateur. Beaucoup ne le font pas, et aucune suggestion n’apparaît alors, ni dans Safari ni ailleurs. Vous n’y pouvez rien de votre côté.</p>
+
+    <h2 id="any-version">4. La méthode qui marche avec toutes les versions</h2>
+    <p>Le remplissage automatique dépend de votre version de macOS, de votre navigateur et de la page. Le collage, non. Si le code est déjà dans le presse-papiers, <kbd>⌘</kbd><kbd>V</kbd> fonctionne dans tous les navigateurs et toutes les apps.</p>
+    <p>C’est ce que fait CodeCatch. Il récupère le code dans Messages ou dans vos e-mails dès son arrivée, le copie et l’affiche dans une petite bannière. Il fonctionne sur macOS 15 ou version ultérieure.</p>
+    <p>Sans CodeCatch, vous pouvez faire la même chose à la main : ouvrez Messages sur votre Mac, double-cliquez sur le code, copiez-le, revenez à la page et collez-le.</p>
+    <h2 id="questions">Questions fréquentes</h2>
+    <div class="faq-list">
+      <details><summary>Pourquoi Safari remplit-il le code, et pas Chrome ?</summary><p>Le remplissage automatique des codes est une fonction de macOS qu’Apple a d’abord intégrée à Safari. Les autres navigateurs n’y ont eu accès qu’avec macOS 26, et elle y est peu fiable.</p></details>
+      <details><summary>Chrome remplit-il les codes SMS sous macOS 15 ?</summary><p>Non. Sous macOS 15 et les versions antérieures, seul Safari remplit les codes automatiquement. Chrome, Firefox, Arc et Edge ne l’ont jamais fait : rien n’est cassé. Ce qui marche avec toutes les versions : copier le code et le coller avec ⌘V.</p></details>
+      <details><summary>Faut-il un iPhone ?</summary><p>Pour les codes envoyés par SMS, oui. L’iPhone reçoit le SMS et le transfère à votre Mac. Avec un téléphone Android, le SMS n’arrive jamais dans Messages sur le Mac. Ni le remplissage automatique ni CodeCatch ne peuvent alors le voir.</p></details>
+      <details><summary>Comment activer le Transfert de SMS ?</summary><p>Sur l’iPhone, ouvrez Réglages → Apps → Messages → Transfert de SMS, puis activez votre Mac. Les deux appareils doivent utiliser le même compte Apple. Si Messages sur iCloud est activé, le transfert est déjà actif pour ce Mac.</p></details>
+      <details><summary>Et les codes envoyés par e-mail ?</summary><p>Dans Safari, macOS peut proposer les codes reçus dans l’app Mail. Il ne lit pas Gmail dans votre navigateur. CodeCatch lit directement Apple Mail, Gmail et vos autres comptes de messagerie.</p></details>
+      <details><summary>Le code arrive en retard sur mon Mac. Pourquoi ?</summary><p>Les codes SMS arrivent d’abord sur votre iPhone, qui les transfère ensuite. L’iPhone doit donc être allumé et connecté. Laisser Messages ouvert sur le Mac aide aussi.</p></details>
+      <details><summary>Peut-on laisser les codes se remplir tout seuls sans risque ?</summary><p>Un code n’est pas plus sûr que la page où vous le saisissez. Avant d’en demander un, vérifiez la barre d’adresse. C’est vrai pour le remplissage automatique comme pour le collage.</p></details>
+    </div>
+  </div>
+</article>
+<section class="cta">
+  <img src="/assets/icon-256.png" width="96" height="96" alt="Icône de l’app CodeCatch" loading="lazy">
+  <h2>Oubliez le remplissage automatique. Collez, tout simplement.</h2>
+  <p>CodeCatch copie chaque code dès son arrivée.</p>
+  <div class="actions">
+    <a class="button" href="/download/CodeCatch.dmg" data-download>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Télécharger pour macOS
+    </a>
+    <a class="button quiet" href="/fr/">Voir comment ça marche</a>
+  </div>
+  <p class="fine">Gratuit · macOS 15+ · Puce Apple et Intel</p>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a class="brand" href="/fr/"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><span>CodeCatch</span></a>
+      <p>Vos codes de vérification, copiés dès leur arrivée.</p>
+      <a class="footer-gh" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>Open source sur GitHub</a>
+    </div>
+    <nav aria-label="Pied de page">
+      <div>
+        <h2>Produit</h2>
+        <a href="/fr/#features">Fonctionnalités</a>
+        <a href="/fr/#privacy">Réglages de confidentialité</a>
+        <a href="/fr/#faq">FAQ</a>
+      </div>
+      <div>
+        <h2>Guides</h2>
+        <a href="/fr/guides/codes-bitwarden-mac-barre-des-menus/">Codes Bitwarden sur Mac</a>
+        <a href="/fr/guides/codes-sms-remplissage-automatique-chrome-mac/">Codes SMS dans Chrome sur Mac</a>
+        <a href="/fr/guides/magic-link-fiable/">Ce magic link est-il fiable ?</a>
+        <a href="/fr/guides/codes-2fa-agents-ia/">Codes 2FA pour agents IA</a>
+      </div>
+      <div>
+        <h2>Comparatifs</h2>
+        <a href="/fr/#compare">Toutes les apps comparées</a>
+        <a href="/fr/comparatif/2fhey/">CodeCatch vs 2FHey</a>
+        <a href="/fr/comparatif/messauto/">CodeCatch vs MessAuto</a>
+      </div>
+      <div>
+        <h2>À propos</h2>
+        <a href="/fr/#why">Qui est derrière</a>
+        <a href="/fr/confidentialite/">Confidentialité</a>
+        <a href="/changelog/">Notes de version (en anglais)</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=bug_report.yml" rel="noopener">Signaler un bug</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=feature_request.yml" rel="noopener">Proposer une fonctionnalité</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CodeCatch</p>
+    <p>Chrome est une marque de Google LLC. CodeCatch n’est affilié ni à Apple ni à Google.</p>
+    <nav class="languages" aria-label="Langue"><a href="/guides/verification-code-autofill-chrome-mac/" hreflang="en" lang="en">English</a><a href="/de/anleitungen/sms-codes-automatisch-ausfuellen-chrome-mac/" hreflang="de" lang="de">Deutsch</a><a href="/es/guias/autocompletar-codigos-sms-chrome-mac/" hreflang="es" lang="es">Español</a><a href="/fr/guides/codes-sms-remplissage-automatique-chrome-mac/" hreflang="fr" lang="fr" aria-current="page">Français</a><a href="/it/guide/codici-otp-chrome-mac/" hreflang="it" lang="it">Italiano</a><a href="/pt/guias/preenchimento-automatico-codigo-sms-chrome-mac/" hreflang="pt" lang="pt">Português</a><a href="/ja/guides/verification-code-autofill-chrome-mac/" hreflang="ja" lang="ja">日本語</a></nav>
+  </div>
+</footer>
+
+<!-- The mark is Resources/AppIcon.icon/Assets/asterisk.svg; icons are drawn for this page. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffa20f"/><stop offset="1" stop-color="#ff2d55"/></linearGradient>
+    <path id="mark" d="M428.0 732.0 L428.0 292.0 A84 84 0 0 1 596.0 292.0 L596.0 732.0 A84 84 0 0 1 428.0 732.0 Z M279.5 549.3 L660.5 329.3 A84 84 0 0 1 744.5 474.7 L363.5 694.7 A84 84 0 0 1 279.5 549.3 Z M363.5 329.3 L744.5 549.3 A84 84 0 0 1 660.5 694.7 L279.5 474.7 A84 84 0 0 1 363.5 329.3 Z"/>
+    <symbol id="i-github" viewBox="0 0 32 32"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M16 0C7.16 0 0 7.16 0 16C0 23.08 4.58 29.06 10.94 31.18C11.74 31.32 12.04 30.84 12.04 30.42C12.04 30.04 12.02 28.78 12.02 27.44C8 28.18 6.96 26.46 6.64 25.56C6.46 25.1 5.68 23.68 5 23.3C4.44 23 3.64 22.26 4.98 22.24C6.24 22.22 7.14 23.4 7.44 23.88C8.88 26.3 11.18 25.62 12.1 25.2C12.24 24.16 12.66 23.46 13.12 23.06C9.56 22.66 5.84 21.28 5.84 15.16C5.84 13.42 6.46 11.98 7.48 10.86C7.32 10.46 6.76 8.82 7.64 6.62C7.64 6.62 8.98 6.2 12.04 8.26C13.32 7.9 14.68 7.72 16.04 7.72C17.4 7.72 18.76 7.9 20.04 8.26C23.1 6.18 24.44 6.62 24.44 6.62C25.32 8.82 24.76 10.46 24.6 10.86C25.62 11.98 26.24 13.4 26.24 15.16C26.24 21.3 22.5 22.66 18.94 23.06C19.52 23.56 20.02 24.52 20.02 26.02C20.02 28.16 20 29.88 20 30.42C20 30.84 20.3 31.34 21.1 31.18C27.42 29.06 32 23.06 32 16C32 7.16 24.84 0 16 0V0Z"/></symbol>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4.500-4.500M12 15l4.500-4.500M5 19h14"/></g>
+    <g id="i-copy" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.500"/><path d="M5.500 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v.500"/></g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7"/></g>
+    <g id="i-link" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.500 4.500 0 0 0 6.400 0l3-3a4.500 4.500 0 0 0-6.400-6.400l-1 1"/><path d="M14 10a4.500 4.500 0 0 0-6.400 0l-3 3a4.500 4.500 0 0 0 6.400 6.400l1-1"/></g>
+    <g id="i-lock" fill="currentColor"><path d="M7 10V8a5 5 0 0 1 10 0v2h.500A2.500 2.500 0 0 1 20 12.500v6a2.500 2.500 0 0 1-2.500 2.500h-11A2.500 2.500 0 0 1 4 18.500v-6A2.500 2.500 0 0 1 6.500 10H7Zm2.200 0h5.600V8a2.800 2.800 0 0 0-5.600 0v2Z"/></g>
+    <g id="i-search" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round"><circle cx="10.500" cy="10.500" r="6.500"/><path d="m20 20-4.800-4.800"/></g>
+    <g id="i-warning" fill="currentColor"><path d="M10.300 3.900a2 2 0 0 1 3.400 0l8 13.600a2 2 0 0 1-1.700 3H4a2 2 0 0 1-1.700-3l8-13.600ZM12 8.500a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm0 7.500a1.150 1.150 0 1 0 0 2.300 1.150 1.150 0 0 0 0-2.300Z"/></g>
+    <g id="i-compass" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.500 8.500-2 5-5 2 2-5 5-2Z"/></g>
+    <g id="i-bubble" fill="currentColor"><path d="M12 3.500c5 0 9 3.400 9 7.700s-4 7.700-9 7.700c-.9 0-1.800-.1-2.600-.3-1.100.9-2.600 1.600-4.300 1.800-.4 0-.6-.4-.4-.7.700-.9 1.100-1.900 1.200-2.800C4.100 15.500 3 13.500 3 11.200c0-4.300 4-7.700 9-7.700Z"/></g>
+    <g id="i-mail" fill="currentColor"><path d="M4.500 5h15A2.500 2.500 0 0 1 22 7.300l-10 5.600L2 7.300A2.500 2.500 0 0 1 4.500 5ZM2 9.600V16.500A2.500 2.500 0 0 0 4.500 19h15a2.500 2.500 0 0 0 2.500-2.500V9.600l-9.500 5.300a1 1 0 0 1-1 0L2 9.600Z"/></g>
+    <g id="i-tray" fill="currentColor"><path d="M6.200 4h11.600a2 2 0 0 1 1.900 1.400l2.200 7V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5.600l2.300-7A2 2 0 0 1 6.200 4Zm.2 2-1.900 6H8a1 1 0 0 1 1 .8 3 3 0 0 0 6 0 1 1 0 0 1 1-.8h3.500l-1.900-6H6.400Z"/></g>
+    <g id="i-key" fill="currentColor"><path d="M15.500 2a6.500 6.500 0 0 0-6.200 8.500L2.600 17.200a1 1 0 0 0-.3.700V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1.500H9a1 1 0 0 0 1-1V17h1.200a1 1 0 0 0 .7-.3l1.600-1.600A6.500 6.500 0 1 0 15.500 2Zm1.700 3.800a1.900 1.900 0 1 1 0 3.800 1.900 1.900 0 0 1 0-3.800Z"/></g>
+    <g id="i-pin" fill="currentColor"><path d="M9 3h6l-.6 6.200 3.100 3.300V14H13v6l-1 2-1-2v-6H6.500v-1.500l3.100-3.300L9 3Z"/></g>
+    <g id="i-record" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3" stroke-dasharray="3.500 3"/><circle cx="12" cy="12" r="2.800" fill="currentColor" stroke="none"/></g>
+    <g id="i-history" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.500-5.800M4 5v4h4M12 8v4.500l3 1.800"/></g>
+    <g id="i-updown" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9.500 4-4 4 4M8 14.500l4 4 4-4"/></g>
+    <g id="i-clock" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.200 2"/></g>
+    <g id="i-eye-off" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.600 6.200A9.800 9.800 0 0 1 12 6c5.500 0 9 6 9 6a15.600 15.600 0 0 1-2.800 3.500M6.500 7.600A15 15 0 0 0 3 12s3.500 6 9 6a9 9 0 0 0 3.600-.8M9.900 9.900a3 3 0 0 0 4.200 4.200"/></g>
+  </defs>
+</svg>
+<script src="/toc.js" defer></script>
+</body>
+</html>

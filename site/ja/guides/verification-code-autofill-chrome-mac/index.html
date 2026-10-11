@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MacのChromeで認証コードが自動入力されないときは</title>
+<meta name="description" content="MacのChromeやFirefoxで、SMSの認証コードが自動入力されない理由と、macOS 26での対処法、どのバージョンでも使える方法を説明します。">
+<link rel="canonical" href="https://codecatch.app/ja/guides/verification-code-autofill-chrome-mac/">
+<link rel="alternate" hreflang="en" href="https://codecatch.app/guides/verification-code-autofill-chrome-mac/">
+<link rel="alternate" hreflang="de" href="https://codecatch.app/de/anleitungen/sms-codes-automatisch-ausfuellen-chrome-mac/">
+<link rel="alternate" hreflang="es" href="https://codecatch.app/es/guias/autocompletar-codigos-sms-chrome-mac/">
+<link rel="alternate" hreflang="fr" href="https://codecatch.app/fr/guides/codes-sms-remplissage-automatique-chrome-mac/">
+<link rel="alternate" hreflang="it" href="https://codecatch.app/it/guide/codici-otp-chrome-mac/">
+<link rel="alternate" hreflang="pt" href="https://codecatch.app/pt/guias/preenchimento-automatico-codigo-sms-chrome-mac/">
+<link rel="alternate" hreflang="ja" href="https://codecatch.app/ja/guides/verification-code-autofill-chrome-mac/">
+<link rel="alternate" hreflang="x-default" href="https://codecatch.app/guides/verification-code-autofill-chrome-mac/">
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100d0e" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/icon-180.png">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="es_LA">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:site_name" content="CodeCatch">
+<meta property="og:url" content="https://codecatch.app/ja/guides/verification-code-autofill-chrome-mac/">
+<meta property="og:title" content="MacのChromeで認証コードが自動入力されないときは">
+<meta property="og:description" content="MacのChromeやFirefoxで、SMSの認証コードが自動入力されない理由と、macOS 26での対処法、どのバージョンでも使える方法を説明します。">
+<meta property="og:image" content="https://codecatch.app/assets/og/ja/verification-code-autofill-chrome-mac.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="「MacのChromeで認証コードが自動入力されない」の見出しと、CodeCatchがコピーしたGoogleの認証コード">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "TechArticle",
+   "@id": "https://codecatch.app/ja/guides/verification-code-autofill-chrome-mac/#article",
+   "headline": "MacのChromeで認証コードが自動入力されないときは",
+   "name": "MacのChromeで認証コードが自動入力されない",
+   "description": "MacのChromeやFirefoxで、SMSの認証コードが自動入力されない理由と、macOS 26での対処法、どのバージョンでも使える方法を説明します。",
+   "image": "https://codecatch.app/assets/og/ja/verification-code-autofill-chrome-mac.png",
+   "datePublished": "2026-10-03",
+   "dateModified": "2026-10-06",
+   "inLanguage": "ja",
+   "author": {
+    "@id": "https://codecatch.app/#author"
+   },
+   "publisher": {
+    "@id": "https://codecatch.app/#org"
+   },
+   "mainEntityOfPage": "https://codecatch.app/ja/guides/verification-code-autofill-chrome-mac/",
+   "about": {
+    "@type": "SoftwareApplication",
+    "name": "CodeCatch",
+    "operatingSystem": "macOS",
+    "applicationCategory": "UtilitiesApplication",
+    "url": "https://codecatch.app/ja/"
+   }
+  },
+  {
+   "@type": "Person",
+   "@id": "https://codecatch.app/#author",
+   "name": "Uros Gazvoda",
+   "url": "https://codecatch.app/#why",
+   "sameAs": [
+    "https://github.com/ugzv",
+    "https://uros.com"
+   ]
+  },
+  {
+   "@type": "Organization",
+   "@id": "https://codecatch.app/#org",
+   "name": "CodeCatch",
+   "url": "https://codecatch.app/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://codecatch.app/assets/icon-512.png",
+    "width": 512,
+    "height": 512
+   },
+   "founder": {
+    "@id": "https://codecatch.app/#author"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "CodeCatch",
+     "item": "https://codecatch.app/ja/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "MacのChromeで認証コードが自動入力されないときは",
+     "item": "https://codecatch.app/ja/guides/verification-code-autofill-chrome-mac/"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Safariでは自動入力されるのに、Chromeではされないのはなぜ？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "認証コードの自動入力はmacOSの機能で、AppleはまずSafariに組み込みました。ほかのブラウザが使えるようになったのはmacOS 26からで、そこでも安定していません。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "iPhoneは必要？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "SMSで届くコードには必要です。iPhoneがSMSを受け取り、Macに転送します。Androidのスマートフォンでは、SMSがMacの「メッセージ」アプリに届かないので、自動入力でもCodeCatchでも読み取れません。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Macに認証コードが届かないときは？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "SMSのコードなら、iPhoneの「設定」＞「アプリ」＞「メッセージ」＞「テキストメッセージ転送」でMacをオンにします。両方のデバイスで同じApple Accountを使っている必要があります。それでも届かなければ、両方を再起動し、アップデートをインストールして、Macの日付と時刻を確認してください。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "メールで届くコードは？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "macOSは、「メール」アプリに届いたコードをSafariで候補に出せます。ブラウザで開いたGmailは読みません。CodeCatchはApple Mail、Gmail、そのほかのメールアカウントを直接読みます。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Macにコードが届くのが遅いのはなぜ？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "SMSのコードはまずiPhoneに届き、そこからMacに転送されます。iPhoneの電源が入っていて、ネットにつながっている必要があります。Macで「メッセージ」アプリを開いたままにしておくと改善します。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "コードが自動で入力されても安全？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "コードの安全性は、入力先のページしだいです。コードを送ってもらう前に、アドレスバーを確認してください。自動入力でも、ペーストでも同じです。"
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/ja/" aria-label="CodeCatchのホーム">
+    <svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg>
+    <span>CodeCatch</span>
+  </a>
+  <nav aria-label="セクション">
+    <a href="/ja/#features">機能</a>
+    <a href="/ja/#privacy">プライバシー</a>
+    <a href="/ja/#compare">比較</a>
+    <a href="/ja/#faq">よくある質問</a>
+  </nav>
+  <a class="button small" href="/download/CodeCatch.dmg" data-download>ダウンロード</a>
+</header>
+
+<main>
+<article class="article">
+  <header class="vs-hero">
+    <p class="eyebrow">ガイド</p>
+    <h1>MacのChromeで認証コードが自動入力されない</h1>
+    <p class="lede">MacのChromeやほかのブラウザで、SMSの認証コードが出てこない理由と、その対処法です。</p>
+    <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>著者：<a href="/ja/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-03">2026年10月3日公開</time></span></p>
+  </header>
+  <div class="feature-art article-art" aria-hidden="true">
+    <div class="cc">
+      <div class="card floating">
+        <div class="card-head"><div class="tile "><img src="/assets/services/google.png" alt="" loading="lazy"><img class="badge" src="/assets/services/messages.png" alt="" loading="lazy"></div><div class="card-who"><b>Google</b><span>Messages · 22000</span></div><span class="card-age">now</span></div>
+        <div class="well"><span class="code">482 913</span><span class="well-time">9:41<svg class="ring " viewBox="0 0 22 22" style="--p:.97"><circle class="track" cx="11" cy="11" r="9.5"/><circle class="arc" cx="11" cy="11" r="9.5" pathLength="1"/></svg></span></div>
+        <div class="card-actions"><span class="pill prominent"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg><span>Copied</span></span></div>
+      </div>
+    </div>
+  </div>
+  <aside class="rail">
+    <nav class="toc" aria-label="このページの内容"><details open>
+      <summary>このページの内容</summary>
+      <ol>
+        <li><a href="#what-works-where">対応状況</a></li>
+        <li><a href="#which-macos">macOSのバージョン</a></li>
+        <li><a href="#sms-codes">コードがMacに届くか確認</a></li>
+        <li><a href="#update-macos">macOS 26をアップデート</a></li>
+        <li><a href="#reported-fixes">報告されている対処法</a></li>
+        <li><a href="#why-no-code">コードが出ないページ</a></li>
+        <li><a href="#any-version">どのバージョンでも使える方法</a></li>
+        <li><a href="#questions">よくある質問</a></li>
+      </ol>
+    </details></nav>
+    <div class="rail-card">
+      <img src="/assets/icon-256.png" width="56" height="56" alt="" loading="lazy">
+      <p><b>CodeCatch</b> メッセージとメールに届いた認証コードとログインリンクを、届いた瞬間にコピー。</p>
+      <a class="button small" href="/download/CodeCatch.dmg" data-download><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Mac版をダウンロード</a>
+      <p class="fine">無料 · macOS 15以降</p>
+    </div>
+  </aside>
+  <div class="prose">
+    <p>iPhoneなら、SMSで届いた認証コード（確認コード）がキーボードの上に出てきます。Macではそれほど安定せず、Chromeではまったく出てこないこともよくあります。原因と対処法をまとめました。</p>
+
+    <p class="callout"><b>結論から言うと、</b>macOS 26より前は、認証コードが自動入力されるのはSafariだけです。macOS 26なら、最新バージョンにアップデートしてください。自動入力に頼らずコードをペーストする方法なら、どこでも使えます。</p>
+
+    <h2 id="what-works-where">ブラウザ別の対応状況</h2>
+    <div class="prose-table"><table><thead><tr><th scope="col"></th><th scope="col">Safari</th><th scope="col">Chrome、Firefox、Arc、Edge</th></tr></thead><tbody>
+<tr><th scope="row">macOS 15以前</th><td>対応</td><td>非対応</td></tr>
+<tr><th scope="row">macOS 26.0と26.1</th><td>対応</td><td>不具合の報告多数</td></tr>
+<tr><th scope="row">macOS 26.2以降</th><td>対応</td><td>復旧の報告あり</td></tr>
+</tbody></table></div>
+    <p>表の下2行は、ユーザーの報告にもとづいています（リンクは後述）。環境によって結果が違うこともあります。</p>
+
+    <h2 id="which-macos">まず、macOSのバージョンを確認</h2>
+    <p><b>アップルメニュー＞「このMacについて」</b>を開きます。</p>
+    <ul class="ticks">
+      <li><b>macOS 15以前：</b>認証コードが自動入力されるのはSafariだけです。Chrome、Firefox、Arc、Edgeでは最初から使えない機能なので、故障ではありません。<a href="#any-version">どのバージョンでも使える方法</a>に進んでください。</li>
+      <li><b>macOS 26（Tahoe）：</b><a href="https://www.macrumors.com/2025/06/12/ios-26-macos-tahoe-expand-one-time-code-autofill/" rel="noopener">MacRumorsが報じたとおり</a>、Appleはほかのブラウザでも認証コードを自動入力できるようにしました。ところがその後、多くの人の環境で動かなくなりました。下の手順を順に確認してください。</li>
+    </ul>
+
+    <h2 id="sms-codes">1. 認証コードがMacに届くか確認</h2>
+    <p>Macで「メッセージ」アプリを開き、サイトから新しいコードを送ってもらいます。そこにSMSが表示されなければ、どのブラウザでも自動入力できません。</p>
+    <p>SMSで届く認証コードをMacで受け取るには、iPhoneで転送をオンにします。<b>「設定」＞「アプリ」＞「メッセージ」＞「テキストメッセージ転送」</b>を開き、Macをオンにします。両方のデバイスで同じApple Accountを使っている必要があります。</p>
+
+    <p>それでも届かない、または「テキストメッセージ転送」が見当たらないときは、次を確認します。</p>
+    <ul class="ticks plain">
+      <li><b>iPhoneの電源が入っていて、ネットにつながっている。</b>SMSを受け取って転送するのはiPhoneです。</li>
+      <li><b>同じApple Accountを使っている。</b>Macで<b>「メッセージ」＞「設定」＞「iMessage」</b>を開きます。そこにあるアカウントが、iPhoneの<b>「送受信」</b>にあるアカウントと一致している必要があります。</li>
+      <li><b>「テキストメッセージ転送」の一覧で、Macがオンになっている。</b></li>
+      <li><b>「テキストメッセージ転送」がない、または一覧にMacがない：</b>iMessageをいったんオフにしてオンに戻し、<b>「送受信」</b>をタップしてサインインし直します。</li>
+      <li><b>「iCloudにメッセージを保管」がオン：</b>この場合、そのMacではすでに転送がオンになっています。</li>
+      <li><b>それでも届かない：</b>両方のデバイスを再起動し、アップデートをインストールして、Macの日付と時刻を確認します。</li>
+    </ul>
+    <p class="fine">Appleサポート：<a href="https://support.apple.com/ja-jp/102545" rel="noopener">iPhoneからほかのデバイスにテキストメッセージを転送する</a></p>
+
+    <h2 id="update-macos">2. macOS 26をアップデート</h2>
+    <p>2025年後半、<a href="https://discussions.apple.com/thread/256153253" rel="noopener">Appleのサポートフォーラム</a>で、macOS 26にしたらChrome、Firefox、Brave、Operaで認証コードが出なくなったという報告がありました。Safariでは問題なく使えていました。その後、新しいリリースで直ったと報告されています。<a href="https://forums.macrumors.com/threads/google-chrome-sms-totp-autofill.2467686/" rel="noopener">MacRumorsのフォーラム</a>にも、macOS 26.2でChromeにコードが出るようになったという書き込みがあります。</p>
+    <p>まずは<b>「システム設定」＞「一般」＞「ソフトウェアアップデート」</b>を開き、表示されたアップデートをインストールしてください。</p>
+
+    <h2 id="reported-fixes">3. 報告されている対処法（注意あり）</h2>
+    <ul class="ticks">
+      <li><b>SiriとApple Intelligence。</b>これらをオフにしていたら候補が出なくなり、オンに戻したら出るようになった、という声があります。</li>
+      <li><b>ターミナルでの設定。</b>フォーラムのスレッドでは、問題のあるバージョンで自動入力を復活させる隠し設定が紹介されています。ただ、同じスレッドでChromeベースのアプリが重くなったり落ちたりしたとも報告されているので、おすすめしません。アップデートするほうが安全です。</li>
+    </ul>
+    <p class="callout">すべてのバージョンで試したわけではありません。上でリンクしたスレッドからの情報です。</p>
+
+    <h2 id="why-no-code">コードが出ないページがある理由</h2>
+    <p>設定がすべて正しくても、ブラウザが候補を出すのは、コードの入力欄だと認識できた欄だけです。その欄がワンタイムパスワード用であることは、ウェブサイト側がブラウザに伝えます。伝えていないサイトも多く、その場合はSafariでもほかのブラウザでも候補は出ません。ユーザー側で変えられることはありません。</p>
+
+    <h2 id="any-version">4. どのバージョンでも使える方法</h2>
+    <p>自動入力が使えるかどうかは、macOSのバージョン、ブラウザ、ページによって変わります。ペーストならその心配はありません。コードがクリップボードに入っていれば、<kbd>⌘</kbd><kbd>V</kbd>はどのブラウザでも、どのアプリでも使えます。</p>
+    <p>CodeCatchがしているのは、まさにこれです。「メッセージ」アプリやメールにコードが届くと読み取ってコピーし、小さなバナーで表示します。macOS 15以降で使えます。</p>
+    <p>CodeCatchがなくても、手作業で同じことができます。Macで「メッセージ」アプリを開き、コードをダブルクリックしてコピーし、元の画面に戻ってペーストします。</p>
+    <h2 id="questions">よくある質問</h2>
+    <div class="faq-list">
+      <details><summary>Safariでは自動入力されるのに、Chromeではされないのはなぜ？</summary><p>認証コードの自動入力はmacOSの機能で、AppleはまずSafariに組み込みました。ほかのブラウザが使えるようになったのはmacOS 26からで、そこでも安定していません。</p></details>
+      <details><summary>iPhoneは必要？</summary><p>SMSで届くコードには必要です。iPhoneがSMSを受け取り、Macに転送します。Androidのスマートフォンでは、SMSがMacの「メッセージ」アプリに届かないので、自動入力でもCodeCatchでも読み取れません。</p></details>
+      <details><summary>Macに認証コードが届かないときは？</summary><p>SMSのコードなら、iPhoneの「設定」＞「アプリ」＞「メッセージ」＞「テキストメッセージ転送」でMacをオンにします。両方のデバイスで同じApple Accountを使っている必要があります。それでも届かなければ、両方を再起動し、アップデートをインストールして、Macの日付と時刻を確認してください。</p></details>
+      <details><summary>メールで届くコードは？</summary><p>macOSは、「メール」アプリに届いたコードをSafariで候補に出せます。ブラウザで開いたGmailは読みません。CodeCatchはApple Mail、Gmail、そのほかのメールアカウントを直接読みます。</p></details>
+      <details><summary>Macにコードが届くのが遅いのはなぜ？</summary><p>SMSのコードはまずiPhoneに届き、そこからMacに転送されます。iPhoneの電源が入っていて、ネットにつながっている必要があります。Macで「メッセージ」アプリを開いたままにしておくと改善します。</p></details>
+      <details><summary>コードが自動で入力されても安全？</summary><p>コードの安全性は、入力先のページしだいです。コードを送ってもらう前に、アドレスバーを確認してください。自動入力でも、ペーストでも同じです。</p></details>
+    </div>
+  </div>
+</article>
+<section class="cta">
+  <img src="/assets/icon-256.png" width="96" height="96" alt="CodeCatchのアプリアイコン" loading="lazy">
+  <h2>自動入力より、ペーストで。</h2>
+  <p>CodeCatchは、届いたコードをそのたびにコピーします。</p>
+  <div class="actions">
+    <a class="button" href="/download/CodeCatch.dmg" data-download>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Mac版をダウンロード
+    </a>
+    <a class="button quiet" href="/ja/">機能を見る</a>
+  </div>
+  <p class="fine">無料 · macOS 15以降 · AppleシリコンとIntelに対応</p>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a class="brand" href="/ja/"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><span>CodeCatch</span></a>
+      <p>認証コードを、届いた瞬間に。</p>
+      <a class="footer-gh" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>GitHubでソースコードを公開中</a>
+    </div>
+    <nav aria-label="フッター">
+      <div>
+        <h2>製品</h2>
+        <a href="/ja/#features">機能</a>
+        <a href="/ja/#privacy">プライバシー設定</a>
+        <a href="/ja/#faq">よくある質問</a>
+      </div>
+      <div>
+        <h2>ガイド</h2>
+        <a href="/ja/guides/bitwarden-codes-mac-menu-bar/">MacでBitwardenのコード</a>
+        <a href="/ja/guides/verification-code-autofill-chrome-mac/">Chromeで認証コードを自動入力</a>
+        <a href="/ja/guides/magic-link-safety/">このログインリンクは安全？</a>
+        <a href="/ja/guides/2fa-codes-for-ai-agents/">AIエージェントに2FAコードを</a>
+      </div>
+      <div>
+        <h2>比較</h2>
+        <a href="/ja/#compare">すべてのアプリを比較</a>
+        <a href="/ja/vs/2fhey/">CodeCatch vs 2FHey</a>
+        <a href="/ja/vs/messauto/">CodeCatch vs MessAuto</a>
+      </div>
+      <div>
+        <h2>CodeCatchについて</h2>
+        <a href="/ja/#why">作っている人</a>
+        <a href="/ja/privacy/">プライバシー</a>
+        <a href="/changelog/">変更履歴（英語）</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=bug_report.yml" rel="noopener">不具合を報告</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=feature_request.yml" rel="noopener">機能をリクエスト</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CodeCatch</p>
+    <p>ChromeはGoogle LLCの商標です。CodeCatchはAppleおよびGoogleとは提携していません。</p>
+    <nav class="languages" aria-label="言語"><a href="/guides/verification-code-autofill-chrome-mac/" hreflang="en" lang="en">English</a><a href="/de/anleitungen/sms-codes-automatisch-ausfuellen-chrome-mac/" hreflang="de" lang="de">Deutsch</a><a href="/es/guias/autocompletar-codigos-sms-chrome-mac/" hreflang="es" lang="es">Español</a><a href="/fr/guides/codes-sms-remplissage-automatique-chrome-mac/" hreflang="fr" lang="fr">Français</a><a href="/it/guide/codici-otp-chrome-mac/" hreflang="it" lang="it">Italiano</a><a href="/pt/guias/preenchimento-automatico-codigo-sms-chrome-mac/" hreflang="pt" lang="pt">Português</a><a href="/ja/guides/verification-code-autofill-chrome-mac/" hreflang="ja" lang="ja" aria-current="page">日本語</a></nav>
+  </div>
+</footer>
+
+<!-- The mark is Resources/AppIcon.icon/Assets/asterisk.svg; icons are drawn for this page. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffa20f"/><stop offset="1" stop-color="#ff2d55"/></linearGradient>
+    <path id="mark" d="M428.0 732.0 L428.0 292.0 A84 84 0 0 1 596.0 292.0 L596.0 732.0 A84 84 0 0 1 428.0 732.0 Z M279.5 549.3 L660.5 329.3 A84 84 0 0 1 744.5 474.7 L363.5 694.7 A84 84 0 0 1 279.5 549.3 Z M363.5 329.3 L744.5 549.3 A84 84 0 0 1 660.5 694.7 L279.5 474.7 A84 84 0 0 1 363.5 329.3 Z"/>
+    <symbol id="i-github" viewBox="0 0 32 32"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M16 0C7.16 0 0 7.16 0 16C0 23.08 4.58 29.06 10.94 31.18C11.74 31.32 12.04 30.84 12.04 30.42C12.04 30.04 12.02 28.78 12.02 27.44C8 28.18 6.96 26.46 6.64 25.56C6.46 25.1 5.68 23.68 5 23.3C4.44 23 3.64 22.26 4.98 22.24C6.24 22.22 7.14 23.4 7.44 23.88C8.88 26.3 11.18 25.62 12.1 25.2C12.24 24.16 12.66 23.46 13.12 23.06C9.56 22.66 5.84 21.28 5.84 15.16C5.84 13.42 6.46 11.98 7.48 10.86C7.32 10.46 6.76 8.82 7.64 6.62C7.64 6.62 8.98 6.2 12.04 8.26C13.32 7.9 14.68 7.72 16.04 7.72C17.4 7.72 18.76 7.9 20.04 8.26C23.1 6.18 24.44 6.62 24.44 6.62C25.32 8.82 24.76 10.46 24.6 10.86C25.62 11.98 26.24 13.4 26.24 15.16C26.24 21.3 22.5 22.66 18.94 23.06C19.52 23.56 20.02 24.52 20.02 26.02C20.02 28.16 20 29.88 20 30.42C20 30.84 20.3 31.34 21.1 31.18C27.42 29.06 32 23.06 32 16C32 7.16 24.84 0 16 0V0Z"/></symbol>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4.500-4.500M12 15l4.500-4.500M5 19h14"/></g>
+    <g id="i-copy" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.500"/><path d="M5.500 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v.500"/></g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7"/></g>
+    <g id="i-link" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.500 4.500 0 0 0 6.400 0l3-3a4.500 4.500 0 0 0-6.400-6.400l-1 1"/><path d="M14 10a4.500 4.500 0 0 0-6.400 0l-3 3a4.500 4.500 0 0 0 6.400 6.400l1-1"/></g>
+    <g id="i-lock" fill="currentColor"><path d="M7 10V8a5 5 0 0 1 10 0v2h.500A2.500 2.500 0 0 1 20 12.500v6a2.500 2.500 0 0 1-2.500 2.500h-11A2.500 2.500 0 0 1 4 18.500v-6A2.500 2.500 0 0 1 6.500 10H7Zm2.200 0h5.600V8a2.800 2.800 0 0 0-5.600 0v2Z"/></g>
+    <g id="i-search" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round"><circle cx="10.500" cy="10.500" r="6.500"/><path d="m20 20-4.800-4.800"/></g>
+    <g id="i-warning" fill="currentColor"><path d="M10.300 3.900a2 2 0 0 1 3.400 0l8 13.600a2 2 0 0 1-1.700 3H4a2 2 0 0 1-1.700-3l8-13.600ZM12 8.500a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm0 7.500a1.150 1.150 0 1 0 0 2.300 1.150 1.150 0 0 0 0-2.300Z"/></g>
+    <g id="i-compass" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.500 8.500-2 5-5 2 2-5 5-2Z"/></g>
+    <g id="i-bubble" fill="currentColor"><path d="M12 3.500c5 0 9 3.400 9 7.700s-4 7.700-9 7.700c-.9 0-1.800-.1-2.600-.3-1.100.9-2.600 1.600-4.300 1.800-.4 0-.6-.4-.4-.7.700-.9 1.100-1.900 1.200-2.800C4.100 15.500 3 13.500 3 11.200c0-4.300 4-7.700 9-7.700Z"/></g>
+    <g id="i-mail" fill="currentColor"><path d="M4.500 5h15A2.500 2.500 0 0 1 22 7.300l-10 5.600L2 7.300A2.500 2.500 0 0 1 4.500 5ZM2 9.600V16.500A2.500 2.500 0 0 0 4.500 19h15a2.500 2.500 0 0 0 2.500-2.500V9.600l-9.500 5.300a1 1 0 0 1-1 0L2 9.600Z"/></g>
+    <g id="i-tray" fill="currentColor"><path d="M6.200 4h11.600a2 2 0 0 1 1.900 1.400l2.200 7V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5.600l2.300-7A2 2 0 0 1 6.200 4Zm.2 2-1.900 6H8a1 1 0 0 1 1 .8 3 3 0 0 0 6 0 1 1 0 0 1 1-.8h3.500l-1.900-6H6.400Z"/></g>
+    <g id="i-key" fill="currentColor"><path d="M15.500 2a6.500 6.500 0 0 0-6.200 8.500L2.600 17.200a1 1 0 0 0-.3.700V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1.500H9a1 1 0 0 0 1-1V17h1.200a1 1 0 0 0 .7-.3l1.600-1.600A6.500 6.500 0 1 0 15.500 2Zm1.700 3.800a1.900 1.900 0 1 1 0 3.800 1.900 1.900 0 0 1 0-3.800Z"/></g>
+    <g id="i-pin" fill="currentColor"><path d="M9 3h6l-.6 6.200 3.100 3.300V14H13v6l-1 2-1-2v-6H6.500v-1.500l3.100-3.300L9 3Z"/></g>
+    <g id="i-record" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3" stroke-dasharray="3.500 3"/><circle cx="12" cy="12" r="2.800" fill="currentColor" stroke="none"/></g>
+    <g id="i-history" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.500-5.800M4 5v4h4M12 8v4.500l3 1.800"/></g>
+    <g id="i-updown" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9.500 4-4 4 4M8 14.500l4 4 4-4"/></g>
+    <g id="i-clock" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.200 2"/></g>
+    <g id="i-eye-off" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.600 6.200A9.800 9.800 0 0 1 12 6c5.500 0 9 6 9 6a15.600 15.600 0 0 1-2.800 3.500M6.500 7.600A15 15 0 0 0 3 12s3.500 6 9 6a9 9 0 0 0 3.600-.8M9.900 9.900a3 3 0 0 0 4.200 4.200"/></g>
+  </defs>
+</svg>
+<script src="/toc.js" defer></script>
+</body>
+</html>

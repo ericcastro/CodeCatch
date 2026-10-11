@@ -19,7 +19,7 @@ SITE = os.path.join(ROOT, "site")
 CHROME = os.environ.get("CHROME", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
 
 TEMPLATE = """<!doctype html>
-<html><head><meta charset="utf-8">
+<html lang="{lang}"><head><meta charset="utf-8">
 <link rel="stylesheet" href="{site}/styles.css">
 <style>
   :root {{ color-scheme: light; }}
@@ -68,6 +68,7 @@ def main():
             os.makedirs(folder, exist_ok=True)
             art = grab(r'<div class="feature-art article-art" aria-hidden="true">\s*(<div class="cc">.*?)\n  </div>\n', html, page)
             source = TEMPLATE.format(
+                lang=lang,
                 site="file://" + SITE,
                 kind=grab(r'<p class="eyebrow">(.*?)</p>', html, page),
                 title=grab(r"<h1>(.*?)</h1>", html, page),

@@ -46,7 +46,7 @@ tools out.
 Preview the site with `python3 -m http.server --directory site`.
 
 The site is in English at the top and in other languages under `site/<lang>/`
-(German: `site/de/`). Each page names its versions in `<link rel="alternate"
+(`de`, `ja`, `fr`, `it`, `es`, `pt`). Each page names its versions in `<link rel="alternate"
 hreflang>` tags and in the footer's language links. `python3 scripts/check-site.py`
 checks those, every link within the site and the sitemap; the deploy runs it too.
 Changing an English page means changing its translations in the same commit.

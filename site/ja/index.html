@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CodeCatch：Macで認証コードとログインリンクを自動コピー</title>
+<meta name="description" content="Macのメニューバーアプリ。メッセージとメールに届いた認証コード（確認コード）とログインリンクをすぐコピーします。Chrome、Arc、Firefoxでも⌘Vでペーストするだけ。Claude CodeなどのAIエージェントにも、許可すれば渡せます。">
+<link rel="canonical" href="https://codecatch.app/ja/">
+<link rel="alternate" hreflang="en" href="https://codecatch.app/">
+<link rel="alternate" hreflang="de" href="https://codecatch.app/de/">
+<link rel="alternate" hreflang="es" href="https://codecatch.app/es/">
+<link rel="alternate" hreflang="fr" href="https://codecatch.app/fr/">
+<link rel="alternate" hreflang="it" href="https://codecatch.app/it/">
+<link rel="alternate" hreflang="pt" href="https://codecatch.app/pt/">
+<link rel="alternate" hreflang="ja" href="https://codecatch.app/ja/">
+<link rel="alternate" hreflang="x-default" href="https://codecatch.app/">
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100d0e" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/icon-180.png">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="es_LA">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:site_name" content="CodeCatch">
+<meta property="og:url" content="https://codecatch.app/ja/">
+<meta property="og:title" content="CodeCatch：認証コードを、届いた瞬間に。">
+<meta property="og:description" content="メッセージとメールに届いた認証コードとログインリンクを拾うMacのメニューバーアプリ。どのブラウザやアプリでも、⌘Vでペーストするだけです。">
+<meta property="og:image" content="https://codecatch.app/assets/og/ja/start.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="すぐにペーストできる認証コードを表示したCodeCatchのバナー">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="/styles.css">
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "SoftwareApplication",
+   "name": "CodeCatch",
+   "url": "https://codecatch.app/ja/",
+   "image": "https://codecatch.app/assets/icon-512.png",
+   "applicationCategory": "UtilitiesApplication",
+   "operatingSystem": "macOS 15以降",
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+   },
+   "description": "メッセージとメールに届いた2FAの認証コードとログインリンクを拾い、クリップボードにコピーするMacのメニューバーアプリ。",
+   "featureList": [
+    "iMessageと転送されたSMSの認証コード",
+    "Apple Mail、Gmail、そのほかのIMAPアカウントの認証コードとログインリンク",
+    "Chrome、Arc、Firefox、Edgeなど、ペーストできるすべてのアプリで使える",
+    "検索できるコード履歴",
+    "Bitwardenの二段階認証コード",
+    "Claude Code、Codex、CursorなどのAIエージェントが、許可を得てコードを頼める",
+    "Touch IDまたはMacのパスワードでロック"
+   ],
+   "@id": "https://codecatch.app/#app",
+   "author": {
+    "@id": "https://codecatch.app/#author"
+   },
+   "publisher": {
+    "@id": "https://codecatch.app/#org"
+   }
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://codecatch.app/#site",
+   "name": "CodeCatch",
+   "url": "https://codecatch.app/",
+   "inLanguage": ["en", "de", "es", "fr", "it", "pt", "ja"],
+   "publisher": {
+    "@id": "https://codecatch.app/#org"
+   }
+  },
+  {
+   "@type": "Organization",
+   "@id": "https://codecatch.app/#org",
+   "name": "CodeCatch",
+   "url": "https://codecatch.app/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://codecatch.app/assets/icon-512.png",
+    "width": 512,
+    "height": 512
+   },
+   "founder": {
+    "@id": "https://codecatch.app/#author"
+   }
+  },
+  {
+   "@type": "Person",
+   "@id": "https://codecatch.app/#author",
+   "name": "Uros Gazvoda",
+   "url": "https://codecatch.app/#why",
+   "sameAs": [
+    "https://github.com/ugzv",
+    "https://uros.com"
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "inLanguage": "ja",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Claude CodeなどのAIエージェントがコードを受け取ることはありますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "「Settings」＞「Agents」でオンにした場合だけです。渡すのは一度にひとつ、エージェントが頼んだサイトのコードだけです。サイトを許可するか「Allow All」をオンにしない限り、コードごとにTouch IDで許可します。エージェントがメッセージを見ることはありません。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Chrome、Arc、Firefoxでも使えますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "はい。新しいコードは届くたびにコピーされるので、どのブラウザやアプリでも⌘Vでペーストできます。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "macOSの自動入力とは何が違いますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "macOSがコードを提案するのは、対応している入力欄だけです。CodeCatchはすべてのコードをコピーするので、どこでも使えます。さらにGmailを読み、ログインリンクを拾い、履歴を残し、Bitwardenのコードも表示します。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "どのメールアカウントを読めますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Apple Mailに設定した受信トレイなら、ログインなしで読めます。Gmailなどほかのアカウント（IMAP）も、アプリパスワードで読めます。CodeCatchは読むだけです。メールを既読にしたり、移動や削除をしたりすることはありません。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "なぜフルディスクアクセスが必要なのですか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "macOSでは、アプリが「メッセージ」と「メール」を読むためにこの許可が必要です。CodeCatchが読むのはこの2つだけです。アクセシビリティの許可が要るのは、コードを代わりに入力する機能をオンにしたときだけです。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Macの外にデータが送られることはありますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "コードとメッセージはMacの外に出ません。パスワードはキーチェーンに保管されたままです。CodeCatchが接続するのは、オンにしたメールサービスと、アップデートを確認するcodecatch.appです。GoogleやMicrosoftでログインするときはそれぞれのサービスと、BitwardenからインポートするときはBitwardenと通信します。サービスのロゴはGoogleかDuckDuckGoのファビコンサービスから読み込みます。この読み込みは「Privacy」でオフにできます。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "CodeCatchの動作環境は？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "macOS 15以降で、AppleシリコンとIntelのどちらのMacでも動きます。SMSのコードをMacで受け取るには、iPhoneで「テキストメッセージ転送」をオンにします。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "SMSの認証コードがMacに届きません。何を確認すればいいですか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Macが受け取れるのは、iPhoneが転送したSMSだけです。iPhoneで「設定」＞「アプリ」＞「メッセージ」＞「テキストメッセージ転送」を開き、Macをオンにします。この項目やMacが見つからないときは、iPhoneとMacが同じApple Accountでサインインしているか確認します（Macでは「メッセージ」＞「設定」＞「iMessage」）。そのうえで、iPhoneのiMessageをオフにしてから、オンに戻します。iPhoneの電源が入っていて、インターネットにつながっていることも必要です。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "CodeCatchがコードを見逃したときは？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "GitHubで報告してください。その際、コードを別の数字に置き換えたメッセージを添えてください。そのメッセージがテストになり、次のバージョンから認識できるようになります。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "CodeCatchは日本語に対応していますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "このサイトは日本語です。アプリの画面は今のところ英語のみです。それでも、日本語のSMSやメールに届いたコードは認識します。たとえば「認証コード」「確認コード」「認証番号」「ワンタイムパスワード」と書かれたメッセージです。CodeCatchは35言語のコードを認識します。"
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/ja/" aria-label="CodeCatchのホーム">
+    <svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg>
+    <span>CodeCatch</span>
+  </a>
+  <nav aria-label="セクション">
+    <a href="#features">機能</a>
+    <a href="#privacy">プライバシー</a>
+    <a href="#compare">比較</a>
+    <a href="#faq">よくある質問</a>
+  </nav>
+  <a class="button small" href="/download/CodeCatch.dmg" data-download>ダウンロード</a>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="hero-copy">
+    <a class="news" href="#agents"><span class="tag">2.0</span>Claude CodeやCodexも、コードを頼めるように</a>
+    <h1>認証コードを、届いた瞬間に。</h1>
+    <p class="lede">SMSやメールに届いた認証コードを自動でコピーする、メニューバーアプリです。ログインリンクも表示します。あとはどのブラウザやアプリでも、<kbd>⌘</kbd><kbd>V</kbd>を押せばログインできます。</p>
+    <div class="actions">
+      <a class="button" href="/download/CodeCatch.dmg" data-download>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Mac版をダウンロード
+      </a>
+      <a class="button quiet" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>ソースコードを見る</a>
+    </div>
+    <p class="fine">無料 · macOS 15以降 · AppleシリコンとIntelに対応</p>
+  </div>
+
+  <!-- The app's own banner and menu bar label, ported from CodeCard.swift and MenuBarLabel.swift. -->
+  <div class="stage" id="stage" role="img" aria-label="Googleの確認コードがSMSで届き、CodeCatchがバナーに表示します。Command-Vでログインページにペーストします。続いてNotionのログインコードがメールで届き、同じようにペーストします。最後にSlackのログインページで、ログインリンクがメールで届き、CodeCatchがリンク先を表示します">
+    <div class="menubar" aria-hidden="true">
+      <span class="menubar-app">Chrome</span><span>ファイル</span><span>編集</span><span>表示</span><span>履歴</span>
+      <span class="menubar-right">
+        <span class="menubar-cc"><svg class="mark mono" viewBox="208 208 608 608"><use href="#mark"/></svg><b id="menubar-code"></b></span>
+        <span class="clock">10月5日(月) 9:41</span>
+      </span>
+    </div>
+
+    <div class="window" aria-hidden="true">
+      <div class="tabs"><i class="light r"></i><i class="light y"></i><i class="light g"></i>
+        <span class="tab"><img src="/assets/services/google.png" alt="" data-fill="icon"><span data-fill="tab">ログイン - Google アカウント</span></span></div>
+      <div class="toolbar"><span class="url"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg><span data-fill="url">accounts.google.com/signin/challenge</span></span></div>
+      <div class="page">
+        <div class="page-box">
+          <img class="page-logo" src="/assets/services/google.png" alt="" data-fill="icon">
+          <p class="page-title" data-fill="title">2 段階認証プロセス</p>
+          <p class="page-note" data-fill="note">6 桁の確認コードを記載したテキスト メッセージを •••• ••41 に送信しました。</p>
+          <div class="page-input" id="otp"><b data-fill="prefix">G-</b><span id="otp-text"></span><i class="caret"></i><em>コードを入力</em></div>
+          <div class="page-button" data-fill="button">次へ</div>
+        </div>
+      </div>
+    </div>
+    <div class="keys" id="keys" aria-hidden="true"><kbd>⌘</kbd><kbd>V</kbd></div>
+
+    <div class="types" id="types" aria-hidden="true">
+      <button type="button" tabindex="-1"><img src="/assets/services/messages.png" alt=""><span>SMSのコード</span></button>
+      <button type="button" tabindex="-1"><img src="/assets/services/gmail.png" alt=""><span>メールのコード</span></button>
+      <button type="button" tabindex="-1"><img src="/assets/services/mail.png" alt=""><span>ログインリンク</span></button>
+    </div>
+    <!-- The sign-in pages of the email scenes (app.js). The Gmail badge already names the inbox, so "from" is empty. -->
+    <script type="application/json" id="scenes">
+    {
+      "emailed": {
+        "brand": "notion", "icon": "/assets/services/notion.png", "tab": "ログイン – Notion", "url": "notion.so/login",
+        "title": "ログイン", "note": "y•••@gmail.comにログインコードを送信しました。受信トレイを確認してください。", "prefix": "", "button": "続行",
+        "via": "/assets/services/gmail.png", "who": "Notion", "from": ""
+      },
+      "linked": {
+        "brand": "slack", "icon": "/assets/services/slack.png", "tab": "ログイン | Slack", "url": "slack.com/signin",
+        "title": "メールをチェックしてください！", "note": "yamada@example.co.jp 宛に特別なリンクを送信しました。リンクは 30 分で期限切れになります。", "prefix": "", "button": "メールを開く"
+      }
+    }
+    </script>
+
+    <div class="cc banner" id="banner" aria-hidden="true">
+      <div class="card">
+        <div class="card-head">
+          <div class="tile "><img src="/assets/services/google.png" alt="" data-fill="icon"><img class="badge" src="/assets/services/messages.png" alt="" data-fill="via"></div>
+          <div class="card-who"><b data-fill="who">Google</b><span data-fill="from">Messages · 22000</span></div>
+          <span class="card-age">now</span>
+        </div>
+        <div class="well">
+          <span class="code" id="banner-code">482 913</span>
+          <span class="well-time"><span id="banner-left">9:58</span><svg class="ring " viewBox="0 0 22 22" style="--p:.98"><circle class="track" cx="11" cy="11" r="9.5"/><circle class="arc" cx="11" cy="11" r="9.5" pathLength="1"/></svg></span>
+        </div>
+        <div class="card-actions">
+          <button class="pill prominent" id="banner-copy" type="button" tabindex="-1"><svg viewBox="0 0 24 24"><use href="#i-copy"/></svg><span>Copy</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc banner" id="banner-link" aria-hidden="true">
+      <div class="card">
+        <div class="card-head">
+          <div class="tile  bleed"><img src="/assets/services/slack.png" alt=""><img class="badge" src="/assets/services/mail.png" alt="" loading="lazy"></div>
+          <div class="card-who"><b>Slack</b><span>Sign-in link</span></div>
+          <span class="card-age">now</span>
+        </div>
+        <div class="well">
+          <span class="site">slack.com</span>
+        </div>
+        <div class="card-actions">
+          <button class="pill prominent" type="button" tabindex="-1"><svg viewBox="0 0 24 24"><use href="#i-compass"/></svg><span>Open Link</span></button>
+          <button class="pill" type="button" tabindex="-1"><svg viewBox="0 0 24 24"><use href="#i-link"/></svg><span>Copy Link</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sources" aria-label="CodeCatchがコードを読み取る場所">
+  <p>コードの読み取り元</p>
+  <ul>
+    <li><img src="/assets/services/messages.png" alt="" width="24" height="24">メッセージとSMS</li>
+    <li><img src="/assets/services/mail.png" alt="" width="24" height="24">Apple Mail</li>
+    <li><img src="/assets/services/gmail.png" alt="" width="24" height="24" class="flat">Gmailなどのメール</li>
+    <li><img src="/assets/services/bitwarden.png" alt="" width="24" height="24" class="round">Bitwarden</li>
+  </ul>
+</section>
+
+<section id="features" class="features">
+  <h2 class="sr-only">機能</h2>
+
+  <article class="feature">
+    <div class="feature-copy">
+      <p class="eyebrow">ペーストできる場所なら、どこでも</p>
+      <h3>Chrome、Arc、Firefoxでも2FAコードを</h3>
+      <p>認証コード（確認コード）もワンタイムパスワードも、探す前にもうコピーされています。カーソルは入力欄に置いたまま。<kbd>⌘</kbd><kbd>V</kbd>を押すだけです。</p>
+      <ul class="ticks">
+        <li>iPhoneに届いたSMS</li>
+        <li>メールのコードも、受信トレイを開かずに</li>
+        <li>35言語のコードに対応</li>
+      </ul>
+    </div>
+    <div class="feature-art">
+      <div class="cc">
+        <div class="card floating">
+          <div class="card-head">
+            <div class="tile  bleed"><img src="/assets/services/paypal.png" alt="" loading="lazy"><img class="badge" src="/assets/services/messages.png" alt="" loading="lazy"></div>
+            <div class="card-who"><b>PayPal</b><span>Messages · PayPal</span></div>
+            <span class="card-age">now</span>
+          </div>
+          <div class="well">
+            <span class="code">729 351</span>
+            <span class="well-time">9:41<svg class="ring " viewBox="0 0 22 22" style="--p:.97"><circle class="track" cx="11" cy="11" r="9.5"/><circle class="arc" cx="11" cy="11" r="9.5" pathLength="1"/></svg></span>
+          </div>
+          <div class="card-actions">
+            <button class="pill prominent" type="button" tabindex="-1"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg><span>Copied</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="feature flip">
+    <div class="feature-copy">
+      <p class="eyebrow">ログインリンク</p>
+      <h3>リンク先が見えるログインリンク</h3>
+      <p>ログインリンク（マジックリンク）が届いたメールも、コードと並んで表示されます。リンク先はいつでも確認できます。送信元と違うサイトにつながるリンクなら、CodeCatchが警告します。</p>
+      <ul class="ticks">
+        <li>リンクは勝手に開かない</li>
+        <li>送信元とリンク先が違えば警告</li>
+      </ul>
+      <p class="fine"><a href="/ja/guides/magic-link-safety/">クリックする前にログインリンクを確かめる方法</a></p>
+    </div>
+    <div class="feature-art">
+      <div class="cc">
+        <div class="card floating">
+          <div class="card-head">
+            <div class="tile  bleed"><img src="/assets/services/notion.png" alt="" loading="lazy"><img class="badge" src="/assets/services/mail.png" alt="" loading="lazy"></div>
+            <div class="card-who"><b>Notion</b><span>Sign-in link</span></div>
+            <span class="card-age">2 min</span>
+          </div>
+          <div class="well">
+            <span class="site">sign-in.example</span>
+          </div>
+          <p class="warning"><svg viewBox="0 0 24 24"><use href="#i-warning"/></svg>This message is from notion.so, but the link goes to sign-in.example. Open it only if you trust this site.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="feature">
+    <div class="feature-copy">
+      <p class="eyebrow">履歴と検索</p>
+      <h3>最近のコードを、ショートカットで</h3>
+      <p>メニューには7日間のコードとリンクが残ります。名前を入力して探し、Returnキーを押せばコピーできます。</p>
+      <ul class="shortcuts">
+        <li><span><kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>C</kbd></span>最新のコードをコピー</li>
+        <li><span><kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>F</kbd></span>コードを検索</li>
+      </ul>
+      <p class="fine">ここで検索を試せます。</p>
+    </div>
+    <div class="feature-art">
+      <!-- MenuContent.swift and CodeRow.swift -->
+      <div class="cc">
+        <div class="popover floating">
+          <div class="popover-head"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><b>CodeCatch</b><span class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-lock-open"/></svg></span><span class="glyph gear" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-gear"/></svg></span></div>
+          <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg><input id="search" type="search" placeholder="Search" aria-label="サンプルのコードを検索" autocomplete="off"></label>
+          <div class="section-title"><span>Today</span><span id="count">5 items</span></div>
+          <ul class="rows" id="rows">
+            <li class="row copied" data-name="google messages 22000"><div class="tile s32"><img src="/assets/services/google.png" alt="" loading="lazy"><img class="badge" src="/assets/services/messages.png" alt="" loading="lazy"></div><div class="row-who"><b>Google <i>now</i></b><span>Messages · 22000</span></div><svg class="ring s14" viewBox="0 0 22 22" style="--p:.9"><circle class="track" cx="11" cy="11" r="9.5"/><circle class="arc" cx="11" cy="11" r="9.5" pathLength="1"/></svg><span class="row-pill row-code"><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><span>482 913</span></span></li>
+            <li class="row" data-name="slack app.slack.com"><div class="tile s32 bleed"><img src="/assets/services/slack.png" alt="" loading="lazy"><img class="badge" src="/assets/services/mail.png" alt="" loading="lazy"></div><div class="row-who"><b>Slack <i>2 min</i></b><span>app.slack.com</span></div><span class="row-pill"><svg viewBox="0 0 24 24"><use href="#i-link"/></svg>Open</span></li>
+            <li class="row" data-name="revolut messages"><div class="tile s32 bleed"><img src="/assets/services/revolut.png" alt="" loading="lazy"><img class="badge" src="/assets/services/messages.png" alt="" loading="lazy"></div><div class="row-who"><b>Revolut <i>6 min</i></b><span>Messages · Revolut</span></div><svg class="ring s14 warn" viewBox="0 0 22 22" style="--p:.22"><circle class="track" cx="11" cy="11" r="9.5"/><circle class="arc" cx="11" cy="11" r="9.5" pathLength="1"/></svg><span class="row-pill row-code"><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><span>771 204</span></span></li>
+            <li class="row expired" data-name="stripe"><div class="tile s32 bleed"><img src="/assets/services/stripe.png" alt="" loading="lazy"><img class="badge" src="/assets/services/mail.png" alt="" loading="lazy"></div><div class="row-who"><b>Stripe <i>10:26</i> <em>Expired</em></b></div><span class="row-pill row-code"><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><span>604 719</span></span></li>
+            <li class="row" data-name="github yamada@example.com bitwarden"><div class="tile s32"><img src="/assets/services/github.svg" alt="" loading="lazy"><img class="badge" src="/assets/services/bitwarden.png" alt="" loading="lazy"></div><div class="row-who"><b>GitHub <svg class="pin" viewBox="0 0 24 24" role="img" aria-label="ピン留め"><use href="#i-pin"/></svg></b><span>yamada@example.com · Bitwarden</span></div><svg class="ring s14" viewBox="0 0 22 22" style="--p:.6"><circle class="track" cx="11" cy="11" r="9.5"/><circle class="arc" cx="11" cy="11" r="9.5" pathLength="1"/></svg><span class="row-pill row-code"><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><span>318 842</span></span></li>
+          </ul>
+          <p class="empty" id="empty" hidden>No codes match</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="feature flip">
+    <div class="feature-copy">
+      <p class="eyebrow">Bitwarden</p>
+      <h3>Bitwardenのコードをメニューバーに</h3>
+      <p>Bitwardenのログインを一度インポートすれば、そのコードも同じメニューに並びます。コードはMacの中で生成され、Touch IDかパスワードでロックを解除するまで隠れています。</p>
+      <ul class="ticks">
+        <li>よく使うログインはピン留め</li>
+        <li>Macのスリープやロックと同時にロック</li>
+      </ul>
+      <p class="fine"><a href="/ja/guides/bitwarden-codes-mac-menu-bar/">設定方法を見る</a></p>
+    </div>
+    <div class="feature-art">
+      <div class="cc">
+        <div class="popover floating locked">
+          <div class="popover-head"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><b>CodeCatch</b><span class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg></span><span class="glyph gear" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-gear"/></svg></span></div>
+          <ul class="rows">
+            <li class="row"><div class="tile s32"><img src="/assets/services/github.svg" alt="" loading="lazy"><img class="badge" src="/assets/services/bitwarden.png" alt="" loading="lazy"></div><div class="row-who"><b>GitHub <svg class="pin" viewBox="0 0 24 24" role="img" aria-label="ピン留め"><use href="#i-pin"/></svg></b><span>yamada@example.com · Bitwarden</span></div><span class="row-pill row-code">••••••</span></li>
+            <li class="row"><div class="tile s32 bleed"><img src="/assets/services/aws.png" alt="" loading="lazy"><img class="badge" src="/assets/services/bitwarden.png" alt="" loading="lazy"></div><div class="row-who"><b>Amazon Web Services</b><span>ops@example.com · Bitwarden</span></div><span class="row-pill row-code">••••••</span></li>
+            <li class="row"><div class="tile s32 bleed"><img src="/assets/services/stripe.png" alt="" loading="lazy"><img class="badge" src="/assets/services/bitwarden.png" alt="" loading="lazy"></div><div class="row-who"><b>Stripe</b><span>billing@example.com · Bitwarden</span></div><span class="row-pill row-code">••••••</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </article>
+  <article class="feature" id="agents">
+    <div class="feature-copy">
+      <p class="eyebrow">AIエージェント</p>
+      <h3>ログインはエージェント、許可は自分で</h3>
+      <p>Claude Code、Codex、Cursorが代わりにログインするとき、CodeCatchに認証コードを頼めます。どのアプリが頼んだかがカードに表示され、Touch IDで許可します。</p>
+      <ul class="ticks">
+        <li>エージェントの接続はワンクリック</li>
+        <li>サイトを許可しない限り、コードごとに確認</li>
+        <li>ログインリンクは、オンにするまで渡さない</li>
+      </ul>
+      <p class="fine"><a href="/ja/guides/2fa-codes-for-ai-agents/">AIエージェントが2FAコードを受け取る仕組み</a></p>
+    </div>
+    <div class="feature-art">
+      <div class="cc">
+        <div class="card floating">
+          <div class="card-head"><img class="agent-tile" src="/assets/services/terminal.png" alt="" width="38" height="38"><div class="card-who"><b>Terminal wants your github.com code</b><span class="verified"><svg viewBox="0 0 24 24"><use href="#i-seal"/></svg>Verified app</span></div></div>
+          <dl class="card-rows"><dt>From</dt><dd>GitHub · Mail · verified sender</dd><dt>Timing</dt><dd>Asked 4s ago, arrived 2s ago</dd><dt>Program</dt><dd>claude (name not verified)</dd></dl>
+          <div class="card-actions"><span class="menu">Always Allow ⌄</span><button class="pill" type="button" tabindex="-1"><span>Deny</span></button><button class="pill prominent" type="button" tabindex="-1"><span>Allow</span></button></div>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section id="privacy" class="privacy feature">
+  <div class="feature-copy">
+    <p class="eyebrow">プライバシー重視の設計</p>
+    <h2>コードはMacの外に出ません</h2>
+    <p>アカウントもサーバーもありません。ここに並んでいるのは、アプリの実際のプライバシー設定です。</p>
+    <dl class="points">
+      <div><dt>ロックを解除するまで非表示</dt><dd>Touch IDかパスワードでロックを解除するまで、コードは表示されません。</dd></div>
+      <div><dt>ディスクに保存しない</dt><dd>コードはメモリ上にだけ置き、ディスクには保存しません。</dd></div>
+      <div><dt>メールは読むだけ</dt><dd>CodeCatchがメールを既読にしたり、移動や削除をしたりすることはありません。パスワードはキーチェーンに保管されます。</dd></div>
+      <div><dt>ペーストは自分で</dt><dd>オンにしない限り、CodeCatchがほかのアプリに文字を入力することはありません。</dd></div>
+      <div><dt>エージェントは許可制</dt><dd>AIエージェントがコードを受け取れるのは、Touch IDで許可したときか、そのサイトを許可しているときだけです。</dd></div>
+    </dl>
+  </div>
+  <div class="feature-art">
+    <!-- PrivacyTab.swift and SettingRow.swift -->
+    <div class="cc">
+      <div class="settings floating">
+        <div class="settings-tabs" aria-hidden="true"><span>General</span><span>Sources</span><span class="on">Privacy</span><span>Agents</span></div>
+        <p class="set-title">On Screen</p>
+        <ul class="set-group">
+            <li><span class="icon-tile" style="--c:#ff3b30"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-record"/></svg></span><span class="set-text"><b>Hide from Screen Capture</b><span>Stays out of video calls, recordings and screenshots</span></span><button class="switch" type="button" role="switch" aria-checked="true" aria-label="Hide from Screen Capture"></button></li>
+            <li><span class="icon-tile" style="--c:#5856d6"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye-off"/></svg></span><span class="set-text"><b>Blur Codes Until Hover</b><span>Point at a code to read it</span></span><button class="switch" type="button" role="switch" aria-checked="false" aria-label="Blur Codes Until Hover"></button></li>
+        </ul>
+        <p class="set-title">Clipboard</p>
+        <ul class="set-group">
+            <li><span class="icon-tile" style="--c:#ff9500"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clock"/></svg></span><span class="set-text"><b>Clear Clipboard After 90 Seconds</b><span>Never synced, skipped by clipboard managers</span></span><button class="switch" type="button" role="switch" aria-checked="true" aria-label="Clear Clipboard After 90 Seconds"></button></li>
+        </ul>
+        <p class="set-title">History</p>
+        <ul class="set-group">
+            <li><span class="icon-tile" style="--c:#30b0c7"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-history"/></svg></span><span class="set-text"><b>Keep Codes For</b><span>Re-read from your sources, never stored</span></span><span class="picker">7 Days<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-updown"/></svg></span></li>
+            <li><span class="icon-tile" style="--c:#0a7aff"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg></span><span class="set-text"><b>Clear History When Mac Locks</b><span>Also clears a code still on the clipboard</span></span><button class="switch" type="button" role="switch" aria-checked="false" aria-label="Clear History When Mac Locks"></button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why" class="why feature flip">
+  <div class="feature-copy">
+    <p class="eyebrow">作った理由</p>
+    <h2>コードを探すのに疲れて</h2>
+    <p>ログインのたびに、同じ手間がかかっていました。コードを待って、スマホを手に取り、「メッセージ」を見て、メールアカウントをひとつずつ開く。Mac標準のコード自動入力に助けられることもありましたが、肝心なときに出てこないことがよくありました。</p>
+    <p>そこで、自分が欲しかったアプリを作りました。どのコードも、届いた瞬間にMacの一か所に表示されるアプリです。開発しているのは私、<a href="https://uros.com" rel="me">Uros Gazvoda</a>ひとりです。すべての変更は、その理由とあわせて<a href="https://github.com/ugzv/CodeCatch" rel="noopener">GitHubで公開</a>しています。</p>
+  </div>
+  <div class="feature-art" aria-hidden="true">
+    <div class="cc">
+      <div class="settings floating">
+        <p class="set-title">以前：あのコードはどこ？</p>
+        <ul class="set-group hunt">
+          <li><div class="tile bleed"><img src="/assets/services/messages.png" alt="" loading="lazy"></div><span class="set-text"><b>メッセージ</b><span>まだiPhoneの中</span></span><span class="state">待機中</span></li>
+          <li><div class="tile"><img src="/assets/services/gmail.png" alt="" loading="lazy"></div><span class="set-text"><b>Gmail</b><span>個人 · 未読12件</span></span><span class="state">ここにもない</span></li>
+          <li><div class="tile bleed"><img src="/assets/services/mail.png" alt="" loading="lazy"></div><span class="set-text"><b>メール</b><span>仕事 · 迷惑メール</span></span><span class="state">ここにもない</span></li>
+        </ul>
+        <p class="set-title"><svg class="mark" viewBox="208 208 608 608"><use href="#mark"/></svg>CodeCatchなら</p>
+        <ul class="set-group solid">
+          <li class="copied"><div class="tile bleed"><img src="/assets/services/paypal.png" alt="" loading="lazy"><img class="badge" src="/assets/services/messages.png" alt="" loading="lazy"></div><span class="set-text"><b>PayPal</b><span>メッセージ · たった今</span></span><span class="row-pill row-code"><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><span>729 351</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="compare" class="compare">
+  <p class="eyebrow">ほかのアプリとの比較</p>
+  <h2>Mac標準でできること、できないこと</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col"><span class="sr-only">機能</span></th>
+          <th scope="col" class="us"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg>CodeCatch</th>
+          <th scope="col">macOS標準の自動入力</th><th scope="col">2FHey</th><th scope="col">MessAuto</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">使える場所</th><td class="us" data-label="CodeCatch">どのアプリでも</td><td class="has" data-label="macOSの自動入力">Safari、26は全ブラウザ</td><td class="has" data-label="2FHey">どのアプリでも</td><td class="has" data-label="MessAuto">どのアプリでも</td></tr>
+        <tr><th scope="row">メールのコード</th><td class="us" data-label="CodeCatch">どのメールでも</td><td class="has" data-label="macOSの自動入力">Apple Mailのみ</td><td class="no" data-label="2FHey">なし</td><td class="has" data-label="MessAuto">Apple Mailのみ</td></tr>
+        <tr><th scope="row">ログインリンク</th><td class="us" data-label="CodeCatch">あり、リンク先を表示</td><td class="no" data-label="macOSの自動入力">なし</td><td class="no" data-label="2FHey">なし</td><td class="no" data-label="MessAuto">なし</td></tr>
+        <tr><th scope="row">AIエージェント</th><td class="us" data-label="CodeCatch">あり、許可制</td><td class="no" data-label="macOSの自動入力">なし</td><td class="no" data-label="2FHey">なし</td><td class="no" data-label="MessAuto">なし</td></tr>
+        <tr><th scope="row">コードの履歴</th><td class="us" data-label="CodeCatch">7日間、検索可</td><td class="no" data-label="macOSの自動入力">なし</td><td class="no" data-label="2FHey">なし</td><td class="no" data-label="MessAuto">なし</td></tr>
+        <tr><th scope="row">TOTPコード</th><td class="us" data-label="CodeCatch">Bitwarden</td><td class="has" data-label="macOSの自動入力">「パスワード」アプリ</td><td class="no" data-label="2FHey">なし</td><td class="no" data-label="MessAuto">なし</td></tr>
+        <tr><th scope="row">Touch IDでロック</th><td class="us" data-label="CodeCatch">あり</td><td class="no" data-label="macOSの自動入力">なし</td><td class="no" data-label="2FHey">なし</td><td class="no" data-label="MessAuto">なし</td></tr>
+        <tr><th scope="row">対応言語</th><td class="us" data-label="CodeCatch">35</td><td class="no" data-label="macOSの自動入力">記載なし</td><td class="has" data-label="2FHey">6</td><td class="no" data-label="MessAuto">記載なし</td></tr>
+        <tr><th scope="row">オープンソース</th><td class="us" data-label="CodeCatch">はい</td><td class="no" data-label="macOSの自動入力">いいえ</td><td class="has" data-label="2FHey">はい</td><td class="has" data-label="MessAuto">はい</td></tr>
+        <tr><th scope="row">アクセシビリティ権限</th><td class="us" data-label="CodeCatch">入力時のみ</td><td class="has" data-label="macOSの自動入力">使わない</td><td class="has" data-label="2FHey">使う（ペースト用）</td><td class="has" data-label="MessAuto">使う</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fine">2026年10月時点。詳しい比較：<a href="/ja/vs/2fhey/">CodeCatch vs 2FHey</a>、<a href="/ja/vs/messauto/">CodeCatch vs MessAuto</a>。</p>
+</section>
+
+<section class="steps">
+  <p class="eyebrow">1分でセットアップ</p>
+  <h2>ダウンロードから最初のコードまで</h2>
+  <ol>
+    <li>
+      <div class="step-art" aria-hidden="true">
+        <div class="cc"><div class="menubar mini"><span class="clock">10月5日(月) 9:41</span><span class="menubar-cc picked"><svg class="mark mono" viewBox="208 208 608 608"><use href="#mark"/></svg></span><svg viewBox="0 0 24 24"><use href="#i-search"/></svg></div></div>
+      </div>
+      <p class="step-n">ステップ1</p>
+      <h3>CodeCatchを開く</h3>
+      <p>メニューバーに常駐し、Macにログインすると自動で起動します。</p>
+    </li>
+    <li>
+      <div class="step-art" aria-hidden="true">
+        <!-- The row Sources shows until access is granted, then the switch in System Settings. -->
+        <div class="cc">
+          <ul class="set-group solid">
+            <li><span class="icon-tile" style="--c:#ff9500"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg></span><span class="set-text"><b>Full Disk Access Needed</b><span>In Privacy &amp; Security</span></span><span class="open">Open Settings</span></li>
+            <li><img class="app-icon" src="/assets/icon-256.png" alt="" loading="lazy"><span class="set-text"><b>CodeCatch</b></span><span class="switch" role="img" aria-label="CodeCatch：オン" data-on></span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="step-n">ステップ2</p>
+      <h3>フルディスクアクセスを許可</h3>
+      <p>macOSでは、アプリが「メッセージ」と「メール」を読むためにこの許可が必要です。設定画面はCodeCatchが開きます。</p>
+    </li>
+    <li>
+      <div class="step-art" aria-hidden="true">
+        <!-- SourcesTab.swift -->
+        <div class="cc">
+          <ul class="set-group solid">
+            <li><span class="icon-tile" style="--c:#32ade6"><svg viewBox="0 0 24 24"><use href="#i-tray"/></svg></span><span class="set-text"><b>Apple Mail <i class="dot"></i></b><span>No sign-in needed</span></span><span class="switch" role="img" aria-label="Apple Mail：オン" data-on></span></li>
+            <li><span class="icon-tile" style="--c:#ff3b30"><svg viewBox="0 0 24 24"><use href="#i-mail"/></svg></span><span class="set-text"><b>Gmail <i class="dot"></i></b><span>you@gmail.com</span></span><span class="switch" role="img" aria-label="Gmail：オン" data-on></span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="step-n">ステップ3</p>
+      <h3>必要ならメールを追加</h3>
+      <p>Apple Mailをオンにするか、アプリパスワードでGmailなどのアカウントを追加します。</p>
+    </li>
+  </ol>
+</section>
+
+<section id="faq" class="faq">
+  <nav class="rail-card guide-card" aria-label="ガイド">
+    <b>ガイドとヒント</b>
+    <ul>
+      <li><a href="/ja/guides/2fa-codes-for-ai-agents/"><span class="icon-tile" style="--c:#5856d6"><svg viewBox="0 0 24 24"><use href="#i-terminal"/></svg></span><span><b>AIエージェントに2FAコードを</b>Claude CodeやCodexがコードを頼めるように</span></a></li>
+      <li><a href="/ja/guides/magic-link-safety/"><span class="icon-tile" style="--c:#ff9500"><svg viewBox="0 0 24 24"><use href="#i-link"/></svg></span><span><b>このログインリンクは安全？</b>クリックする前にマジックリンクを確認</span></a></li>
+      <li><a href="/ja/guides/verification-code-autofill-chrome-mac/"><span class="icon-tile" style="--c:#0a7aff"><svg viewBox="0 0 24 24"><use href="#i-compass"/></svg></span><span><b>Chromeで認証コードを自動入力</b>うまくいかない理由と、使える方法</span></a></li>
+      <li><a href="/ja/guides/bitwarden-codes-mac-menu-bar/"><span class="icon-tile" style="--c:#30b0c7"><svg viewBox="0 0 24 24"><use href="#i-key"/></svg></span><span><b>MacでBitwardenのコード</b>コードを使う4つの方法</span></a></li>
+    </ul>
+  </nav>
+  <div>
+  <h2>よくある質問</h2>
+  <details open>
+    <summary>Claude CodeなどのAIエージェントがコードを受け取ることはありますか？</summary>
+    <p>「Settings」＞「Agents」でオンにした場合だけです。渡すのは一度にひとつ、エージェントが頼んだサイトのコードだけです。サイトを許可するか「Allow All」をオンにしない限り、コードごとにTouch IDで許可します。エージェントがメッセージを見ることはありません。<a href="/ja/guides/2fa-codes-for-ai-agents/">仕組みを見る</a></p>
+  </details>
+  <details>
+    <summary>Chrome、Arc、Firefoxでも使えますか？</summary>
+    <p>はい。新しいコードは届くたびにコピーされるので、どのブラウザやアプリでも<kbd>⌘</kbd><kbd>V</kbd>でペーストできます。</p>
+  </details>
+  <details>
+    <summary>macOSの自動入力とは何が違いますか？</summary>
+    <p>macOSがコードを提案するのは、対応している入力欄だけです。CodeCatchはすべてのコードをコピーするので、どこでも使えます。さらにGmailを読み、ログインリンクを拾い、履歴を残し、Bitwardenのコードも表示します。自動入力が使えなくなったときは、<a href="/ja/guides/verification-code-autofill-chrome-mac/">自動入力のガイド</a>をご覧ください。</p>
+  </details>
+  <details>
+    <summary>どのメールアカウントを読めますか？</summary>
+    <p>Apple Mailに設定した受信トレイなら、ログインなしで読めます。Gmailなどほかのアカウント（IMAP）も、アプリパスワードで読めます。CodeCatchは読むだけです。メールを既読にしたり、移動や削除をしたりすることはありません。</p>
+  </details>
+  <details>
+    <summary>なぜフルディスクアクセスが必要なのですか？</summary>
+    <p>macOSでは、アプリが「メッセージ」と「メール」を読むためにこの許可が必要です。CodeCatchが読むのはこの2つだけです。アクセシビリティの許可が要るのは、コードを代わりに入力する機能をオンにしたときだけです。</p>
+  </details>
+  <details>
+    <summary>Macの外にデータが送られることはありますか？</summary>
+    <p>コードとメッセージはMacの外に出ません。パスワードはキーチェーンに保管されたままです。CodeCatchが接続するのは、オンにしたメールサービスと、アップデートを確認するcodecatch.appです。GoogleやMicrosoftでログインするときはそれぞれのサービスと、BitwardenからインポートするときはBitwardenと通信します。サービスのロゴはGoogleかDuckDuckGoのファビコンサービスから読み込みます。この読み込みは「Privacy」でオフにできます。</p>
+  </details>
+  <details>
+    <summary>CodeCatchの動作環境は？</summary>
+    <p>macOS 15以降で、AppleシリコンとIntelのどちらのMacでも動きます。SMSのコードをMacで受け取るには、iPhoneで「テキストメッセージ転送」をオンにします。</p>
+  </details>
+  <details>
+    <summary>SMSの認証コードがMacに届きません。何を確認すればいいですか？</summary>
+    <p>Macが受け取れるのは、iPhoneが転送したSMSだけです。iPhoneで「設定」＞「アプリ」＞「メッセージ」＞「<b>テキストメッセージ転送</b>」を開き、Macをオンにします。この項目やMacが見つからないときは、iPhoneとMacが同じApple Accountでサインインしているか確認します（Macでは「メッセージ」＞「設定」＞「iMessage」）。そのうえで、iPhoneのiMessageをオフにしてから、オンに戻します。iPhoneの電源が入っていて、インターネットにつながっていることも必要です。<a href="/ja/guides/verification-code-autofill-chrome-mac/#sms-codes">ほかの対処法</a></p>
+  </details>
+  <details>
+    <summary>CodeCatchがコードを見逃したときは？</summary>
+    <p><a href="https://github.com/ugzv/CodeCatch/issues/new?template=bug_report.yml" rel="noopener">GitHubで報告してください</a>。その際、コードを別の数字に置き換えたメッセージを添えてください。そのメッセージがテストになり、次のバージョンから認識できるようになります。</p>
+  </details>
+  <details>
+    <summary>CodeCatchは日本語に対応していますか？</summary>
+    <p>このサイトは日本語です。アプリの画面は今のところ英語のみです。それでも、日本語のSMSやメールに届いたコードは認識します。たとえば「認証コード」「確認コード」「認証番号」「ワンタイムパスワード」と書かれたメッセージです。CodeCatchは35言語のコードを認識します。</p>
+  </details>
+  </div>
+</section>
+
+<section class="cta">
+  <img src="/assets/icon-256.png" width="96" height="96" alt="CodeCatchのアプリアイコン" loading="lazy">
+  <h2>もう、スマホに手を伸ばさない。</h2>
+  <p>次のコードは、ペーストするだけ。</p>
+  <div class="actions">
+    <a class="button" href="/download/CodeCatch.dmg" data-download>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Mac版をダウンロード
+    </a>
+    <a class="button quiet" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>ソースコードを見る</a>
+  </div>
+  <p class="fine">無料 · macOS 15以降 · AppleシリコンとIntelに対応</p>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a class="brand" href="/ja/"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><span>CodeCatch</span></a>
+      <p>認証コードを、届いた瞬間に。</p>
+      <a class="footer-gh" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>GitHubでソースコードを公開中</a>
+    </div>
+    <nav aria-label="フッター">
+      <div>
+        <h2>製品</h2>
+        <a href="/ja/#features">機能</a>
+        <a href="/ja/#privacy">プライバシー設定</a>
+        <a href="/ja/#faq">よくある質問</a>
+      </div>
+      <div>
+        <h2>ガイド</h2>
+        <a href="/ja/guides/bitwarden-codes-mac-menu-bar/">MacでBitwardenのコード</a>
+        <a href="/ja/guides/verification-code-autofill-chrome-mac/">Chromeで認証コードを自動入力</a>
+        <a href="/ja/guides/magic-link-safety/">このログインリンクは安全？</a>
+        <a href="/ja/guides/2fa-codes-for-ai-agents/">AIエージェントに2FAコードを</a>
+      </div>
+      <div>
+        <h2>比較</h2>
+        <a href="/ja/#compare">すべてのアプリを比較</a>
+        <a href="/ja/vs/2fhey/">CodeCatch vs 2FHey</a>
+        <a href="/ja/vs/messauto/">CodeCatch vs MessAuto</a>
+      </div>
+      <div>
+        <h2>CodeCatchについて</h2>
+        <a href="/ja/#why">作っている人</a>
+        <a href="/ja/privacy/">プライバシー</a>
+        <a href="/changelog/">変更履歴（英語）</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=bug_report.yml" rel="noopener">不具合を報告</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=feature_request.yml" rel="noopener">機能をリクエスト</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CodeCatch</p>
+    <p>その他の名称とロゴは、それぞれの所有者に帰属します。</p>
+    <nav class="languages" aria-label="言語"><a href="/" hreflang="en" lang="en">English</a><a href="/de/" hreflang="de" lang="de">Deutsch</a><a href="/es/" hreflang="es" lang="es">Español</a><a href="/fr/" hreflang="fr" lang="fr">Français</a><a href="/it/" hreflang="it" lang="it">Italiano</a><a href="/pt/" hreflang="pt" lang="pt">Português</a><a href="/ja/" hreflang="ja" lang="ja" aria-current="page">日本語</a></nav>
+  </div>
+</footer>
+
+<!-- The mark is Resources/AppIcon.icon/Assets/asterisk.svg; icons are drawn for this page. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffa20f"/><stop offset="1" stop-color="#ff2d55"/></linearGradient>
+    <path id="mark" d="M428.0 732.0 L428.0 292.0 A84 84 0 0 1 596.0 292.0 L596.0 732.0 A84 84 0 0 1 428.0 732.0 Z M279.5 549.3 L660.5 329.3 A84 84 0 0 1 744.5 474.7 L363.5 694.7 A84 84 0 0 1 279.5 549.3 Z M363.5 329.3 L744.5 549.3 A84 84 0 0 1 660.5 694.7 L279.5 474.7 A84 84 0 0 1 363.5 329.3 Z"/>
+    <symbol id="i-github" viewBox="0 0 32 32"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M16 0C7.16 0 0 7.16 0 16C0 23.08 4.58 29.06 10.94 31.18C11.74 31.32 12.04 30.84 12.04 30.42C12.04 30.04 12.02 28.78 12.02 27.44C8 28.18 6.96 26.46 6.64 25.56C6.46 25.1 5.68 23.68 5 23.3C4.44 23 3.64 22.26 4.98 22.24C6.24 22.22 7.14 23.4 7.44 23.88C8.88 26.3 11.18 25.62 12.1 25.2C12.24 24.16 12.66 23.46 13.12 23.06C9.56 22.66 5.84 21.28 5.84 15.16C5.84 13.42 6.46 11.98 7.48 10.86C7.32 10.46 6.76 8.82 7.64 6.62C7.64 6.62 8.98 6.2 12.04 8.26C13.32 7.9 14.68 7.72 16.04 7.72C17.4 7.72 18.76 7.9 20.04 8.26C23.1 6.18 24.44 6.62 24.44 6.62C25.32 8.82 24.76 10.46 24.6 10.86C25.62 11.98 26.24 13.4 26.24 15.16C26.24 21.3 22.5 22.66 18.94 23.06C19.52 23.56 20.02 24.52 20.02 26.02C20.02 28.16 20 29.88 20 30.42C20 30.84 20.3 31.34 21.1 31.18C27.42 29.06 32 23.06 32 16C32 7.16 24.84 0 16 0V0Z"/></symbol>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4.500-4.500M12 15l4.500-4.500M5 19h14"/></g>
+    <g id="i-copy" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.500"/><path d="M5.500 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v.500"/></g>
+    <g id="i-seal"><path fill="currentColor" d="M12.00 1.35 L12.68 1.65 L13.27 2.38 L13.76 3.15 L14.26 3.55 L14.90 3.45 L15.71 3.04 L16.59 2.70 L17.32 2.78 L17.76 3.38 L17.90 4.30 L17.95 5.21 L18.19 5.81 L18.79 6.05 L19.70 6.10 L20.62 6.24 L21.22 6.67 L21.30 7.41 L20.96 8.29 L20.55 9.10 L20.45 9.74 L20.85 10.24 L21.62 10.73 L22.35 11.32 L22.65 12.00 L22.35 12.68 L21.62 13.27 L20.85 13.76 L20.45 14.26 L20.55 14.90 L20.96 15.71 L21.30 16.59 L21.22 17.32 L20.62 17.76 L19.70 17.90 L18.79 17.95 L18.19 18.19 L17.95 18.79 L17.90 19.70 L17.76 20.62 L17.32 21.22 L16.59 21.30 L15.71 20.96 L14.90 20.55 L14.26 20.45 L13.76 20.85 L13.27 21.62 L12.68 22.35 L12.00 22.65 L11.32 22.35 L10.73 21.62 L10.24 20.85 L9.74 20.45 L9.10 20.55 L8.29 20.96 L7.41 21.30 L6.68 21.22 L6.24 20.62 L6.10 19.70 L6.05 18.79 L5.81 18.19 L5.21 17.95 L4.30 17.90 L3.38 17.76 L2.78 17.33 L2.70 16.59 L3.04 15.71 L3.45 14.90 L3.55 14.26 L3.15 13.76 L2.38 13.27 L1.65 12.68 L1.35 12.00 L1.65 11.32 L2.38 10.73 L3.15 10.24 L3.55 9.74 L3.45 9.10 L3.04 8.29 L2.70 7.41 L2.78 6.67 L3.38 6.24 L4.30 6.10 L5.21 6.05 L5.81 5.81 L6.05 5.21 L6.10 4.30 L6.24 3.38 L6.67 2.78 L7.41 2.70 L8.29 3.04 L9.10 3.45 L9.74 3.55 L10.24 3.15 L10.73 2.38 L11.32 1.65 Z"/><path fill="none" stroke="#fff" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" d="m8 12.300 2.800 2.800L16.200 9.500"/></g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7"/></g>
+    <g id="i-link" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.500 4.500 0 0 0 6.400 0l3-3a4.500 4.500 0 0 0-6.400-6.400l-1 1"/><path d="M14 10a4.500 4.500 0 0 0-6.400 0l-3 3a4.500 4.500 0 0 0 6.400 6.400l1-1"/></g>
+    <g id="i-lock" fill="currentColor"><path d="M7 10V8a5 5 0 0 1 10 0v2h.500A2.500 2.500 0 0 1 20 12.500v6a2.500 2.500 0 0 1-2.500 2.500h-11A2.500 2.500 0 0 1 4 18.500v-6A2.500 2.500 0 0 1 6.500 10H7Zm2.200 0h5.600V8a2.800 2.800 0 0 0-5.600 0v2Z"/></g>
+    <g id="i-lock-open" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.500" y="11" width="13" height="10" rx="2.500"/><path d="M13 11V7.500a4 4 0 0 1 8 0V10"/></g>
+    <g id="i-gear" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linejoin="round"><path d="M10.21 4.82 L10.44 2.12 L13.56 2.12 L13.79 4.82 L15.81 5.66 L17.88 3.91 L20.09 6.12 L18.34 8.19 L19.18 10.21 L21.88 10.44 L21.88 13.56 L19.18 13.79 L18.34 15.81 L20.09 17.88 L17.88 20.09 L15.81 18.34 L13.79 19.18 L13.56 21.88 L10.44 21.88 L10.21 19.18 L8.19 18.34 L6.12 20.09 L3.91 17.88 L5.66 15.81 L4.82 13.79 L2.12 13.56 L2.12 10.44 L4.82 10.21 L5.66 8.19 L3.91 6.12 L6.12 3.91 L8.19 5.66Z"/><circle cx="12" cy="12" r="3.200"/></g>
+    <g id="i-search" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round"><circle cx="10.500" cy="10.500" r="6.500"/><path d="m20 20-4.800-4.800"/></g>
+    <g id="i-warning" fill="currentColor"><path d="M10.300 3.900a2 2 0 0 1 3.400 0l8 13.600a2 2 0 0 1-1.700 3H4a2 2 0 0 1-1.700-3l8-13.600ZM12 8.500a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm0 7.500a1.150 1.150 0 1 0 0 2.300 1.150 1.150 0 0 0 0-2.300Z"/></g>
+    <g id="i-compass" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.500 8.500-2 5-5 2 2-5 5-2Z"/></g>
+    <g id="i-bubble" fill="currentColor"><path d="M12 3.500c5 0 9 3.400 9 7.700s-4 7.700-9 7.700c-.9 0-1.800-.1-2.600-.3-1.100.9-2.600 1.600-4.300 1.800-.4 0-.6-.4-.4-.7.700-.9 1.100-1.900 1.200-2.800C4.100 15.500 3 13.500 3 11.200c0-4.300 4-7.700 9-7.700Z"/></g>
+    <g id="i-mail" fill="currentColor"><path d="M4.500 5h15A2.500 2.500 0 0 1 22 7.300l-10 5.600L2 7.300A2.500 2.500 0 0 1 4.500 5ZM2 9.600V16.500A2.500 2.500 0 0 0 4.500 19h15a2.500 2.500 0 0 0 2.500-2.500V9.600l-9.500 5.300a1 1 0 0 1-1 0L2 9.600Z"/></g>
+    <g id="i-tray" fill="currentColor"><path d="M6.200 4h11.600a2 2 0 0 1 1.900 1.400l2.200 7V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5.600l2.300-7A2 2 0 0 1 6.200 4Zm.2 2-1.900 6H8a1 1 0 0 1 1 .8 3 3 0 0 0 6 0 1 1 0 0 1 1-.8h3.500l-1.900-6H6.400Z"/></g>
+    <g id="i-key" fill="currentColor"><path d="M15.500 2a6.500 6.500 0 0 0-6.200 8.500L2.600 17.200a1 1 0 0 0-.3.700V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1.500H9a1 1 0 0 0 1-1V17h1.200a1 1 0 0 0 .7-.3l1.600-1.600A6.500 6.500 0 1 0 15.500 2Zm1.700 3.800a1.900 1.900 0 1 1 0 3.800 1.900 1.900 0 0 1 0-3.800Z"/></g>
+    <g id="i-pin" fill="currentColor"><path d="M9 3h6l-.6 6.200 3.100 3.300V14H13v6l-1 2-1-2v-6H6.500v-1.500l3.100-3.300L9 3Z"/></g>
+    <g id="i-record" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3" stroke-dasharray="3.500 3"/><circle cx="12" cy="12" r="2.800" fill="currentColor" stroke="none"/></g>
+    <g id="i-history" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.500-5.800M4 5v4h4M12 8v4.500l3 1.800"/></g>
+    <g id="i-updown" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9.500 4-4 4 4M8 14.500l4 4 4-4"/></g>
+    <g id="i-clock" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.200 2"/></g>
+    <g id="i-eye-off" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.600 6.200A9.800 9.800 0 0 1 12 6c5.500 0 9 6 9 6a15.600 15.600 0 0 1-2.800 3.500M6.500 7.600A15 15 0 0 0 3 12s3.500 6 9 6a9 9 0 0 0 3.600-.8M9.900 9.900a3 3 0 0 0 4.200 4.200"/></g>
+    <g id="i-terminal" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 4 4-4 4M12 16h7"/></g>
+    <g id="i-shield" fill="currentColor"><path d="M12 2.500 4.500 5.300v6c0 4.700 3.200 8.900 7.500 10.200 4.300-1.300 7.500-5.500 7.500-10.200v-6L12 2.500Zm-1.200 13.300-3.400-3.400 1.400-1.400 2 2 4.400-4.400 1.400 1.400-5.800 5.800Z"/></g>
+  </defs>
+</svg>
+
+<script src="/app.js" defer></script>
+</body>
+</html>

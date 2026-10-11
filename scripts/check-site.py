@@ -21,7 +21,7 @@ from urllib.parse import urljoin, urlsplit
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = os.path.join(ROOT, "site")
 ORIGIN = "https://codecatch.app"
-LANGUAGES = ["de"]  # besides English; also in functions/_middleware.js
+LANGUAGES = ["de", "ja", "fr", "it", "es", "pt"]  # besides English; also in functions/_middleware.js
 
 
 class Page(HTMLParser):

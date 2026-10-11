@@ -12,7 +12,7 @@ const BOT = /bot|crawl|spider|slurp|preview|headless/i;
 // in the language of the page the download was clicked on.
 // Macs, and tools that name no system (curl), still get the file.
 const NOT_MAC = ["iOS", "Android", "Windows", "Linux"];
-const LANGUAGES = ["de"];  // the site's folders besides English, as in site/<lang>/
+const LANGUAGES = ["de", "ja", "fr", "it", "es", "pt"];  // the site's folders besides English, as in site/<lang>/
 
 export async function onRequest({ request, env, next, waitUntil }) {
   const url = new URL(request.url);

@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Questo link è sicuro? Come verificare un magic link</title>
+<meta name="description" content="Cos’è un magic link, come distinguere un link di accesso vero da uno di phishing prima di cliccare e cosa fare se hai già cliccato.">
+<link rel="canonical" href="https://codecatch.app/it/guide/magic-link-sicuro/">
+<link rel="alternate" hreflang="en" href="https://codecatch.app/guides/magic-link-safety/">
+<link rel="alternate" hreflang="de" href="https://codecatch.app/de/anleitungen/magic-link-sicher/">
+<link rel="alternate" hreflang="es" href="https://codecatch.app/es/guias/magic-link-seguro/">
+<link rel="alternate" hreflang="fr" href="https://codecatch.app/fr/guides/magic-link-fiable/">
+<link rel="alternate" hreflang="it" href="https://codecatch.app/it/guide/magic-link-sicuro/">
+<link rel="alternate" hreflang="pt" href="https://codecatch.app/pt/guias/magic-link-seguro/">
+<link rel="alternate" hreflang="ja" href="https://codecatch.app/ja/guides/magic-link-safety/">
+<link rel="alternate" hreflang="x-default" href="https://codecatch.app/guides/magic-link-safety/">
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100d0e" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/icon-180.png">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="es_LA">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:site_name" content="CodeCatch">
+<meta property="og:url" content="https://codecatch.app/it/guide/magic-link-sicuro/">
+<meta property="og:title" content="Questo link è sicuro? Come verificare un magic link">
+<meta property="og:description" content="Cos’è un magic link, come distinguere un link di accesso vero da uno di phishing prima di cliccare e cosa fare se hai già cliccato.">
+<meta property="og:image" content="https://codecatch.app/assets/og/it/magic-link-sicuro.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="“Questo link di accesso è sicuro?” accanto all’avviso di CodeCatch: il link di accesso apre un altro sito">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "TechArticle",
+   "@id": "https://codecatch.app/it/guide/magic-link-sicuro/#article",
+   "headline": "Questo link di accesso è sicuro? Come verificare un magic link",
+   "name": "Come verificare un magic link",
+   "description": "Cos’è un magic link, come distinguere un link di accesso vero da uno di phishing prima di cliccare e cosa fare se hai già cliccato.",
+   "image": "https://codecatch.app/assets/og/it/magic-link-sicuro.png",
+   "datePublished": "2026-10-06",
+   "dateModified": "2026-10-06",
+   "inLanguage": "it",
+   "author": {
+    "@id": "https://codecatch.app/#author"
+   },
+   "publisher": {
+    "@id": "https://codecatch.app/#org"
+   },
+   "mainEntityOfPage": "https://codecatch.app/it/guide/magic-link-sicuro/",
+   "about": {
+    "@type": "SoftwareApplication",
+    "name": "CodeCatch",
+    "operatingSystem": "macOS",
+    "applicationCategory": "UtilitiesApplication",
+    "url": "https://codecatch.app/it/"
+   }
+  },
+  {
+   "@type": "Person",
+   "@id": "https://codecatch.app/#author",
+   "name": "Uros Gazvoda",
+   "url": "https://codecatch.app/#why",
+   "sameAs": [
+    "https://github.com/ugzv",
+    "https://uros.com"
+   ]
+  },
+  {
+   "@type": "Organization",
+   "@id": "https://codecatch.app/#org",
+   "name": "CodeCatch",
+   "url": "https://codecatch.app/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://codecatch.app/assets/icon-512.png",
+    "width": 512,
+    "height": 512
+   },
+   "founder": {
+    "@id": "https://codecatch.app/#author"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "CodeCatch",
+     "item": "https://codecatch.app/it/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Questo link di accesso è sicuro? Come verificare un magic link",
+     "item": "https://codecatch.app/it/guide/magic-link-sicuro/"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Cos’è un magic link?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "È un link di accesso che un sito ti manda via email al posto della password. Contiene una chiave segreta monouso. Di solito funziona una sola volta e scade presto, spesso tra 10 e 30 minuti."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "I magic link sono più sicuri delle password?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "In parte sì: non c’è una password da indovinare, da riutilizzare o da perdere in una fuga di dati. Però la tua casella email diventa la chiave dell’account. Proteggila con una password robusta e l’autenticazione a due fattori."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Perché ho ricevuto un link di accesso che non ho chiesto?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Qualcuno ha inserito il tuo indirizzo email su quel sito, per sbaglio o apposta. Non può accedere senza aprire il link che è arrivato a te. Non cliccarlo. Elimina l’email e basta."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Quanto dura un magic link?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Di solito minuti, non ore. Molti scadono tra 10 e 30 minuti e la maggior parte funziona una volta sola. Se è scaduto, chiedine uno nuovo al sito."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Posso controllare un link senza cliccarlo?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Sì. Tieni il puntatore sul pulsante per vedere l’indirizzo, oppure fai clic sul pulsante tenendo premuto Ctrl e scegli “Copia link”. Poi leggi il nome del sito come spiegato sopra."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "È sicuro inoltrare un link di accesso?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. Su molti siti chi apre il link entra nel tuo account. Trattalo come una password."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Ho cliccato su un link di phishing: cosa faccio?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Se non hai scritto nulla, chiudi la pagina. Se hai scritto una password, cambiala subito sul sito vero e ovunque la usi, poi attiva l’autenticazione a due fattori. Se hai scritto un codice o i dati della carta, contatta il servizio o la tua banca e controlla nell’account se ci sono dispositivi o pagamenti che non riconosci."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/it/" aria-label="CodeCatch, pagina iniziale">
+    <svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg>
+    <span>CodeCatch</span>
+  </a>
+  <nav aria-label="Sezioni">
+    <a href="/it/#features">Funzioni</a>
+    <a href="/it/#privacy">Privacy</a>
+    <a href="/it/#compare">Confronto</a>
+    <a href="/it/#faq">FAQ</a>
+  </nav>
+  <a class="button small" href="/download/CodeCatch.dmg" data-download>Scarica</a>
+</header>
+
+<main>
+<article class="article">
+  <header class="vs-hero">
+    <p class="eyebrow">Guida</p>
+    <h1>Questo link di accesso è sicuro? Come verificare un magic link</h1>
+    <p class="lede">Sempre più siti, invece di chiederti la password, ti mandano un link via email. Ecco come funzionano questi link e come controllarne uno prima di cliccare.</p>
+    <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>Di <a href="/it/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-06">Pubblicato il 6 ottobre 2026</time></span></p>
+  </header>
+  <div class="feature-art article-art" aria-hidden="true">
+    <div class="cc">
+      <div class="card floating">
+        <div class="card-head"><div class="tile  bleed"><img src="/assets/services/notion.png" alt="" loading="lazy"><img class="badge" src="/assets/services/mail.png" alt="" loading="lazy"></div><div class="card-who"><b>Notion</b><span>Sign-in link</span></div><span class="card-age">2 min</span></div>
+        <div class="well"><span class="site">sign-in.example</span></div>
+        <p class="warning"><svg viewBox="0 0 24 24"><use href="#i-warning"/></svg>This message is from notion.so, but the link goes to sign-in.example. Open it only if you trust this site.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="rail">
+    <nav class="toc" aria-label="In questa pagina"><details open>
+      <summary>In questa pagina</summary>
+      <ol>
+        <li><a href="#what-is-a-magic-link">Cos’è un magic link</a></li>
+        <li><a href="#why-fakes-work">Perché i link falsi ingannano</a></li>
+        <li><a href="#five-steps">Verificare un link in cinque passaggi</a></li>
+        <li><a href="#reading-a-link">Come leggere un link</a></li>
+        <li><a href="#already-clicked">Se hai già cliccato</a></li>
+        <li><a href="#codecatch">Come aiuta CodeCatch</a></li>
+        <li><a href="#questions">Domande</a></li>
+      </ol>
+    </details></nav>
+    <div class="rail-card">
+      <img src="/assets/icon-256.png" width="56" height="56" alt="" loading="lazy">
+      <p><b>CodeCatch</b> Codici di verifica e link di accesso da Messaggi e dalle email, copiati appena arrivano.</p>
+      <a class="button small" href="/download/CodeCatch.dmg" data-download><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Scarica per macOS</a>
+      <p class="fine">Gratis · macOS 15+</p>
+    </div>
+  </aside>
+  <div class="prose">
+    <p>Inserisci la tua email e il sito ti dice: “Controlla la posta in arrivo”. Poco dopo arriva un’email con un pulsante: <b>Accedi</b>, <b>Accedi a Slack</b> o <b>Conferma che sei tu</b>. Quel pulsante è un link di accesso, detto anche magic link. Un clic e sei dentro.</p>
+
+    <p class="callout"><b>In breve:</b> clicca solo su un link di accesso che hai appena chiesto tu. Prima di cliccare, controlla che apra proprio il sito a cui stai accedendo. Se una delle due cose non torna, non cliccare. Vai tu sul sito e chiedi un nuovo link.</p>
+
+    <h2 id="what-is-a-magic-link">Cos’è un magic link</h2>
+    <p>Un magic link è un link di accesso che contiene una chiave segreta monouso. L’email arriva solo nella tua casella, quindi aprire il link dimostra che la casella è tua. Così il link prende il posto della password.</p>
+    <ul class="ticks plain">
+      <li>Di solito funziona una volta sola.</li>
+      <li>Scade presto, spesso tra 10 e 30 minuti.</li>
+      <li>Su molti siti chi lo apre entra nel tuo account. Perciò non inoltrarlo mai e non mandarne mai uno screenshot.</li>
+    </ul>
+    <p>Ogni sito li chiama a modo suo: magic link, link di accesso, link di login, “link monouso” o email “Sei tu?”. Funzionano tutti allo stesso modo.</p>
+
+    <h2 id="why-fakes-work">Perché i link falsi ingannano</h2>
+    <p>Queste email te le aspetti, quindi clicchi in fretta. Un’email falsa ha lo stesso aspetto, ma il suo pulsante apre una copia del sito vero. La copia ti chiede la password, un codice o i dati della carta. Tutto quello che scrivi finisce a chi l’ha creata. Questo è il phishing.</p>
+
+    <h2 id="five-steps">Questo link è sicuro? Verificalo in cinque passaggi</h2>
+    <ol class="numbered">
+      <li><b>L’hai appena chiesto tu?</b> Se non stavi provando ad accedere, non cliccare. Qualcuno ha scritto il tuo indirizzo email, per sbaglio o apposta. Senza il link non può entrare, quindi ignora l’email.</li>
+      <li><b>Guarda l’indirizzo del mittente, non il nome.</b> Il nome può essere qualsiasi cosa. Guarda l’indirizzo, la parte dopo la @.</li>
+      <li><b>Guarda dove porta il pulsante, senza cliccare.</b> Nella maggior parte delle app di posta basta tenere il puntatore sul pulsante e compare l’indirizzo. In Gmail nel browser lo vedi nell’angolo in basso della finestra. Oppure fai clic sul pulsante tenendo premuto Ctrl, scegli <b>Copia link</b> e incollalo in una nota.</li>
+      <li><b>Leggi il nome del sito nel modo giusto.</b> Trova la prima barra singola (/) dopo <code>https://</code>. Il sito è quello che c’è subito prima, letto da destra. Trovi gli esempi qui sotto.</li>
+      <li><b>Dopo il clic, guarda prima di scrivere.</b> Un magic link vero ti fa accedere. Se invece la pagina ti chiede la password o i dati della carta, chiudila.</li>
+    </ol>
+
+    <h2 id="reading-a-link">Come leggere un link: vero o falso?</h2>
+    <p>Il sito corrisponde alle ultime due parti del nome, prima della prima barra singola. Con indirizzi come <code>bank.co.uk</code> sono le ultime tre.</p>
+    <p>Mettiamo che tu abbia chiesto a Notion un link di accesso:</p>
+    <ul class="ticks plain">
+      <li><code>https://www.notion.so/loginwithemail?token=…</code> apre <b>notion.so</b>. È Notion.</li>
+      <li><code>https://notion.so.sign-in.example/verify</code> apre <b>sign-in.example</b>. “notion.so” è solo l’inizio del nome.</li>
+      <li><code>https://notion-so.com/login</code> apre <b>notion-so.com</b>. Un nome simile, ma è un altro sito.</li>
+      <li><code>https://example.com/r?u=notion.so</code> apre <b>example.com</b>. Notion compare solo dopo la barra.</li>
+    </ul>
+    <p>C’è un limite: alcune email vere fanno passare i link da un servizio di invio, quindi l’indirizzo può sembrare estraneo anche se l’email è autentica. A occhio non le distingui. Nel dubbio, apri tu il sito e chiedi un nuovo link.</p>
+
+    <h2 id="already-clicked">Hai già cliccato? Ecco cosa fare</h2>
+    <ul class="ticks plain">
+      <li><b>Non hai scritto nulla:</b> chiudi la pagina. Il solo fatto di aprirla raramente fa danni.</li>
+      <li><b>Hai scritto una password:</b> cambiala subito sul sito vero e ovunque la usi. Attiva l’autenticazione a due fattori.</li>
+      <li><b>Hai scritto un codice o i dati della carta:</b> contatta il servizio o la tua banca. Controlla nell’account se ci sono dispositivi o pagamenti che non riconosci.</li>
+    </ul>
+
+    <h2 id="codecatch">Come ti aiuta CodeCatch sul Mac</h2>
+    <p>Ho creato CodeCatch per i codici di verifica, ma i link di accesso danno lo stesso fastidio. CodeCatch legge Apple Mail, Gmail e altre caselle di posta e mostra ogni nuovo link di accesso accanto ai codici. Prima di decidere, vedi quale sito apre.</p>
+    <ul class="ticks">
+      <li>Non apre mai un link da sola. Sei tu a fare clic su <b>Open Link</b> o <b>Copy Link</b>.</li>
+      <li>Mostra il sito che il link apre, letto nel modo giusto.</li>
+      <li>Se quel sito non corrisponde all’indirizzo del mittente, ti avvisa, come nell’immagine qui sopra.</li>
+      <li>Prende solo il pulsante di accesso, non i link per annullare l’iscrizione o per l’assistenza, e solo link sicuri <code>https</code>.</li>
+      <li>Fa lo stesso controllo sui link per reimpostare la password.</li>
+    </ul>
+    <p>È un aiuto, non una garanzia. L’avviso confronta il link con l’indirizzo del mittente, e anche quell’indirizzo si può falsificare. Il passaggio 1 resta il più importante: clicca solo sui link che hai chiesto tu.</p>
+
+    <h2 id="questions">Domande</h2>
+    <div class="faq-list">
+      <details><summary>Cos’è un magic link?</summary><p>È un link di accesso che un sito ti manda via email al posto della password. Contiene una chiave segreta monouso. Di solito funziona una sola volta e scade presto, spesso tra 10 e 30 minuti.</p></details>
+      <details><summary>I magic link sono più sicuri delle password?</summary><p>In parte sì: non c’è una password da indovinare, da riutilizzare o da perdere in una fuga di dati. Però la tua casella email diventa la chiave dell’account. Proteggila con una password robusta e l’autenticazione a due fattori.</p></details>
+      <details><summary>Perché ho ricevuto un link di accesso che non ho chiesto?</summary><p>Qualcuno ha inserito il tuo indirizzo email su quel sito, per sbaglio o apposta. Non può accedere senza aprire il link che è arrivato a te. Non cliccarlo. Elimina l’email e basta.</p></details>
+      <details><summary>Quanto dura un magic link?</summary><p>Di solito minuti, non ore. Molti scadono tra 10 e 30 minuti e la maggior parte funziona una volta sola. Se è scaduto, chiedine uno nuovo al sito.</p></details>
+      <details><summary>Posso controllare un link senza cliccarlo?</summary><p>Sì. Tieni il puntatore sul pulsante per vedere l’indirizzo, oppure fai clic sul pulsante tenendo premuto Ctrl e scegli “Copia link”. Poi leggi il nome del sito come spiegato sopra.</p></details>
+      <details><summary>È sicuro inoltrare un link di accesso?</summary><p>No. Su molti siti chi apre il link entra nel tuo account. Trattalo come una password.</p></details>
+      <details><summary>Ho cliccato su un link di phishing: cosa faccio?</summary><p>Se non hai scritto nulla, chiudi la pagina. Se hai scritto una password, cambiala subito sul sito vero e ovunque la usi, poi attiva l’autenticazione a due fattori. Se hai scritto un codice o i dati della carta, contatta il servizio o la tua banca e controlla nell’account se ci sono dispositivi o pagamenti che non riconosci.</p></details>
+    </div>
+  </div>
+</article>
+<section class="cta">
+  <img src="/assets/icon-256.png" width="96" height="96" alt="Icona dell’app CodeCatch" loading="lazy">
+  <h2>Guarda dove porta un link, prima di cliccare.</h2>
+  <p>CodeCatch ti mostra in un solo posto i link di accesso e i codici che arrivano via email.</p>
+  <div class="actions">
+    <a class="button" href="/download/CodeCatch.dmg" data-download>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Scarica per macOS
+    </a>
+    <a class="button quiet" href="/it/">Scopri come funziona</a>
+  </div>
+  <p class="fine">Gratis · macOS 15+ · chip Apple e Intel</p>
+</section>
+</main>
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a class="brand" href="/it/"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><span>CodeCatch</span></a>
+      <p>Codici di verifica, copiati appena arrivano.</p>
+      <a class="footer-gh" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>Open source su GitHub</a>
+    </div>
+    <nav aria-label="Piè di pagina">
+      <div>
+        <h2>Prodotto</h2>
+        <a href="/it/#features">Funzioni</a>
+        <a href="/it/#privacy">Impostazioni privacy</a>
+        <a href="/it/#faq">FAQ</a>
+      </div>
+      <div>
+        <h2>Guide</h2>
+        <a href="/it/guide/codici-bitwarden-barra-dei-menu-mac/">Codici Bitwarden sul Mac</a>
+        <a href="/it/guide/codici-otp-chrome-mac/">Codici OTP in Chrome</a>
+        <a href="/it/guide/magic-link-sicuro/">Questo link è sicuro?</a>
+        <a href="/it/guide/codici-2fa-agenti-ai/">Codici 2FA per agenti AI</a>
+      </div>
+      <div>
+        <h2>Confronti</h2>
+        <a href="/it/#compare">Tutte le app a confronto</a>
+        <a href="/it/confronto/2fhey/">CodeCatch vs 2FHey</a>
+        <a href="/it/confronto/messauto/">CodeCatch vs MessAuto</a>
+      </div>
+      <div>
+        <h2>Informazioni</h2>
+        <a href="/it/#why">Chi la sviluppa</a>
+        <a href="/it/privacy/">Privacy</a>
+        <a href="/changelog/">Changelog (in inglese)</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=bug_report.yml" rel="noopener">Segnala un bug</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=feature_request.yml" rel="noopener">Suggerisci una funzione</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CodeCatch</p>
+    <p>CodeCatch non ha legami con Apple, Google o Notion.</p>
+    <nav class="languages" aria-label="Lingua"><a href="/guides/magic-link-safety/" hreflang="en" lang="en">English</a><a href="/de/anleitungen/magic-link-sicher/" hreflang="de" lang="de">Deutsch</a><a href="/es/guias/magic-link-seguro/" hreflang="es" lang="es">Español</a><a href="/fr/guides/magic-link-fiable/" hreflang="fr" lang="fr">Français</a><a href="/it/guide/magic-link-sicuro/" hreflang="it" lang="it" aria-current="page">Italiano</a><a href="/pt/guias/magic-link-seguro/" hreflang="pt" lang="pt">Português</a><a href="/ja/guides/magic-link-safety/" hreflang="ja" lang="ja">日本語</a></nav>
+  </div>
+</footer>
+
+<!-- The mark is Resources/AppIcon.icon/Assets/asterisk.svg; icons are drawn for this page. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffa20f"/><stop offset="1" stop-color="#ff2d55"/></linearGradient>
+    <path id="mark" d="M428.0 732.0 L428.0 292.0 A84 84 0 0 1 596.0 292.0 L596.0 732.0 A84 84 0 0 1 428.0 732.0 Z M279.5 549.3 L660.5 329.3 A84 84 0 0 1 744.5 474.7 L363.5 694.7 A84 84 0 0 1 279.5 549.3 Z M363.5 329.3 L744.5 549.3 A84 84 0 0 1 660.5 694.7 L279.5 474.7 A84 84 0 0 1 363.5 329.3 Z"/>
+    <symbol id="i-github" viewBox="0 0 32 32"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M16 0C7.16 0 0 7.16 0 16C0 23.08 4.58 29.06 10.94 31.18C11.74 31.32 12.04 30.84 12.04 30.42C12.04 30.04 12.02 28.78 12.02 27.44C8 28.18 6.96 26.46 6.64 25.56C6.46 25.1 5.68 23.68 5 23.3C4.44 23 3.64 22.26 4.98 22.24C6.24 22.22 7.14 23.4 7.44 23.88C8.88 26.3 11.18 25.62 12.1 25.2C12.24 24.16 12.66 23.46 13.12 23.06C9.56 22.66 5.84 21.28 5.84 15.16C5.84 13.42 6.46 11.98 7.48 10.86C7.32 10.46 6.76 8.82 7.64 6.62C7.64 6.62 8.98 6.2 12.04 8.26C13.32 7.9 14.68 7.72 16.04 7.72C17.4 7.72 18.76 7.9 20.04 8.26C23.1 6.18 24.44 6.62 24.44 6.62C25.32 8.82 24.76 10.46 24.6 10.86C25.62 11.98 26.24 13.4 26.24 15.16C26.24 21.3 22.5 22.66 18.94 23.06C19.52 23.56 20.02 24.52 20.02 26.02C20.02 28.16 20 29.88 20 30.42C20 30.84 20.3 31.34 21.1 31.18C27.42 29.06 32 23.06 32 16C32 7.16 24.84 0 16 0V0Z"/></symbol>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4.500-4.500M12 15l4.500-4.500M5 19h14"/></g>
+    <g id="i-copy" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.500"/><path d="M5.500 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v.500"/></g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7"/></g>
+    <g id="i-link" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.500 4.500 0 0 0 6.400 0l3-3a4.500 4.500 0 0 0-6.400-6.400l-1 1"/><path d="M14 10a4.500 4.500 0 0 0-6.400 0l-3 3a4.500 4.500 0 0 0 6.400 6.400l1-1"/></g>
+    <g id="i-lock" fill="currentColor"><path d="M7 10V8a5 5 0 0 1 10 0v2h.500A2.500 2.500 0 0 1 20 12.500v6a2.500 2.500 0 0 1-2.500 2.500h-11A2.500 2.500 0 0 1 4 18.500v-6A2.500 2.500 0 0 1 6.500 10H7Zm2.200 0h5.600V8a2.800 2.800 0 0 0-5.600 0v2Z"/></g>
+    <g id="i-search" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round"><circle cx="10.500" cy="10.500" r="6.500"/><path d="m20 20-4.800-4.800"/></g>
+    <g id="i-warning" fill="currentColor"><path d="M10.300 3.900a2 2 0 0 1 3.400 0l8 13.600a2 2 0 0 1-1.700 3H4a2 2 0 0 1-1.700-3l8-13.600ZM12 8.500a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm0 7.500a1.150 1.150 0 1 0 0 2.300 1.150 1.150 0 0 0 0-2.300Z"/></g>
+    <g id="i-compass" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.500 8.500-2 5-5 2 2-5 5-2Z"/></g>
+    <g id="i-bubble" fill="currentColor"><path d="M12 3.500c5 0 9 3.400 9 7.700s-4 7.700-9 7.700c-.9 0-1.800-.1-2.600-.3-1.100.9-2.600 1.600-4.300 1.800-.4 0-.6-.4-.4-.7.700-.9 1.100-1.900 1.200-2.800C4.100 15.500 3 13.500 3 11.200c0-4.300 4-7.700 9-7.700Z"/></g>
+    <g id="i-mail" fill="currentColor"><path d="M4.500 5h15A2.500 2.500 0 0 1 22 7.300l-10 5.600L2 7.300A2.500 2.500 0 0 1 4.500 5ZM2 9.600V16.500A2.500 2.500 0 0 0 4.500 19h15a2.500 2.500 0 0 0 2.500-2.500V9.600l-9.500 5.300a1 1 0 0 1-1 0L2 9.600Z"/></g>
+    <g id="i-tray" fill="currentColor"><path d="M6.200 4h11.600a2 2 0 0 1 1.900 1.400l2.200 7V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5.600l2.300-7A2 2 0 0 1 6.200 4Zm.2 2-1.900 6H8a1 1 0 0 1 1 .8 3 3 0 0 0 6 0 1 1 0 0 1 1-.8h3.500l-1.900-6H6.400Z"/></g>
+    <g id="i-key" fill="currentColor"><path d="M15.500 2a6.500 6.500 0 0 0-6.200 8.500L2.600 17.200a1 1 0 0 0-.3.700V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1.500H9a1 1 0 0 0 1-1V17h1.200a1 1 0 0 0 .7-.3l1.600-1.600A6.500 6.500 0 1 0 15.500 2Zm1.700 3.800a1.900 1.900 0 1 1 0 3.800 1.900 1.900 0 0 1 0-3.800Z"/></g>
+    <g id="i-pin" fill="currentColor"><path d="M9 3h6l-.6 6.200 3.100 3.300V14H13v6l-1 2-1-2v-6H6.500v-1.500l3.100-3.300L9 3Z"/></g>
+    <g id="i-record" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3" stroke-dasharray="3.500 3"/><circle cx="12" cy="12" r="2.800" fill="currentColor" stroke="none"/></g>
+    <g id="i-history" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.500-5.800M4 5v4h4M12 8v4.500l3 1.800"/></g>
+    <g id="i-updown" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9.500 4-4 4 4M8 14.500l4 4 4-4"/></g>
+    <g id="i-clock" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.200 2"/></g>
+    <g id="i-eye-off" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.600 6.200A9.800 9.800 0 0 1 12 6c5.500 0 9 6 9 6a15.600 15.600 0 0 1-2.800 3.500M6.500 7.600A15 15 0 0 0 3 12s3.500 6 9 6a9 9 0 0 0 3.600-.8M9.900 9.900a3 3 0 0 0 4.200 4.200"/></g>
+  </defs>
+</svg>
+<script src="/toc.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>マジックリンクは安全？ログインリンクを見分ける方法</title>
+<meta name="description" content="マジックリンク（ログインリンク）の仕組みと、クリックする前に本物と偽物を見分ける方法、うっかり開いてしまったときの対処を説明します。">
+<link rel="canonical" href="https://codecatch.app/ja/guides/magic-link-safety/">
+<link rel="alternate" hreflang="en" href="https://codecatch.app/guides/magic-link-safety/">
+<link rel="alternate" hreflang="de" href="https://codecatch.app/de/anleitungen/magic-link-sicher/">
+<link rel="alternate" hreflang="es" href="https://codecatch.app/es/guias/magic-link-seguro/">
+<link rel="alternate" hreflang="fr" href="https://codecatch.app/fr/guides/magic-link-fiable/">
+<link rel="alternate" hreflang="it" href="https://codecatch.app/it/guide/magic-link-sicuro/">
+<link rel="alternate" hreflang="pt" href="https://codecatch.app/pt/guias/magic-link-seguro/">
+<link rel="alternate" hreflang="ja" href="https://codecatch.app/ja/guides/magic-link-safety/">
+<link rel="alternate" hreflang="x-default" href="https://codecatch.app/guides/magic-link-safety/">
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#100d0e" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/icon-180.png">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="es_LA">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:site_name" content="CodeCatch">
+<meta property="og:url" content="https://codecatch.app/ja/guides/magic-link-safety/">
+<meta property="og:title" content="マジックリンクは安全？ログインリンクを見分ける方法">
+<meta property="og:description" content="マジックリンク（ログインリンク）の仕組みと、クリックする前に本物と偽物を見分ける方法、うっかり開いてしまったときの対処を説明します。">
+<meta property="og:image" content="https://codecatch.app/assets/og/ja/magic-link-safety.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="「このログインリンクは安全？」の見出しと、ログインリンクが別のサイトを開くと警告するCodeCatch">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "TechArticle",
+   "@id": "https://codecatch.app/ja/guides/magic-link-safety/#article",
+   "headline": "マジックリンクは安全？ログインリンクを見分ける方法",
+   "name": "マジックリンクの確かめ方",
+   "description": "マジックリンク（ログインリンク）の仕組みと、クリックする前に本物と偽物を見分ける方法、うっかり開いてしまったときの対処を説明します。",
+   "image": "https://codecatch.app/assets/og/ja/magic-link-safety.png",
+   "datePublished": "2026-10-06",
+   "dateModified": "2026-10-06",
+   "inLanguage": "ja",
+   "author": {
+    "@id": "https://codecatch.app/#author"
+   },
+   "publisher": {
+    "@id": "https://codecatch.app/#org"
+   },
+   "mainEntityOfPage": "https://codecatch.app/ja/guides/magic-link-safety/",
+   "about": {
+    "@type": "SoftwareApplication",
+    "name": "CodeCatch",
+    "operatingSystem": "macOS",
+    "applicationCategory": "UtilitiesApplication",
+    "url": "https://codecatch.app/ja/"
+   }
+  },
+  {
+   "@type": "Person",
+   "@id": "https://codecatch.app/#author",
+   "name": "Uros Gazvoda",
+   "url": "https://codecatch.app/#why",
+   "sameAs": [
+    "https://github.com/ugzv",
+    "https://uros.com"
+   ]
+  },
+  {
+   "@type": "Organization",
+   "@id": "https://codecatch.app/#org",
+   "name": "CodeCatch",
+   "url": "https://codecatch.app/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://codecatch.app/assets/icon-512.png",
+    "width": 512,
+    "height": 512
+   },
+   "founder": {
+    "@id": "https://codecatch.app/#author"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "CodeCatch",
+     "item": "https://codecatch.app/ja/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "マジックリンクは安全？ログインリンクを見分ける方法",
+     "item": "https://codecatch.app/ja/guides/magic-link-safety/"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "マジックリンクとは？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "パスワードの代わりにメールで届く、ログイン用のリンクです。使い捨ての秘密の鍵が入っていて、開くと受信トレイの持ち主だと証明できます。たいてい1回しか使えず、すぐに期限が切れます。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "マジックリンクはパスワードより安全？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "ある意味ではそうです。推測されたり、使い回されたり、漏れたりするパスワードがありません。その代わり、メールの受信トレイがアカウントの鍵になります。メールは強いパスワードと二段階認証で守ってください。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "頼んでいないログインリンクが届いたのはなぜ？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "誰かがそのサイトでメールアドレスを入力したためです。間違えたのかもしれませんし、わざとかもしれません。受信トレイのリンクを開かない限り、その人はログインできません。クリックせず、メールを削除してください。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "マジックリンクの有効期限は？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "たいていは数時間ではなく数分です。10〜30分で切れるものが多く、ほとんどは1回しか使えません。期限が切れていたら、サイトで新しいリンクを頼んでください。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "クリックせずにリンク先を確認できますか？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "できます。ボタンにポインタを重ねるとアドレスが表示されます。または、Controlキーを押しながらクリックして「リンクをコピー」を選びます。そのうえで、上で説明した方法でサイト名を読みます。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "ログインリンクを転送しても大丈夫？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "いいえ。多くのサイトでは、リンクを開いた人がそのままアカウントにログインできてしまいます。パスワードと同じように扱ってください。"
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "怪しいリンクを開いてしまったら？",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "何も入力していなければ、ページを閉じます。開いただけで被害が出ることはまれです。パスワードを入力したなら、本物のサイトですぐに変更します。コードやカード情報を入力したなら、サービスか銀行に連絡してください。"
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/ja/" aria-label="CodeCatchのホーム">
+    <svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg>
+    <span>CodeCatch</span>
+  </a>
+  <nav aria-label="セクション">
+    <a href="/ja/#features">機能</a>
+    <a href="/ja/#privacy">プライバシー</a>
+    <a href="/ja/#compare">比較</a>
+    <a href="/ja/#faq">よくある質問</a>
+  </nav>
+  <a class="button small" href="/download/CodeCatch.dmg" data-download>ダウンロード</a>
+</header>
+
+<main>
+<article class="article">
+  <header class="vs-hero">
+    <p class="eyebrow">ガイド</p>
+    <h1>このログインリンクは安全？マジックリンクの確かめ方</h1>
+    <p class="lede">パスワードの代わりに、メールでリンクを送ってくるサイトが増えています。マジックリンクの仕組みと、クリックする前に安全かどうか確かめる方法をまとめました。</p>
+    <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>著者：<a href="/ja/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-06">2026年10月6日公開</time></span></p>
+  </header>
+  <div class="feature-art article-art" aria-hidden="true">
+    <div class="cc">
+      <div class="card floating">
+        <div class="card-head"><div class="tile  bleed"><img src="/assets/services/notion.png" alt="" loading="lazy"><img class="badge" src="/assets/services/mail.png" alt="" loading="lazy"></div><div class="card-who"><b>Notion</b><span>Sign-in link</span></div><span class="card-age">2 min</span></div>
+        <div class="well"><span class="site">sign-in.example</span></div>
+        <p class="warning"><svg viewBox="0 0 24 24"><use href="#i-warning"/></svg>This message is from notion.so, but the link goes to sign-in.example. Open it only if you trust this site.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="rail">
+    <nav class="toc" aria-label="このページの内容"><details open>
+      <summary>このページの内容</summary>
+      <ol>
+        <li><a href="#what-is-a-magic-link">マジックリンクとは</a></li>
+        <li><a href="#why-fakes-work">偽物にだまされる理由</a></li>
+        <li><a href="#five-steps">5つのステップで確認</a></li>
+        <li><a href="#reading-a-link">リンクの読み方</a></li>
+        <li><a href="#already-clicked">開いてしまったら</a></li>
+        <li><a href="#codecatch">CodeCatchでできること</a></li>
+        <li><a href="#questions">よくある質問</a></li>
+      </ol>
+    </details></nav>
+    <div class="rail-card">
+      <img src="/assets/icon-256.png" width="56" height="56" alt="" loading="lazy">
+      <p><b>CodeCatch</b> メッセージとメールに届いた認証コードとログインリンクを、届いた瞬間にコピー。</p>
+      <a class="button small" href="/download/CodeCatch.dmg" data-download><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Mac版をダウンロード</a>
+      <p class="fine">無料 · macOS 15以降</p>
+    </div>
+  </aside>
+  <div class="prose">
+    <p>メールアドレスを入力すると、サイトに「受信トレイを確認してください」と表示されます。すぐにメールが届き、<b>ログイン</b>、<b>Slackにログイン</b>、<b>本人確認</b>といったボタンが入っています。このボタンがマジックリンクです。クリックするだけでログインできます。</p>
+
+    <p class="callout"><b>結論から言うと、</b>クリックしてよいのは、自分で頼んだばかりのログインリンクだけです。クリックする前に、ログインしようとしているサイトが開くかを確かめます。どちらかでも怪しければクリックせず、自分でサイトを開いて、新しいリンクを送ってもらってください。</p>
+
+    <h2 id="what-is-a-magic-link">マジックリンクとは</h2>
+    <p>マジックリンクは、使い捨ての秘密の鍵が入ったログイン用のリンクです。メールが届くのは本人の受信トレイだけなので、リンクを開けば、その受信トレイの持ち主だと証明できます。これがパスワードの代わりになります。</p>
+    <ul class="ticks plain">
+      <li>たいてい1回しか使えません。</li>
+      <li>期限がすぐに切れます。10〜30分で切れることもよくあります。</li>
+      <li>多くのサイトでは、リンクを開いた人がそのままログインできます。転送はせず、スクリーンショットも人に見せないでください。</li>
+    </ul>
+    <p>マジックリンク、ログインリンク、サインインリンク、「ワンタイムリンク」、「本人ですか？」というメールなど、呼び方はサイトによってさまざまです。仕組みはどれも同じです。</p>
+
+    <h2 id="why-fakes-work">偽物にだまされる理由</h2>
+    <p>この手のメールは自分で待っているものなので、届くとつい急いでクリックしてしまいます。偽物は見た目が同じでも、ボタンを押すと本物そっくりの偽サイトが開きます。偽サイトはパスワードやコード、カード番号を入力させようとします。入力した内容は、偽サイトを作った人の手に渡ります。これがフィッシングです。</p>
+
+    <h2 id="five-steps">リンクを確かめる5つのステップ</h2>
+    <ol class="numbered">
+      <li><b>自分で頼んだばかりのリンクか。</b>今ログインしようとしていないなら、クリックしません。誰かが間違えて、あるいはわざと、メールアドレスを入力したのです。リンクがなければその人はログインできないので、メールは放っておいてかまいません。</li>
+      <li><b>送信者の名前ではなく、アドレスを見る。</b>名前は何とでも表示できます。@のあとのアドレスを確認します。</li>
+      <li><b>クリックせずにリンク先を見る。</b>たいていのメールアプリでは、ボタンにポインタを重ねるとアドレスが表示されます。ブラウザで使うGmailなら、ウインドウの下の隅に出ます。または、ボタンをControlキーを押しながらクリックし、<b>「リンクをコピー」</b>を選んでメモにペーストします。</li>
+      <li><b>サイト名を正しく読む。</b><code>https://</code>のあとで最初に出てくるスラッシュ（/）を探します。サイト名はその直前にあり、右から読みます。下の例を見てください。</li>
+      <li><b>クリックしたら、入力する前に確かめる。</b>本物のマジックリンクなら、それだけでログインできます。代わりにパスワードやカード番号を求められたら、ページを閉じてください。</li>
+    </ol>
+
+    <h2 id="reading-a-link">リンクの読み方：本物か偽物か</h2>
+    <p>サイト名は、最初のスラッシュの直前にある名前のうち、ドットで区切った最後の2つです。<code>example.co.jp</code>のように「.co.jp」で終わるアドレスでは、最後の3つになります。</p>
+    <p>Notionでログインリンクを頼んだ場合で見てみましょう。</p>
+    <ul class="ticks plain">
+      <li><code>https://www.notion.so/loginwithemail?token=…</code>は<b>notion.so</b>を開きます。これはNotionです。</li>
+      <li><code>https://notion.so.sign-in.example/verify</code>は<b>sign-in.example</b>を開きます。「notion.so」は名前の先頭にあるだけです。</li>
+      <li><code>https://notion-so.com/login</code>は<b>notion-so.com</b>を開きます。よく似せた別の名前です。</li>
+      <li><code>https://example.com/r?u=notion.so</code>は<b>example.com</b>を開きます。Notionはスラッシュのあとに出てくるだけです。</li>
+    </ul>
+    <p>ただし、見分けにくい場合もあります。本物のメールでも、いったん配信サービスを通るリンクがあり、アドレスが無関係に見えることがあるからです。これは見ただけでは区別できません。迷ったら、自分でサイトを開いて新しいリンクを頼んでください。</p>
+
+    <h2 id="already-clicked">リンクを開いてしまったら</h2>
+    <ul class="ticks plain">
+      <li><b>何も入力していない：</b>ページを閉じます。ページを開いただけで被害が出ることはまれです。</li>
+      <li><b>パスワードを入力した：</b>本物のサイトで今すぐ変更します。同じパスワードをほかで使っていれば、そちらも変えます。二段階認証もオンにしてください。</li>
+      <li><b>コードやカード情報を入力した：</b>そのサービスか銀行に連絡します。アカウントに心当たりのないデバイスや支払いがないかも確認してください。</li>
+    </ul>
+
+    <h2 id="codecatch">MacならCodeCatchで確認</h2>
+    <p>CodeCatchは、もともと認証コードを受け取るために作りました。ログインリンクにも同じ手間がかかります。CodeCatchはApple Mail、Gmail、そのほかのメールを読み、新しいログインリンクを認証コードと並べて表示します。リンクがどのサイトを開くか、クリックする前にわかります。</p>
+    <ul class="ticks">
+      <li>リンクを勝手に開くことはありません。「Open Link」か「Copy Link」を自分でクリックします。</li>
+      <li>リンクが開くサイトを、正しく読み取って表示します。</li>
+      <li>そのサイトが送信者のアドレスと違えば、上の画像のように警告します。</li>
+      <li>選ぶのはログインのボタンだけです。配信停止やヘルプのリンクは選ばず、安全な<code>https</code>のリンクに限ります。</li>
+      <li>パスワード再設定のリンクも同じように確認します。</li>
+    </ul>
+    <p>ただし、これはヒントであって保証ではありません。警告はリンクと送信者のアドレスを比べたもので、送信者のアドレスは偽装できます。いちばん大事なのは、やはりステップ1です。自分で頼んだリンクだけをクリックしてください。</p>
+
+    <h2 id="questions">よくある質問</h2>
+    <div class="faq-list">
+      <details><summary>マジックリンクとは？</summary><p>パスワードの代わりにメールで届く、ログイン用のリンクです。使い捨ての秘密の鍵が入っていて、開くと受信トレイの持ち主だと証明できます。たいてい1回しか使えず、すぐに期限が切れます。</p></details>
+      <details><summary>マジックリンクはパスワードより安全？</summary><p>ある意味ではそうです。推測されたり、使い回されたり、漏れたりするパスワードがありません。その代わり、メールの受信トレイがアカウントの鍵になります。メールは強いパスワードと二段階認証で守ってください。</p></details>
+      <details><summary>頼んでいないログインリンクが届いたのはなぜ？</summary><p>誰かがそのサイトでメールアドレスを入力したためです。間違えたのかもしれませんし、わざとかもしれません。受信トレイのリンクを開かない限り、その人はログインできません。クリックせず、メールを削除してください。</p></details>
+      <details><summary>マジックリンクの有効期限は？</summary><p>たいていは数時間ではなく数分です。10〜30分で切れるものが多く、ほとんどは1回しか使えません。期限が切れていたら、サイトで新しいリンクを頼んでください。</p></details>
+      <details><summary>クリックせずにリンク先を確認できますか？</summary><p>できます。ボタンにポインタを重ねるとアドレスが表示されます。または、Controlキーを押しながらクリックして「リンクをコピー」を選びます。そのうえで、上で説明した方法でサイト名を読みます。</p></details>
+      <details><summary>ログインリンクを転送しても大丈夫？</summary><p>いいえ。多くのサイトでは、リンクを開いた人がそのままアカウントにログインできてしまいます。パスワードと同じように扱ってください。</p></details>
+      <details><summary>怪しいリンクを開いてしまったら？</summary><p>何も入力していなければ、ページを閉じます。開いただけで被害が出ることはまれです。パスワードを入力したなら、本物のサイトですぐに変更します。コードやカード情報を入力したなら、サービスか銀行に連絡してください。</p></details>
+    </div>
+  </div>
+</article>
+<section class="cta">
+  <img src="/assets/icon-256.png" width="96" height="96" alt="CodeCatchのアプリアイコン" loading="lazy">
+  <h2>クリックする前に、リンク先を確認。</h2>
+  <p>メールに届いたログインリンクと認証コードを、CodeCatchが1か所にまとめて表示します。</p>
+  <div class="actions">
+    <a class="button" href="/download/CodeCatch.dmg" data-download>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Mac版をダウンロード
+    </a>
+    <a class="button quiet" href="/ja/">機能を見る</a>
+  </div>
+  <p class="fine">無料 · macOS 15以降 · AppleシリコンとIntelに対応</p>
+</section>
+</main>
+
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a class="brand" href="/ja/"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><span>CodeCatch</span></a>
+      <p>認証コードを、届いた瞬間に。</p>
+      <a class="footer-gh" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>GitHubでソースコードを公開中</a>
+    </div>
+    <nav aria-label="フッター">
+      <div>
+        <h2>製品</h2>
+        <a href="/ja/#features">機能</a>
+        <a href="/ja/#privacy">プライバシー設定</a>
+        <a href="/ja/#faq">よくある質問</a>
+      </div>
+      <div>
+        <h2>ガイド</h2>
+        <a href="/ja/guides/bitwarden-codes-mac-menu-bar/">MacでBitwardenのコード</a>
+        <a href="/ja/guides/verification-code-autofill-chrome-mac/">Chromeで認証コードを自動入力</a>
+        <a href="/ja/guides/magic-link-safety/">このログインリンクは安全？</a>
+        <a href="/ja/guides/2fa-codes-for-ai-agents/">AIエージェントに2FAコードを</a>
+      </div>
+      <div>
+        <h2>比較</h2>
+        <a href="/ja/#compare">すべてのアプリを比較</a>
+        <a href="/ja/vs/2fhey/">CodeCatch vs 2FHey</a>
+        <a href="/ja/vs/messauto/">CodeCatch vs MessAuto</a>
+      </div>
+      <div>
+        <h2>CodeCatchについて</h2>
+        <a href="/ja/#why">作っている人</a>
+        <a href="/ja/privacy/">プライバシー</a>
+        <a href="/changelog/">変更履歴（英語）</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=bug_report.yml" rel="noopener">不具合を報告</a>
+        <a href="https://github.com/ugzv/CodeCatch/issues/new?template=feature_request.yml" rel="noopener">機能をリクエスト</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CodeCatch</p>
+    <p>CodeCatchは、Apple、Google、Notionとは提携していません。</p>
+    <nav class="languages" aria-label="言語"><a href="/guides/magic-link-safety/" hreflang="en" lang="en">English</a><a href="/de/anleitungen/magic-link-sicher/" hreflang="de" lang="de">Deutsch</a><a href="/es/guias/magic-link-seguro/" hreflang="es" lang="es">Español</a><a href="/fr/guides/magic-link-fiable/" hreflang="fr" lang="fr">Français</a><a href="/it/guide/magic-link-sicuro/" hreflang="it" lang="it">Italiano</a><a href="/pt/guias/magic-link-seguro/" hreflang="pt" lang="pt">Português</a><a href="/ja/guides/magic-link-safety/" hreflang="ja" lang="ja" aria-current="page">日本語</a></nav>
+  </div>
+</footer>
+
+<!-- The mark is Resources/AppIcon.icon/Assets/asterisk.svg; icons are drawn for this page. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffa20f"/><stop offset="1" stop-color="#ff2d55"/></linearGradient>
+    <path id="mark" d="M428.0 732.0 L428.0 292.0 A84 84 0 0 1 596.0 292.0 L596.0 732.0 A84 84 0 0 1 428.0 732.0 Z M279.5 549.3 L660.5 329.3 A84 84 0 0 1 744.5 474.7 L363.5 694.7 A84 84 0 0 1 279.5 549.3 Z M363.5 329.3 L744.5 549.3 A84 84 0 0 1 660.5 694.7 L279.5 474.7 A84 84 0 0 1 363.5 329.3 Z"/>
+    <symbol id="i-github" viewBox="0 0 32 32"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M16 0C7.16 0 0 7.16 0 16C0 23.08 4.58 29.06 10.94 31.18C11.74 31.32 12.04 30.84 12.04 30.42C12.04 30.04 12.02 28.78 12.02 27.44C8 28.18 6.96 26.46 6.64 25.56C6.46 25.1 5.68 23.68 5 23.3C4.44 23 3.64 22.26 4.98 22.24C6.24 22.22 7.14 23.4 7.44 23.88C8.88 26.3 11.18 25.62 12.1 25.2C12.24 24.16 12.66 23.46 13.12 23.06C9.56 22.66 5.84 21.28 5.84 15.16C5.84 13.42 6.46 11.98 7.48 10.86C7.32 10.46 6.76 8.82 7.64 6.62C7.64 6.62 8.98 6.2 12.04 8.26C13.32 7.9 14.68 7.72 16.04 7.72C17.4 7.72 18.76 7.9 20.04 8.26C23.1 6.18 24.44 6.62 24.44 6.62C25.32 8.82 24.76 10.46 24.6 10.86C25.62 11.98 26.24 13.4 26.24 15.16C26.24 21.3 22.5 22.66 18.94 23.06C19.52 23.56 20.02 24.52 20.02 26.02C20.02 28.16 20 29.88 20 30.42C20 30.84 20.3 31.34 21.1 31.18C27.42 29.06 32 23.06 32 16C32 7.16 24.84 0 16 0V0Z"/></symbol>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4.500-4.500M12 15l4.500-4.500M5 19h14"/></g>
+    <g id="i-copy" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.500"/><path d="M5.500 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v.500"/></g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7"/></g>
+    <g id="i-link" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.500 4.500 0 0 0 6.400 0l3-3a4.500 4.500 0 0 0-6.400-6.400l-1 1"/><path d="M14 10a4.500 4.500 0 0 0-6.400 0l-3 3a4.500 4.500 0 0 0 6.400 6.400l1-1"/></g>
+    <g id="i-lock" fill="currentColor"><path d="M7 10V8a5 5 0 0 1 10 0v2h.500A2.500 2.500 0 0 1 20 12.500v6a2.500 2.500 0 0 1-2.500 2.500h-11A2.500 2.500 0 0 1 4 18.500v-6A2.500 2.500 0 0 1 6.500 10H7Zm2.200 0h5.600V8a2.800 2.800 0 0 0-5.600 0v2Z"/></g>
+    <g id="i-search" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round"><circle cx="10.500" cy="10.500" r="6.500"/><path d="m20 20-4.800-4.800"/></g>
+    <g id="i-warning" fill="currentColor"><path d="M10.300 3.900a2 2 0 0 1 3.400 0l8 13.600a2 2 0 0 1-1.700 3H4a2 2 0 0 1-1.700-3l8-13.600ZM12 8.500a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm0 7.500a1.150 1.150 0 1 0 0 2.300 1.150 1.150 0 0 0 0-2.300Z"/></g>
+    <g id="i-compass" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.500 8.500-2 5-5 2 2-5 5-2Z"/></g>
+    <g id="i-bubble" fill="currentColor"><path d="M12 3.500c5 0 9 3.400 9 7.700s-4 7.700-9 7.700c-.9 0-1.800-.1-2.600-.3-1.100.9-2.600 1.600-4.300 1.800-.4 0-.6-.4-.4-.7.700-.9 1.100-1.900 1.200-2.800C4.100 15.500 3 13.500 3 11.200c0-4.300 4-7.700 9-7.700Z"/></g>
+    <g id="i-mail" fill="currentColor"><path d="M4.500 5h15A2.500 2.500 0 0 1 22 7.300l-10 5.600L2 7.300A2.500 2.500 0 0 1 4.500 5ZM2 9.600V16.500A2.500 2.500 0 0 0 4.500 19h15a2.500 2.500 0 0 0 2.500-2.500V9.600l-9.500 5.300a1 1 0 0 1-1 0L2 9.600Z"/></g>
+    <g id="i-tray" fill="currentColor"><path d="M6.200 4h11.600a2 2 0 0 1 1.900 1.400l2.200 7V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5.600l2.300-7A2 2 0 0 1 6.200 4Zm.2 2-1.900 6H8a1 1 0 0 1 1 .8 3 3 0 0 0 6 0 1 1 0 0 1 1-.8h3.500l-1.900-6H6.400Z"/></g>
+    <g id="i-key" fill="currentColor"><path d="M15.500 2a6.500 6.500 0 0 0-6.200 8.500L2.600 17.200a1 1 0 0 0-.3.700V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1.500H9a1 1 0 0 0 1-1V17h1.200a1 1 0 0 0 .7-.3l1.600-1.600A6.500 6.500 0 1 0 15.500 2Zm1.700 3.800a1.900 1.900 0 1 1 0 3.800 1.900 1.900 0 0 1 0-3.800Z"/></g>
+    <g id="i-pin" fill="currentColor"><path d="M9 3h6l-.6 6.200 3.100 3.300V14H13v6l-1 2-1-2v-6H6.500v-1.500l3.100-3.300L9 3Z"/></g>
+    <g id="i-record" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3" stroke-dasharray="3.500 3"/><circle cx="12" cy="12" r="2.800" fill="currentColor" stroke="none"/></g>
+    <g id="i-history" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.500-5.800M4 5v4h4M12 8v4.500l3 1.800"/></g>
+    <g id="i-updown" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9.500 4-4 4 4M8 14.500l4 4 4-4"/></g>
+    <g id="i-clock" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.200 2"/></g>
+    <g id="i-eye-off" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.600 6.200A9.800 9.800 0 0 1 12 6c5.500 0 9 6 9 6a15.600 15.600 0 0 1-2.800 3.500M6.500 7.600A15 15 0 0 0 3 12s3.500 6 9 6a9 9 0 0 0 3.600-.8M9.900 9.900a3 3 0 0 0 4.200 4.200"/></g>
+  </defs>
+</svg>
+<script src="/toc.js" defer></script>
+</body>
+</html>
