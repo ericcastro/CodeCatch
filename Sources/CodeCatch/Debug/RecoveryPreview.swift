@@ -2,7 +2,8 @@
     import AppKit
     import SwiftUI
 
-    /// Isolated UI fixture: no real mail, credentials, settings or clipboard access.
+    /// Isolated UI fixture: no real mail, credentials or settings. Copies of its sample text go to
+    /// the clipboard as in the app, since "Copied" shows only while the clipboard holds them.
     @MainActor
     enum RecoveryPreview {
         static func run() {
@@ -15,7 +16,7 @@
             let monitor = SourceMonitor(watchMail: { _, callbacks in callbacks.status(.live) }, hasCredential: { _ in true }, defaults: defaults)
             let model = AppModel(
                 vaultSession: session, monitor: monitor, search: CodeSearch(defaults: defaults), defaults: defaults,
-                accounts: [account], copyToClipboard: { _, _ in })
+                accounts: [account])
             model.recovery.onRemove = { _ in }
             func populate() {
                 for (index, sender) in ["Acme", "Example Workspace"].enumerated() {
