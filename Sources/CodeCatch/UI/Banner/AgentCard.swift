@@ -6,17 +6,7 @@ import SwiftUI
 /// code can never swap the card under the user's pointer.
 @MainActor
 enum AgentPanel {
-    private static let panel: NSPanel = {
-        let p = NSPanel(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: true)
-        p.level = .statusBar
-        p.isOpaque = false
-        p.backgroundColor = .clear
-        p.hasShadow = false
-        p.hidesOnDeactivate = false
-        p.isReleasedWhenClosed = false
-        p.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
-        return p
-    }()
+    private static let panel = NSPanel.card()
     private static var hideTask: Task<Void, Never>?
 
     static func present(_ presentation: AgentAccess.Presentation) {
@@ -38,13 +28,8 @@ enum AgentPanel {
     }
 
     private static func show(_ view: AnyView) {
-        panel.sharingType = Prefs[Prefs.hideFromCapture] ? .none : .readOnly
-        let host = FirstClickHostingView(rootView: view)
-        panel.contentView = host
-        let size = host.fittingSize
-        guard let screen = NSScreen.screens.first(where: { NSMouseInRect(NSEvent.mouseLocation, $0.frame, false) }) ?? NSScreen.main else { return }
-        let frame = screen.visibleFrame
-        panel.setFrame(NSRect(x: frame.maxX - size.width, y: frame.maxY - size.height + 2, width: size.width, height: size.height), display: true)
+        guard let frame = panel.host(view) else { return }
+        panel.setFrame(frame, display: true)
         panel.orderFrontRegardless()
     }
 }
