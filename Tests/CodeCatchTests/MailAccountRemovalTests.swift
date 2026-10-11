@@ -5,16 +5,16 @@ import Testing
 
 private enum AccountRemovalFailure: Error { case denied }
 
-/// Keychain whose `read` returns a synthetic token and which logs every read, removal and revoke in order.
+/// Keychain whose `read` returns a token naming its key, and which logs every read, removal and revoke in order.
 @MainActor private final class RevokeRecorder {
-    var token: String? = "synthetic-refresh-token"
+    var hasTokens = true
     var removeError: Error?
     var events: [String] = []
     var revoked: [(provider: String, token: String)] = []
 
     var keychain: AccountKeychain {
         AccountKeychain(
-            read: { [self] key in events.append("read \(key)"); return token },
+            read: { [self] key in events.append("read \(key)"); return hasTokens ? "token for \(key)" : nil },
             write: { _, _ in },
             remove: { [self] key in
                 events.append("remove \(key)")
@@ -263,7 +263,7 @@ private enum AccountRemovalFailure: Error { case denied }
 
         if let provider = host.1 {
             #expect(recorder.revoked.map(\.provider) == [provider])
-            #expect(recorder.revoked.map(\.token) == ["synthetic-refresh-token"])
+            #expect(recorder.revoked.map(\.token) == ["token for \(original.refreshTokenKey)"])
             #expect(recorder.events.contains("remove \(original.refreshTokenKey)"))
             #expect(recorder.events.last == "revoke")
         } else {
@@ -298,7 +298,7 @@ private enum AccountRemovalFailure: Error { case denied }
         defer { fixture.cleanUp() }
         let model = fixture.makeModel()
         let recorder = RevokeRecorder()
-        recorder.token = nil
+        recorder.hasTokens = false
         let account = MailAccount(label: "Gmail", host: "imap.gmail.com", user: "me@gmail.com")
         model.save(account)
 
