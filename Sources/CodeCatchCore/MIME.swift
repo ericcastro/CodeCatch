@@ -54,14 +54,16 @@ public enum MIME {
               let result = verdict.range(of: #"^dmarc\s*=\s*(pass|fail)(?=\s|$)"#, options: [.regularExpression, .caseInsensitive]),
               let domain = fromAddress.split(separator: "@", omittingEmptySubsequences: false).last,
               fromAddress.filter({ $0 == "@" }).count == 1 else { return nil }
-        let property = try! NSRegularExpression(pattern: #"(?:^|\s)header\.from\s*=\s*(?:"([^"]+)"|([^\s]+))(?=\s|$)"#, options: .caseInsensitive)
         let ns = verdict as NSString
-        let matches = property.matches(in: verdict, range: NSRange(location: 0, length: ns.length))
+        let matches = headerFrom.matches(in: verdict, range: NSRange(location: 0, length: ns.length))
         guard matches.count == 1, let match = matches.first else { return nil }
         let value = ns.substring(with: match.range(at: match.range(at: 1).location == NSNotFound ? 2 : 1))
         guard !domain.isEmpty, value.lowercased() == domain.lowercased() else { return nil }
         return verdict[result].lowercased().trimmingCharacters(in: .whitespaces).hasSuffix("pass")
     }
+
+    private static let headerFrom = try! NSRegularExpression(pattern: #"(?:^|\s)header\.from\s*=\s*(?:"([^"]+)"|([^\s]+))(?=\s|$)"#,
+                                                            options: .caseInsensitive)
 
     /// Split method results without treating quoted or commented semicolons as new methods.
     private static func authenticationParts(_ value: String) -> [String]? {
@@ -93,8 +95,7 @@ public enum MIME {
 
     /// Encoded words, or raw UTF-8 (RFC 6532), which the Latin-1 read left as mojibake.
     private static func header(_ value: String?) -> String {
-        let bytes = Data((value ?? "").unicodeScalars.map { UInt8(truncatingIfNeeded: $0.value) })
-        return decodeWords(String(data: bytes, encoding: .utf8) ?? value ?? "")
+        decodeWords(String(data: latin1Bytes(value ?? ""), encoding: .utf8) ?? value ?? "")
     }
 
     // MARK: - Structure
@@ -102,6 +103,8 @@ public enum MIME {
     /// Bytes as ISO-8859-1: a lossless 1:1 byte mapping, so parts can be re-encoded
     /// to their bytes and decoded with their own charset later.
     private static func latin1(_ data: Data) -> String { String(decoding: data.map { UInt16($0) }, as: UTF16.self) }
+    /// The bytes a `latin1` read turned into this text.
+    private static func latin1Bytes(_ text: String) -> Data { Data(text.unicodeScalars.map { UInt8(truncatingIfNeeded: $0.value) }) }
 
     /// Headers (the first of each name), the body, and every Authentication-Results in order.
     private static func split(_ s: String) -> ([String: String], String, [String]) {
@@ -194,7 +197,7 @@ public enum MIME {
     // MARK: - Decoding
 
     private static func decodeTransfer(_ body: String, encoding: String) -> Data {
-        let bytes = Data(body.unicodeScalars.map { UInt8(truncatingIfNeeded: $0.value) })
+        let bytes = latin1Bytes(body)
         switch encoding {
         case "base64":
             // Whole groups only: a part cut at the read limit would otherwise not decode at all.
@@ -230,7 +233,7 @@ public enum MIME {
                 return s
             }
         }
-        return String(data: data, encoding: .utf8) ?? String(decoding: data.map { UInt16($0) }, as: UTF16.self)
+        return String(data: data, encoding: .utf8) ?? latin1(data)
     }
 
     private static let encodedWord = try! NSRegularExpression(pattern: #"=\?([^?]+)\?([BbQq])\?([^?]*)\?="#)
@@ -238,15 +241,22 @@ public enum MIME {
     /// RFC 2047 `=?charset?B|Q?...?=` words; whitespace between adjacent words is dropped.
     static func decodeWords(_ value: String) -> String {
         let v = value.replacingOccurrences(of: #"\?=\s+=\?"#, with: "?==?", options: .regularExpression)
-        let ns = v as NSString
-        var out = "", last = 0
-        for m in encodedWord.matches(in: v, range: NSRange(location: 0, length: ns.length)) {
-            out += ns.substring(with: NSRange(location: last, length: m.range.location - last))
+        return replacing(encodedWord, in: v) { m, ns in
             let payload = ns.substring(with: m.range(at: 3))
             let data = ns.substring(with: m.range(at: 2)).uppercased() == "B"
                 ? Data(base64Encoded: payload, options: .ignoreUnknownCharacters) ?? Data()
                 : quotedPrintable(Data(payload.utf8), underscoreIsSpace: true)
-            out += decodeCharset(data, ns.substring(with: m.range(at: 1)))
+            return decodeCharset(data, ns.substring(with: m.range(at: 1)))
+        }
+    }
+
+    /// `value` with each match of `regex` replaced by what `replace` makes of it.
+    private static func replacing(_ regex: NSRegularExpression, in value: String,
+                                  with replace: (NSTextCheckingResult, NSString) -> String) -> String {
+        let ns = value as NSString
+        var out = "", last = 0
+        for m in regex.matches(in: value, range: NSRange(location: 0, length: ns.length)) {
+            out += ns.substring(with: NSRange(location: last, length: m.range.location - last)) + replace(m, ns)
             last = m.range.upperBound
         }
         return out + ns.substring(from: last)
@@ -386,18 +396,13 @@ public enum MIME {
         return decodeNumericEntities(s).replacingOccurrences(of: "&amp;", with: "&", options: .caseInsensitive)
     }
 
+    private static let numericEntity = try! NSRegularExpression(pattern: #"&#(x?)([0-9a-fA-F]+);"#)
+
     private static func decodeNumericEntities(_ s: String) -> String {
-        let regex = try! NSRegularExpression(pattern: #"&#(x?)([0-9a-fA-F]+);"#)
-        let ns = s as NSString
-        var out = "", last = 0
-        for m in regex.matches(in: s, range: NSRange(location: 0, length: ns.length)) {
-            out += ns.substring(with: NSRange(location: last, length: m.range.location - last))
+        replacing(numericEntity, in: s) { m, ns in
             let hex = m.range(at: 1).length > 0
-            if let v = UInt32(ns.substring(with: m.range(at: 2)), radix: hex ? 16 : 10), let scalar = Unicode.Scalar(v) {
-                out.unicodeScalars.append(scalar)
-            }
-            last = m.range.upperBound
+            guard let v = UInt32(ns.substring(with: m.range(at: 2)), radix: hex ? 16 : 10), let scalar = Unicode.Scalar(v) else { return "" }
+            return String(scalar)
         }
-        return out + ns.substring(from: last)
     }
 }
