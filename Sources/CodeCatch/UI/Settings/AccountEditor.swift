@@ -67,7 +67,7 @@ struct AccountEditor: View {
                 // Outlook and Microsoft 365 turned off IMAP passwords; signing in is the only way.
                 if !usesSignIn && !account.isOutlook {
                     SecureField("App password", text: $password,
-                                prompt: Text(!hasPassword ? "Required" : "Saved — leave empty to keep"))
+                                prompt: Text(!hasPassword ? "Required" : "Saved (leave empty to keep it)"))
                     if account.isGmail {
                         Link("How to create a Google app password", destination: MailAccount.appPasswordHelp)
                             .font(.caption)

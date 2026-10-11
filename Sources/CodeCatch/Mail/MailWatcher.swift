@@ -83,7 +83,7 @@ enum MailWatcher {
                 if Task.isCancelled { break }
                 let noPassword = if case IMAPError.noPassword = error { true } else { false }
                 let authFailed = noPassword || "\(error)".contains("AUTHENTICATIONFAILED")
-                await status(.failed(authFailed ? "Sign-in failed — check the app password" : error.localizedDescription))
+                await status(.failed(authFailed ? "Sign-in failed. Check the app password." : error.localizedDescription))
                 let delay = authFailed ? 300 : backoff
                 await event(.retry(Date().addingTimeInterval(delay)))
                 try? await Task.sleep(for: .seconds(delay))
