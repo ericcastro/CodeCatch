@@ -5,6 +5,8 @@
 # Needs Cloudflare credentials in the environment: CLOUDFLARE_ACCOUNT_ID, and either
 # CLOUDFLARE_API_TOKEN (D1 read) or CLOUDFLARE_API_KEY with CLOUDFLARE_EMAIL.
 set -euo pipefail
+# wrangler's own output is silenced below, so say what's missing up front.
+: "${CLOUDFLARE_ACCOUNT_ID:?Set CLOUDFLARE_ACCOUNT_ID and a token (see the top of this script).}"
 SINCE7="strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '-7 days')"
 SINCE30="strftime('%Y-%m-%dT%H:%M:%SZ', 'now', '-30 days')"
 show() {

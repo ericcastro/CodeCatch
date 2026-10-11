@@ -105,7 +105,7 @@ if [ "${1:-}" = "--build-only" ]; then
     echo "Built $APP (not yet notarized)"
     exit 0
 fi
-if [ "${1:-}" = "--release" ] || [ "${1:-}" = "--publish" ]; then
+if $RELEASING; then
     DMG="$BUILD/CodeCatch.dmg"
     swift scripts/make-dmg-background.swift "$BUILD/dmg-background.png"
     # dmgbuild writes the window layout itself, so no Finder scripting (or its permission prompt).

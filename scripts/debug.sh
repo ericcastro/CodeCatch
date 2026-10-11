@@ -10,5 +10,7 @@ BIN=.build/debug/CodeCatch
 IDENTITY="${CODECATCH_IDENTITY:-Developer ID Application}"
 if security find-identity -v -p codesigning | grep -q "$IDENTITY"; then
     codesign --force --timestamp=none --sign "$IDENTITY" --identifier com.uros.codecatch "$BIN"
+    # A signed app answers only a CLI signed by the same team: `.build/debug/CodeCatchCLI get …` then works.
+    codesign --force --timestamp=none --sign "$IDENTITY" --identifier com.uros.codecatch.cli .build/debug/CodeCatchCLI
 fi
 exec "$BIN" "$@"
