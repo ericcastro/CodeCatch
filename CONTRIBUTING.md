@@ -13,6 +13,27 @@ certificate or release secrets. Tests use synthetic messages, isolated settings,
 in-memory vaults and private pasteboards. CI runs them on Apple silicon and Intel.
 Do not use a personal inbox or vault as a test fixture.
 
+## Layout
+
+| Path | What it holds |
+|---|---|
+| `Sources/`, `Tests/` | The Swift package: the app, `CodeCatchCore` and the `codecatch` CLI, and their tests. See [ARCHITECTURE.md](ARCHITECTURE.md). |
+| `Resources/` | `Info.plist` and the app icon, copied into the bundle by `scripts/install.sh` |
+| `scripts/` | Build, release, test and site tooling |
+| `site/` | The website, codecatch.app |
+| `functions/` | Cloudflare Pages Functions for the site: download routing and install counts |
+
+Swift package folders are capitalized as SwiftPM expects; `functions/` is the name Cloudflare
+Pages looks for; everything else is lowercase.
+
+Python scripts follow `ruff.toml`. Before committing a script change, run:
+
+```sh
+ruff check scripts && ruff format --check scripts
+```
+
+## Changes
+
 Keep a change focused on a failure or a concrete simplification. For bugs, first
 add a failing case to the closest existing test. Preserve behavioral assertions
 when moving code. Tests around sensitive actions should exercise rejection,
