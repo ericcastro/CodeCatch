@@ -312,17 +312,22 @@ struct MenuContent: View {
     @ViewBuilder private var footer: some View {
         let count = model.recovery.entries.count
         if model.unlockError != nil || count > 0 {
-            HStack(spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 if let error = model.unlockError { WarningText(message: error, compact: true).font(.caption) }
-                Spacer()
                 if count > 0 {
-                    Button("\(count) \(count == 1 ? "email" : "emails") may have your code") { leave { openWindow(id: "recovery") } }
+                    Button { leave { openWindow(id: "recovery") } } label: {
+                        HStack(spacing: 3) {
+                            Text("\(count) \(count == 1 ? "email" : "emails") may have your code")
+                            Image(systemName: "chevron.right").imageScale(.small).fontWeight(.semibold)
+                        }
+                    }
                     .buttonStyle(.plain)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 }
             }
-            .padding(.horizontal, 14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 16)  // lines up with the section headers (6 + 10)
             .padding(.vertical, 9)
             .overlay(alignment: .top) { Divider().padding(.horizontal, 12) }
             .padding(.top, 8)
