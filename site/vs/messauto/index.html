@@ -194,7 +194,7 @@
 <section class="vs-hero">
   <p class="eyebrow">Comparison</p>
   <h1>CodeCatch vs MessAuto</h1>
-  <p class="lede">Both catch verification codes from Messages and Mail on a Mac, in any browser. MessAuto is free and can paste the code and press Return for you. CodeCatch also reads Gmail, catches sign-in links and keeps a history.</p>
+  <p class="lede">Both catch verification codes from Messages and Mail on a Mac, in any browser. MessAuto can paste the code and press Return for you. CodeCatch also reads Gmail, catches sign-in links and keeps a history.</p>
   <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>By <a href="/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-03">Published 3 October 2026</time></span></p>
 </section>
 
@@ -219,7 +219,7 @@
         <tr><th scope="row">Needs Accessibility access</th><td class="us" data-label="CodeCatch">Only to type for you</td><td class="has" data-label="MessAuto">Yes</td></tr>
         <tr><th scope="row">Needs Full Disk Access</th><td class="us" data-label="CodeCatch">Yes</td><td class="has" data-label="MessAuto">Yes</td></tr>
         <tr><th scope="row">Custom rules</th><td class="us" data-label="CodeCatch">Ignore a sender</td><td class="has" data-label="MessAuto">Your own patterns</td></tr>
-        <tr><th scope="row">Open source</th><td class="us" data-label="CodeCatch">Yes</td><td class="has" data-label="MessAuto">Yes, and free</td></tr>
+        <tr><th scope="row">Open source</th><td class="us" data-label="CodeCatch">Yes</td><td class="has" data-label="MessAuto">Yes</td></tr>
         <tr><th scope="row">Opens without a warning</th><td class="us" data-label="CodeCatch">Yes, signed with a Developer ID</td><td class="no" data-label="MessAuto">No, macOS asks you to confirm</td></tr>
       </tbody>
     </table>
@@ -259,7 +259,7 @@
     </div>
   </aside>
   <div class="prose">
-    <p class="callout"><b>Short answer:</b> MessAuto is the better pick if you want a free tool that pastes the code and presses Return. CodeCatch is the better pick if your codes arrive in Gmail, if you get sign-in links, or if you want to find a code again later.</p>
+    <p class="callout"><b>Short answer:</b> MessAuto is the better pick if you want a tool that pastes the code and presses Return. CodeCatch is the better pick if your codes arrive in Gmail, if you get sign-in links, or if you want to find a code again later.</p>
 
     <h2 id="what-is-messauto">What is MessAuto?</h2>
     <p><a href="https://github.com/LeeeSe/MessAuto" rel="noopener">MessAuto</a> is a free, open-source menu bar app for the Mac, written in Rust by LeeeSe. It watches the Messages and Mail apps. When a message contains a verification code, MessAuto copies it, and can paste it into the field you are in and press Return.</p>
@@ -275,7 +275,6 @@
 
     <h2 id="messauto-better">Where MessAuto is stronger</h2>
     <ul class="ticks">
-      <li><b>It is free.</b></li>
       <li><b>Hands-off entry.</b> Auto Paste puts the code in the field, and Auto Return submits it. You do not touch the keyboard.</li>
       <li><b>It can leave your clipboard alone.</b> In its “Don’t Occupy Clipboard” mode, MessAuto types the code directly, so what you copied earlier stays put.</li>
       <li><b>A window by your cursor.</b> Its floating window shows the code next to the pointer.</li>
@@ -284,7 +283,7 @@
 
     <h2 id="codecatch-better">Where CodeCatch is stronger</h2>
     <ul class="ticks">
-      <li><b>Gmail and other mail, directly.</b> MessAuto reads the Mail app only, and its README lists other mail clients as not yet supported. CodeCatch reads the Mail app, and also connects to Gmail and other accounts with an app password. Mail stays read-only.</li>
+      <li><b>Gmail and other mail, directly.</b> MessAuto reads the Mail app only, and its README lists other mail clients as not yet supported. CodeCatch reads the Mail app, and also connects to Gmail, Outlook and other accounts directly. Mail stays read-only.</li>
       <li><b>Sign-in links.</b> Many services now send a link in place of a code. CodeCatch shows the link next to your codes, tells you where it goes, and warns you if it leads to a different site than the sender’s.</li>
       <li><b>History.</b> Codes and links stay in the menu for seven days. Type a name, press Return, and the code is copied again.</li>
       <li><b>Bitwarden codes.</b> CodeCatch shows your <a href="/guides/bitwarden-codes-mac-menu-bar/">Bitwarden codes in the menu bar</a>, locked with Touch ID.</li>
@@ -309,8 +308,8 @@
       <li><b>Quit MessAuto</b> from its menu bar icon, so two apps do not react to the same code.</li>
       <li><b><a href="/download/CodeCatch.dmg" data-download>Download CodeCatch</a></b> and open it. It sits in the menu bar.</li>
       <li><b>Allow Full Disk Access.</b> CodeCatch opens the setting for you.</li>
-      <li><b>Add mail.</b> Switch on Apple Mail, or add Gmail with an app password.</li>
-      <li><b>Miss auto-paste?</b> Turn on typing codes for you in Settings. macOS will then ask for Accessibility access.</li>
+      <li><b>Add mail.</b> Switch on Apple Mail, or add Gmail, Outlook or another account.</li>
+      <li><b>Miss auto-paste?</b> Turn on <b>Automatically Type Codes</b> in Settings → General. macOS will then ask for Accessibility access.</li>
     </ul>
 
     <h2 id="questions">Questions</h2>
@@ -330,7 +329,6 @@
   <div>
     <h2>Choose MessAuto if</h2>
     <ul class="ticks plain">
-      <li>You want a free tool</li>
       <li>You want the code pasted and Return pressed for you</li>
       <li>You like writing your own detection rules</li>
       <li>You only use Apple Mail</li>

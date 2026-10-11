@@ -194,7 +194,7 @@
 <section class="vs-hero">
   <p class="eyebrow">Vergleich</p>
   <h1>MessAuto-Alternative: CodeCatch vs. MessAuto</h1>
-  <p class="lede">Beide Apps fangen am Mac Bestätigungscodes aus „Nachrichten“ und „Mail“ ab und funktionieren in jedem Browser. MessAuto ist kostenlos und kann den Code automatisch einfügen und Return drücken. CodeCatch liest zusätzlich Gmail, erkennt Anmeldelinks und führt einen Verlauf.</p>
+  <p class="lede">Beide Apps fangen am Mac Bestätigungscodes aus „Nachrichten“ und „Mail“ ab und funktionieren in jedem Browser. MessAuto kann den Code automatisch einfügen und Return drücken. CodeCatch liest zusätzlich Gmail, erkennt Anmeldelinks und führt einen Verlauf.</p>
   <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>Von <a href="/de/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-03">Veröffentlicht am 3.&nbsp;Oktober 2026</time></span></p>
 </section>
 
@@ -219,7 +219,7 @@
         <tr><th scope="row">Braucht Zugriff auf die Bedienungshilfen</th><td class="us" data-label="CodeCatch">Nur für die automatische Eingabe</td><td class="has" data-label="MessAuto">Ja</td></tr>
         <tr><th scope="row">Braucht Festplattenvollzugriff</th><td class="us" data-label="CodeCatch">Ja</td><td class="has" data-label="MessAuto">Ja</td></tr>
         <tr><th scope="row">Eigene Regeln</th><td class="us" data-label="CodeCatch">Absender ignorieren</td><td class="has" data-label="MessAuto">Eigene Muster</td></tr>
-        <tr><th scope="row">Open Source</th><td class="us" data-label="CodeCatch">Ja</td><td class="has" data-label="MessAuto">Ja, und kostenlos</td></tr>
+        <tr><th scope="row">Open Source</th><td class="us" data-label="CodeCatch">Ja</td><td class="has" data-label="MessAuto">Ja</td></tr>
         <tr><th scope="row">Öffnet ohne Warnung</th><td class="us" data-label="CodeCatch">Ja, mit Developer ID signiert</td><td class="no" data-label="MessAuto">Nein, macOS verlangt eine Bestätigung</td></tr>
       </tbody>
     </table>
@@ -259,7 +259,7 @@
     </div>
   </aside>
   <div class="prose">
-    <p class="callout"><b>Kurz gesagt:</b> MessAuto ist die bessere Wahl, wenn du ein kostenloses Tool willst, das den Code einfügt und Return drückt. CodeCatch ist die bessere Wahl, wenn deine Codes in Gmail ankommen, Dienste dir Anmeldelinks schicken oder du einen Code später wiederfinden willst.</p>
+    <p class="callout"><b>Kurz gesagt:</b> MessAuto ist die bessere Wahl, wenn du ein Tool willst, das den Code einfügt und Return drückt. CodeCatch ist die bessere Wahl, wenn deine Codes in Gmail ankommen, Dienste dir Anmeldelinks schicken oder du einen Code später wiederfinden willst.</p>
 
     <h2 id="what-is-messauto">Was ist MessAuto?</h2>
     <p><a href="https://github.com/LeeeSe/MessAuto" rel="noopener">MessAuto</a> ist eine kostenlose Open-Source-App für die Menüleiste des Mac, von LeeeSe in Rust geschrieben. Sie achtet auf „Nachrichten“ und „Mail“. Steckt in einer Nachricht ein Bestätigungscode, kopiert MessAuto ihn. Auf Wunsch fügt die App ihn auch gleich in das Feld ein, in dem du gerade bist, und drückt Return.</p>
@@ -275,7 +275,6 @@
 
     <h2 id="messauto-better">Wo MessAuto stärker ist</h2>
     <ul class="ticks">
-      <li><b>MessAuto ist kostenlos.</b></li>
       <li><b>Eingabe ohne dein Zutun.</b> Auto Paste fügt den Code ins Feld ein, Auto Return schickt ihn ab. Die Tastatur musst du dafür nicht anfassen.</li>
       <li><b>Die Zwischenablage bleibt auf Wunsch unberührt.</b> Im Modus „Don’t Occupy Clipboard“ tippt MessAuto den Code direkt ein. Was du vorher kopiert hast, bleibt erhalten.</li>
       <li><b>Code am Mauszeiger.</b> Ein schwebendes Fenster zeigt den Code direkt neben dem Zeiger.</li>
@@ -284,7 +283,7 @@
 
     <h2 id="codecatch-better">Wo CodeCatch stärker ist</h2>
     <ul class="ticks">
-      <li><b>Gmail und andere Konten direkt.</b> MessAuto liest nur „Mail“, andere Mail-Programme führt die README als noch nicht unterstützt. CodeCatch liest ebenfalls „Mail“, bindet aber zusätzlich Gmail und andere Konten direkt per App-Passwort an. Dabei greift es nur lesend auf deine Mails zu.</li>
+      <li><b>Gmail und andere Konten direkt.</b> MessAuto liest nur „Mail“, andere Mail-Programme führt die README als noch nicht unterstützt. CodeCatch liest ebenfalls „Mail“, bindet aber zusätzlich Gmail, Outlook und andere Konten direkt an. Dabei greift es nur lesend auf deine Mails zu.</li>
       <li><b>Anmeldelinks.</b> Viele Dienste schicken heute statt eines Codes einen Link. CodeCatch zeigt ihn neben deinen Codes, sagt dir, wohin er führt, und warnt dich, wenn das Ziel nicht die Website des Absenders ist.</li>
       <li><b>Verlauf.</b> Codes und Links bleiben sieben Tage im Menü. Namen eintippen, Return drücken, und der Code ist wieder kopiert.</li>
       <li><b>Bitwarden-Codes.</b> CodeCatch zeigt deine <a href="/de/anleitungen/bitwarden-codes-mac-menueleiste/">Bitwarden-Codes in der Menüleiste</a>, per Touch ID geschützt.</li>
@@ -309,7 +308,7 @@
       <li><b>Beende MessAuto</b> über sein Symbol in der Menüleiste, damit nicht zwei Apps auf denselben Code reagieren.</li>
       <li><b><a href="/download/CodeCatch.dmg" data-download>Lade CodeCatch herunter</a></b> und öffne die App. Sie erscheint in der Menüleiste.</li>
       <li><b>Erlaube den Festplattenvollzugriff.</b> CodeCatch öffnet die passende Einstellung für dich.</li>
-      <li><b>Richte Mail ein.</b> Schalte Apple Mail ein oder füge Gmail per App-Passwort hinzu.</li>
+      <li><b>Richte Mail ein.</b> Schalte Apple Mail ein oder füge Gmail, Outlook oder ein anderes Konto hinzu.</li>
       <li><b>Fehlt dir das automatische Einfügen?</b> Dann schalte in CodeCatch unter Settings → General <b>Automatically Type Codes</b> ein. macOS fragt anschließend nach dem Zugriff auf die Bedienungshilfen.</li>
     </ul>
 
@@ -330,7 +329,6 @@
   <div>
     <h2>Nimm MessAuto, wenn</h2>
     <ul class="ticks plain">
-      <li>du ein kostenloses Tool willst</li>
       <li>die App den Code für dich einfügen und Return drücken soll</li>
       <li>du gern eigene Erkennungsregeln schreibst</li>
       <li>du nur Apple Mail nutzt</li>

@@ -194,7 +194,7 @@
 <section class="vs-hero">
   <p class="eyebrow">比較</p>
   <h1>CodeCatchとMessAutoを比較</h1>
-  <p class="lede">どちらも、Macの「メッセージ」と「メール」アプリから認証コードを取り出すアプリで、どのブラウザでも使えます。MessAutoは無料で、コードのペーストからReturnキーまで任せられます。CodeCatchはGmailも読み、ログインリンクを拾い、履歴も残します。</p>
+  <p class="lede">どちらも、Macの「メッセージ」と「メール」アプリから認証コードを取り出すアプリで、どのブラウザでも使えます。MessAutoは、コードのペーストからReturnキーまで任せられます。CodeCatchはGmailも読み、ログインリンクを拾い、履歴も残します。</p>
   <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>著者：<a href="/ja/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-03">2026年10月3日公開</time></span></p>
 </section>
 
@@ -219,7 +219,7 @@
         <tr><th scope="row">アクセシビリティの許可</th><td class="us" data-label="CodeCatch">入力を任せる場合のみ</td><td class="has" data-label="MessAuto">必要</td></tr>
         <tr><th scope="row">フルディスクアクセス</th><td class="us" data-label="CodeCatch">必要</td><td class="has" data-label="MessAuto">必要</td></tr>
         <tr><th scope="row">独自のルール</th><td class="us" data-label="CodeCatch">送信元を無視</td><td class="has" data-label="MessAuto">独自のパターン</td></tr>
-        <tr><th scope="row">オープンソース</th><td class="us" data-label="CodeCatch">はい</td><td class="has" data-label="MessAuto">はい、無料</td></tr>
+        <tr><th scope="row">オープンソース</th><td class="us" data-label="CodeCatch">はい</td><td class="has" data-label="MessAuto">はい</td></tr>
         <tr><th scope="row">警告なしで開ける</th><td class="us" data-label="CodeCatch">はい、Developer IDで署名</td><td class="no" data-label="MessAuto">いいえ、macOSが確認を求める</td></tr>
       </tbody>
     </table>
@@ -259,7 +259,7 @@
     </div>
   </aside>
   <div class="prose">
-    <p class="callout"><b>結論から言うと、</b>コードのペーストからReturnキーまで無料のツールに任せたいなら、MessAutoが向いています。コードがGmailに届く、ログインリンクを受け取る、あとでコードを探したい。そんな人にはCodeCatchが向いています。</p>
+    <p class="callout"><b>結論から言うと、</b>コードのペーストからReturnキーまで任せられるツールがほしいなら、MessAutoが向いています。コードがGmailに届く、ログインリンクを受け取る、あとでコードを探したい。そんな人にはCodeCatchが向いています。</p>
 
     <h2 id="what-is-messauto">MessAutoとは？</h2>
     <p><a href="https://github.com/LeeeSe/MessAuto" rel="noopener">MessAuto</a>は、LeeeSeがRustで開発している、無料でオープンソースのMac用メニューバーアプリです。「メッセージ」と「メール」アプリをチェックし、認証コードが届くとコピーします。カーソルのある入力欄へのペーストと、Returnキーの入力まで任せることもできます。</p>
@@ -275,7 +275,6 @@
 
     <h2 id="messauto-better">MessAutoが優れている点</h2>
     <ul class="ticks">
-      <li><b>無料。</b></li>
       <li><b>入力まで全部おまかせ。</b>Auto Pasteがコードを入力欄に入れ、Auto Returnが送信します。キーボードに触れる必要はありません。</li>
       <li><b>クリップボードをそのままにできる。</b>「Don’t Occupy Clipboard」モードでは、MessAutoがコードを直接入力します。先にコピーしていた内容は消えません。</li>
       <li><b>カーソルのそばに表示。</b>フローティングウインドウが、ポインタのすぐ横にコードを表示します。</li>
@@ -284,7 +283,7 @@
 
     <h2 id="codecatch-better">CodeCatchが優れている点</h2>
     <ul class="ticks">
-      <li><b>Gmailなどのメールに直接接続。</b>MessAutoが読むのは「メール」アプリだけで、READMEではほかのメールクライアントは未対応とされています。CodeCatchは「メール」アプリも読み、Gmailなどのアカウントにもアプリパスワードで接続します。メールは読み取り専用です。</li>
+      <li><b>Gmailなどのメールに直接接続。</b>MessAutoが読むのは「メール」アプリだけで、READMEではほかのメールクライアントは未対応とされています。CodeCatchは「メール」アプリも読み、GmailやOutlookなどのアカウントにも直接接続します。メールは読み取り専用です。</li>
       <li><b>ログインリンク。</b>コードの代わりにリンクを送るサービスが増えています。CodeCatchはそのリンクをコードと同じ一覧に表示し、どこにつながるかを示します。送信元と違うサイトにつながるリンクには警告を出します。</li>
       <li><b>履歴。</b>コードとリンクは7日間メニューに残ります。サービス名を入力してReturnキーを押せば、そのコードをもう一度コピーできます。</li>
       <li><b>Bitwardenのコード。</b>CodeCatchは<a href="/ja/guides/bitwarden-codes-mac-menu-bar/">Bitwardenのコードをメニューバーに</a>表示し、Touch IDでロックします。</li>
@@ -308,8 +307,8 @@
     <ul class="ticks">
       <li><b>MessAutoを終了します。</b>メニューバーのアイコンから終了します。2つのアプリが同じコードに反応しないようにするためです。</li>
       <li><b><a href="/download/CodeCatch.dmg" data-download>CodeCatchをダウンロード</a></b>して開きます。アプリはメニューバーに常駐します。</li>
-      <li><b>フルディスクアクセスを許可します。</b>該当する設定画面はCodeCatchが開きます。</li>
-      <li><b>メールを追加します。</b>Apple Mailをオンにするか、Gmailをアプリパスワードで追加します。</li>
+      <li><b>フルディスクアクセスを許可します。</b>設定画面はCodeCatchが開きます。</li>
+      <li><b>メールを追加します。</b>Apple Mailをオンにするか、GmailやOutlookなどのアカウントを追加します。</li>
       <li><b>自動ペーストがほしいなら、</b>「Settings」＞「General」で「Automatically Type Codes」をオンにします。macOSがアクセシビリティの許可を求めます。</li>
     </ul>
 
@@ -330,7 +329,6 @@
   <div>
     <h2>MessAutoが向いている人</h2>
     <ul class="ticks plain">
-      <li>無料のツールがほしい</li>
       <li>コードのペーストとReturnキーまで任せたい</li>
       <li>検出ルールを自分で書きたい</li>
       <li>メールはApple Mailしか使わない</li>
