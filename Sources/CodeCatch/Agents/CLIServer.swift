@@ -57,31 +57,29 @@ enum CLIServer {
         setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &sendLimit, socklen_t(MemoryLayout<timeval>.size))
         var readLimit = timeval(tv_sec: 1, tv_usec: 0)
         setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &readLimit, socklen_t(MemoryLayout<timeval>.size))
+        /// Ends the connection before a request is served, saying why when the client should know.
+        func drop(_ error: AgentError? = nil) {
+            if let error { LocalSocket.send(AgentReply(error: error), to: fd) }
+            close(fd)
+            slots.signal()
+        }
         // Who asked is read at once, before the client has time to exit and leave its pid to another process.
-        guard let peer = LocalSocket.peer(of: fd), peer.uid == getuid() else { close(fd); slots.signal(); return }
+        guard let peer = LocalSocket.peer(of: fd), peer.uid == getuid() else { return drop() }
         // Only the codecatch this team signed, checked by audit token: the walk up from it then starts at a
         // process that can't be swapped. An unsigned development build skips this.
         if let team = CodeSignature.current?.team {
             let client = CodeSignature.of(auditToken: peer.auditToken)
             guard client?.identifier == "com.uros.codecatch.cli", client?.team == team else {
-                LocalSocket.send(AgentReply(error: AgentError(.usage, "Use the codecatch tool that comes with CodeCatch.")), to: fd)
-                close(fd)
-                slots.signal()
-                return
+                return drop(AgentError(.usage, "Use the codecatch tool that comes with CodeCatch."))
             }
         }
         let caller = CallerIdentity.caller(pid: peer.pid)
         logger.debug("Connection from \(caller.logLabel, privacy: .public)")
         // Five seconds in all to say what it wants.
         var buffer = Data()
-        guard let line = LocalSocket.readLine(from: fd, buffer: &buffer, within: 5) else {
-            close(fd); slots.signal(); return
-        }
+        guard let line = LocalSocket.readLine(from: fd, buffer: &buffer, within: 5) else { return drop() }
         guard let request = try? AgentWire.decoder.decode(AgentRequest.self, from: line), request.v <= AgentWire.version else {
-            LocalSocket.send(AgentReply(error: AgentError(.usage, "CodeCatch couldn't read the request. Update CodeCatch and try again.")), to: fd)
-            close(fd)
-            slots.signal()
-            return
+            return drop(AgentError(.usage, "CodeCatch couldn't read the request. Update CodeCatch and try again."))
         }
 
         // EOF from the client cancels the request. The fd is closed only after the reply is written,
