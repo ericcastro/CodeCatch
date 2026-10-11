@@ -337,8 +337,12 @@ section[id] { scroll-margin-top: 60px; }
 
 /* Popover */
 .popover { width: 380px; max-width: 100%; border-radius: 18px; border: 0.500px solid var(--line); overflow: hidden; text-align: left; }
-.popover-head { display: flex; align-items: center; gap: 8px; padding: 13px 16px 11px; font-size: 13px; }
+.popover-head { display: flex; align-items: center; gap: 8px; padding: 13px 14px 11px 16px; font-size: 13px; }
 .popover-head .mark { font-size: 18px; }
+/* MenuContent.swift: the padlock beside the name, the gear menu in the rows' column. */
+.popover-head .glyph { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; color: var(--muted); font-size: 13px; }
+.popover-head .glyph:hover { background: var(--tint); }
+.popover-head .gear { margin-left: auto; }
 .search { display: flex; align-items: center; gap: 6px; margin: 0 12px 10px; padding: 6px 10px; border-radius: 9px; background: var(--tint); color: var(--muted); }
 .search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: var(--text); font: 13px var(--font); -webkit-appearance: none; appearance: none; }
 .search:focus-within { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent); }
@@ -352,8 +356,8 @@ section[id] { scroll-margin-top: 60px; }
 .row-who i { font-style: normal; font-weight: 400; font-size: 11px; color: var(--faint); font-variant-numeric: tabular-nums; }
 .row-who em { font-style: normal; font-weight: 500; font-size: 10px; color: var(--faint); }
 .row-who span { color: var(--muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* CodeRow.swift: a code and a link's Open share one pill, blue on the row a click acts on. */
-.row-pill { flex: none; display: inline-flex; align-items: center; gap: 5px; min-height: 24px; padding: 0 10px; border-radius: 999px; background: var(--tint); box-shadow: inset 0 0 0 0.500px var(--line); color: var(--text); font: 500 12px/1 var(--font); white-space: nowrap; }
+/* CodeRow.swift: a code and a link's Open share one pill, one width, blue on the row a click acts on. */
+.row-pill { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 90px; min-height: 24px; padding: 0 10px; border-radius: 999px; background: var(--tint); box-shadow: inset 0 0 0 0.500px var(--line); color: var(--text); font: 500 12px/1 var(--font); white-space: nowrap; }
 .row-code { font-size: 15px; font-variant-numeric: tabular-nums; }
 .row.expired .row-pill { color: var(--faint); }
 /* On the clipboard: the code turns blue, its ring goes and a checkmark draws in before it. */
@@ -372,9 +376,6 @@ li.copied .tick { display: block; animation: draw-on 0.35s ease-out both; }
 .popover.locked .rows { padding-top: 2px; }
 .popover.locked .row-code { letter-spacing: 0.12em; color: var(--muted); }
 .popover.locked .row:hover .row-code { color: #fff; }  /* white on the blue pill, as in the app */
-.popover-foot { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-top: 0.500px solid var(--line); color: var(--muted); font-size: 11px; }
-.unlock { display: inline-flex; align-items: center; gap: 5px; border: 0.500px solid var(--line); border-radius: 6px; padding: 3px 9px; background: var(--surface); color: var(--text); font: 12px var(--font); box-shadow: 0 0.500px 1px rgba(0, 0, 0, 0.1); }
-.unlock svg { font-size: 10px; }
 
 /* Sources strip */
 .sources { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 28px; padding-top: 22px !important; padding-bottom: 22px !important; border-block: 1px solid var(--line); color: var(--muted); font-size: 15px; }
