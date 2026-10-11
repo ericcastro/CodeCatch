@@ -1,4 +1,5 @@
 import AppKit
+import CodeCatchCore
 
 /// `/usr/local/bin/codecatch`, a link to the binary inside the app. Sparkle replaces the app at the
 /// same path, so the link survives updates; moving the app breaks it, and Settings offers Repair.
@@ -31,7 +32,7 @@ enum CommandLineTool {
         // Ours if it points at a CodeCatch bundle's helper; a bundle that's gone can't say, so its path must.
         let bundle = URL(fileURLWithPath: target).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         guard target.hasSuffix(".app/Contents/Helpers/codecatch") else { return .taken }
-        if files.fileExists(atPath: bundle.path), Bundle(url: bundle)?.bundleIdentifier != "com.uros.codecatch" { return .taken }
+        if files.fileExists(atPath: bundle.path), Bundle(url: bundle)?.bundleIdentifier != AgentWire.appIdentifier { return .taken }
         return .stale(target: target)
     }
 

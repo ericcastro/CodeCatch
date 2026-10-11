@@ -153,7 +153,7 @@ func verifiedConnection() -> Int32 {
     // can sign a program as com.uros.codecatch, but not under that team.
     let server = CodeSignature.of(auditToken: peer.auditToken)
     let team = CodeSignature.current?.team ?? "KS2HADLRV4"
-    guard let server, server.identifier == "com.uros.codecatch", server.team == team else {
+    guard let server, server.identifier == AgentWire.appIdentifier, server.team == team else {
         finish(AgentError(.failed, "The program at \(path) isn't a signed CodeCatch. Not asking it."))
     }
     return fd

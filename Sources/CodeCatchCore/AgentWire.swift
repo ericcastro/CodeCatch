@@ -6,6 +6,10 @@ import Foundation
 public enum AgentWire {
     public static let version = 1
 
+    /// The code-signing identifiers each side checks the other for; install.sh signs with the same.
+    public static let appIdentifier = "com.uros.codecatch"
+    public static let cliIdentifier = "com.uros.codecatch.cli"
+
     /// Readable only by this user: the folder is 0700, the socket 0600.
     public static func socketPath(home: String = NSHomeDirectory()) -> String {
         home + "/Library/Application Support/CodeCatch/cli.sock"

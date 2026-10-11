@@ -69,7 +69,7 @@ enum CLIServer {
         // process that can't be swapped. An unsigned development build skips this.
         if let team = CodeSignature.current?.team {
             let client = CodeSignature.of(auditToken: peer.auditToken)
-            guard client?.identifier == "com.uros.codecatch.cli", client?.team == team else {
+            guard client?.identifier == AgentWire.cliIdentifier, client?.team == team else {
                 return drop(AgentError(.usage, "Use the codecatch tool that comes with CodeCatch."))
             }
         }
