@@ -22,7 +22,7 @@ struct ServiceIcon: View {
             Group {
                 if let logo = icons.icon(for: mailbox) {
                     LogoTile(icon: logo, size: size * 0.46)
-                } else if item.origin != .test, let badge = item.origin.appIcon(sourceKey: item.sourceKey) {
+                } else if let badge = item.origin.appIcon(sourceKey: item.sourceKey) {
                     Image(nsImage: badge).resizable().frame(width: size * 0.46, height: size * 0.46)
                 }
             }
@@ -69,8 +69,8 @@ extension CodeItem.Origin {
         case .mail where sourceKey == AppleMailStore.sourceKey: Self.icon("com.apple.mail")
         case .mail: NSWorkspace.shared.urlForApplication(toOpen: URL(string: "mailto:")!)
             .map { NSWorkspace.shared.icon(forFile: $0.path) }
-        case .test: NSApp.applicationIconImage
         case .vault: Self.icon("com.bitwarden.desktop")
+        case .test: nil
         }
     }
 
