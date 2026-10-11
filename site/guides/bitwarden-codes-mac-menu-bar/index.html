@@ -115,7 +115,7 @@
      "name": "Does CodeCatch save my Bitwarden master password?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "No. It is passed once to Bitwarden’s own command-line tool to unlock the vault for the import, and it is not kept. The vault is locked again afterwards."
+      "text": "No. It is passed once to Bitwarden’s own command-line tool to unlock the vault for the import, and it is not kept. The vault is locked again afterward."
      }
     },
     {
@@ -123,7 +123,7 @@
      "name": "Do the codes work without an internet connection?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Yes. A code is worked out from the saved key and the current time, on your Mac. Nothing is looked up online."
+      "text": "Yes. Your Mac makes each code from the saved key and the current time. Nothing is looked up online."
      }
     },
     {
@@ -155,7 +155,7 @@
      "name": "I use Bitwarden’s EU server. Does it work?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Yes. The setup checklist has a server step for bitwarden.com or bitwarden.eu. Switching server needs bw logout first."
+      "text": "Yes. The setup checklist has a server step for bitwarden.com or bitwarden.eu. To switch servers, run bw logout first."
      }
     }
    ]
@@ -224,7 +224,7 @@
   </aside>
   <div class="prose">
     <p>Bitwarden can hold the keys for your two-step codes and make the six-digit codes for you. On a Mac there are four ways to get at them. The first three need nothing but Bitwarden.</p>
-    <p class="callout">Bitwarden stores authenticator keys on every plan. Showing the codes needs Premium or a paid organisation plan, according to <a href="https://bitwarden.com/help/integrated-authenticator/" rel="noopener">Bitwarden’s help page</a>.</p>
+    <p class="callout">Bitwarden stores authenticator keys on every plan. Showing the codes needs Premium or a paid organization plan, according to <a href="https://bitwarden.com/help/integrated-authenticator/" rel="noopener">Bitwarden’s help page</a>.</p>
 
     <h2 id="at-a-glance">At a glance</h2>
     <div class="prose-table"><table><thead><tr><th scope="col"></th><th scope="col">Extension</th><th scope="col">Desktop app</th><th scope="col">Command line</th><th scope="col">CodeCatch</th></tr></thead><tbody>
@@ -272,7 +272,7 @@
     <ul class="ticks">
       <li><b>“bw: command not found”.</b> The Bitwarden CLI is not installed. Run <code>brew install bitwarden-cli</code>, or get it from Bitwarden’s site.</li>
       <li><b>“You are not logged in”.</b> Run <code>bw login</code> in Terminal. It also handles your two-step login for Bitwarden itself.</li>
-      <li><b>Wrong server.</b> If your account is on bitwarden.eu, pick it in the server step. Switching needs <code>bw logout</code> first.</li>
+      <li><b>Wrong server.</b> If your account is on bitwarden.eu, pick it in the server step. To switch, run <code>bw logout</code> first.</li>
       <li><b>Changed something in Bitwarden?</b> Use <b>Refresh…</b> You see what was added, changed and removed before it is saved.</li>
     </ul>
 
@@ -294,12 +294,12 @@
     </ul>
     <h2 id="questions">Questions</h2>
     <div class="faq-list">
-      <details><summary>Does CodeCatch save my Bitwarden master password?</summary><p>No. It is passed once to Bitwarden’s own command-line tool to unlock the vault for the import, and it is not kept. The vault is locked again afterwards.</p></details>
-      <details><summary>Do the codes work without an internet connection?</summary><p>Yes. A code is worked out from the saved key and the current time, on your Mac. Nothing is looked up online.</p></details>
+      <details><summary>Does CodeCatch save my Bitwarden master password?</summary><p>No. It is passed once to Bitwarden’s own command-line tool to unlock the vault for the import, and it is not kept. The vault is locked again afterward.</p></details>
+      <details><summary>Do the codes work without an internet connection?</summary><p>Yes. Your Mac makes each code from the saved key and the current time. Nothing is looked up online.</p></details>
       <details><summary>Is it safe to keep codes next to my passwords?</summary><p>It is a trade-off. Keeping both in Bitwarden is convenient, but someone who gets into your vault gets both. Many people keep their most important accounts, such as email and banking, in a separate authenticator and use Bitwarden for the rest.</p></details>
       <details><summary>Why is the code different from the one on my phone?</summary><p>Codes depend on the time. If your Mac’s clock is off, the code is wrong. Turn on <b>Set time and date automatically</b> in System Settings → General → Date &amp; Time.</p></details>
       <details><summary>A login is missing from CodeCatch. Why?</summary><p>Only logins with an authenticator key in Bitwarden are imported. Add the key to the login in Bitwarden, then use <b>Refresh…</b> in CodeCatch.</p></details>
-      <details><summary>I use Bitwarden’s EU server. Does it work?</summary><p>Yes. The setup checklist has a server step for bitwarden.com or bitwarden.eu. Switching server needs <code>bw logout</code> first.</p></details>
+      <details><summary>I use Bitwarden’s EU server. Does it work?</summary><p>Yes. The setup checklist has a server step for bitwarden.com or bitwarden.eu. To switch servers, run <code>bw logout</code> first.</p></details>
     </div>
   </div>
 </article>

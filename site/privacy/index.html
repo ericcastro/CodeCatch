@@ -189,7 +189,7 @@
         <div><dt>Google or Microsoft</dt><dd>Only if you sign in with them to read Gmail or Outlook.</dd></div>
         <div><dt>Bitwarden</dt><dd>Through Bitwarden’s own tool, when you import your logins.</dd></div>
         <div><dt>Service logos</dt><dd>Loaded through Google’s favicon service, or DuckDuckGo’s when Google has no clear logo. These see your IP address and the service’s domain. CodeCatch never contacts the service’s own website. On by default; turn them off in Settings → Privacy.</dd></div>
-        <div><dt>Update checks</dt><dd>Once a day, to codecatch.app. Each check sends a random install ID, the app version, the macOS version and the Mac model. The server uses your IP address to note your country, city and internet provider, but never stores the address. This counts how many Macs run CodeCatch and which version they have, and never includes your codes, messages, mail or what you do in the app. To stop it, turn off Update Automatically in Settings → General.</dd></div>
+        <div><dt>Update checks</dt><dd>Once a day, to codecatch.app. Each check sends a random install ID, the app version, the macOS version and the Mac model. The server uses your IP address to note your country, city and internet provider, but never stores the address. This counts how many Macs run CodeCatch and which version they have. It never includes your codes, messages, mail or what you do in the app. To stop it, turn off Update Automatically in Settings → General.</dd></div>
       </dl>
     </div>
     <div class="feature-art" aria-hidden="true">
@@ -242,7 +242,7 @@
     </div>
     <div>
       <h3>Agents and the command line</h3>
-      <p>Off by default. When you turn it on in Settings → Agents, agents such as Claude Code can ask for a code with the <code>codecatch</code> tool. It talks to the app over a socket on your Mac that only you can open, never the network. Each code needs your Touch ID or Mac password, unless you allowed that site for that app, or turned on Allow All Without Asking.</p>
+      <p>Off by default. When you turn it on in Settings → Agents, agents such as Claude Code can ask for a code with the <code>codecatch</code> tool. It talks to the app over a socket on your Mac that only you can open, never over the network. Each code needs your Touch ID or Mac password, unless you allowed that site for that app, or turned on Allow All Without Asking.</p>
       <p>The switch and your rules stay in your Keychain. The last 50 requests (which app, which site, the outcome; never the code) stay in the app’s settings until you clear them.</p>
     </div>
     <div>

@@ -155,7 +155,7 @@
      "name": "¿Mis códigos pasan por internet?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "No. El comando habla con CodeCatch a través de un socket que, en tu Mac, solo tú puedes abrir. Nada sale a la red."
+      "text": "No. El comando se comunica con CodeCatch a través de un socket que, en tu Mac, solo tú puedes abrir. Nada sale a la red."
      }
     },
     {
@@ -193,7 +193,7 @@
   <header class="vs-hero">
     <p class="eyebrow">Guía</p>
     <h1>Códigos 2FA para Claude Code, Codex y Cursor en tu Mac</h1>
-    <p class="lede">Tu agente de IA sabe completar el formulario de inicio de sesión, pero el código de verificación llega a tu teléfono o a tu correo. CodeCatch se lo pasa, pero solo cuando tú dices que sí.</p>
+    <p class="lede">Tu agente de IA sabe completar el formulario de inicio de sesión, pero el código de verificación llega a tu teléfono o a tu correo. CodeCatch se lo pasa solo cuando tú dices que sí.</p>
     <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>Por <a href="/es/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-10">Publicado el 10&nbsp;de octubre de 2026</time></span></p>
   </header>
   <div class="feature-art article-art" aria-hidden="true">
@@ -242,7 +242,7 @@
     <ol class="numbered">
       <li><b>Instala CodeCatch</b> y dale acceso a Mensajes y a tu correo, como siempre.</li>
       <li><b>Abre Settings → Agents</b> y activa <b>Let Agents Ask for Codes</b>. Esto también instala el comando <code>codecatch</code>.</li>
-      <li><b>Haz clic en Connect</b> junto a Claude Code, Codex o Cursor. Esto añade una pequeña skill que el agente solo lee cuando necesita un código. Para otros agentes, copia el texto de <b>Other Agents</b> en sus instrucciones.</li>
+      <li><b>Haz clic en Connect</b> junto a Claude Code, Codex o Cursor. Esto agrega una pequeña skill que el agente solo lee cuando necesita un código. Para otros agentes, copia el texto de <b>Other Agents</b> en sus instrucciones.</li>
     </ol>
     <div class="feature-art article-art" aria-hidden="true">
       <!-- AgentsTab.swift -->
@@ -286,8 +286,8 @@
 
     <h2 id="how-it-stays-safe">Por qué es seguro</h2>
     <ul class="ticks plain">
-      <li>El comando habla con CodeCatch a través de un socket que, en tu Mac, solo tú puedes abrir. Nada sale a la red.</li>
-      <li>CodeCatch identifica la app que pide el código por su firma de código, y el comando comprueba que habla con el CodeCatch real.</li>
+      <li>El comando se comunica con CodeCatch a través de un socket que, en tu Mac, solo tú puedes abrir. Nada sale a la red.</li>
+      <li>CodeCatch identifica la app que pide el código por su firma de código, y el comando comprueba que se comunica con el CodeCatch real.</li>
       <li>Un código solo cuenta si viene del dominio del propio sitio. Un correo que se hace llamar “GitHub” pero llega desde otro dominio no trae el código de GitHub.</li>
       <li>Una solicitud a la vez. Tres rechazos seguidos desactivan el acceso de los agentes. Las reglas de permiso dan como máximo 20 códigos por hora.</li>
       <li><b>Request History</b> muestra qué app pidió el código de qué sitio y qué pasó. El código nunca se guarda ahí.</li>
@@ -308,7 +308,7 @@ codecatch get github.com --since $T --json</code></pre>
       <details><summary>¿Funciona si me alejo de mi Mac?</summary><p>Solo si tú lo permites. Si eliges <b>Always Allow</b> para un sitio y una app, o activas <b>Allow All</b>, los códigos salen sin preguntarte, hasta 20 por hora. Aun así, cada uno queda en <b>Request History</b>.</p></details>
       <details><summary>¿Qué agentes son compatibles?</summary><p>Claude Code, Codex y Cursor se conectan con un clic. Cualquier otro agente o script que pueda ejecutar un comando también puede usarlo: pega las instrucciones cortas en su configuración.</p></details>
       <details><summary>¿Tengo que dejar CodeCatch abierto?</summary><p>CodeCatch funciona desde la barra de menús. Si no está abierto, el comando lo abre.</p></details>
-      <details><summary>¿Mis códigos pasan por internet?</summary><p>No. El comando habla con CodeCatch a través de un socket que, en tu Mac, solo tú puedes abrir. Nada sale a la red.</p></details>
+      <details><summary>¿Mis códigos pasan por internet?</summary><p>No. El comando se comunica con CodeCatch a través de un socket que, en tu Mac, solo tú puedes abrir. Nada sale a la red.</p></details>
       <details><summary>¿Un agente puede recibir un enlace para restablecer la contraseña?</summary><p>No. Los enlaces para restablecer la contraseña nunca llegan a los agentes. Los enlaces de acceso sí, pero solo si activas <b>Sign-In Links</b> en <b>Settings → Agents</b>.</p></details>
     </div>
   </div>

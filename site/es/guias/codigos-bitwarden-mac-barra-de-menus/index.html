@@ -123,7 +123,7 @@
      "name": "¿CodeCatch guarda mi contraseña maestra de Bitwarden?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "No. CodeCatch se la pasa una sola vez a la propia herramienta de línea de comandos de Bitwarden, que desbloquea la caja fuerte para la importación, y no la guarda. Después, la caja fuerte vuelve a quedar bloqueada."
+      "text": "No. CodeCatch se la pasa una sola vez a la herramienta de línea de comandos de Bitwarden, que desbloquea la caja fuerte para importar. CodeCatch no la guarda, y después la caja fuerte vuelve a quedar bloqueada."
      }
     },
     {
@@ -155,7 +155,7 @@
      "name": "¿Por qué falta un inicio de sesión en CodeCatch?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Solo se importan los inicios de sesión que tienen una clave de autenticación en Bitwarden. Añade la clave al elemento en Bitwarden, en el campo Clave de autenticación (TOTP), y luego usa Refresh… en CodeCatch."
+      "text": "Solo se importan los inicios de sesión que tienen una clave de autenticación en Bitwarden. Agrega la clave al elemento en Bitwarden, en el campo Clave de autenticación (TOTP), y luego usa Refresh… en CodeCatch."
      }
     },
     {
@@ -257,7 +257,7 @@
     <h2 id="command-line">3. La línea de comandos</h2>
     <p>Con la <a href="https://bitwarden.com/help/cli/" rel="noopener">Bitwarden CLI</a> (en inglés) instalada y desbloqueada:</p>
     <pre><code>bw get totp github.com</code></pre>
-    <p>Muestra el código actual. Es útil en scripts, no tanto cuando el código deja de servir a los 30 segundos.</p>
+    <p>Muestra el código actual. Es útil en scripts, pero no tanto para un código que deja de servir a los 30 segundos.</p>
 
     <h2 id="menu-bar">4. La barra de menús, con CodeCatch</h2>
     <p>CodeCatch pone tus códigos de Bitwarden en la barra de menús, junto a los que te llegan por SMS y por correo. Presiona <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>F</kbd>, escribe un nombre y presiona Retorno: el código queda copiado.</p>
@@ -282,14 +282,14 @@
       <li><b>“bw: command not found”.</b> La Bitwarden CLI no está instalada. Ejecuta <code>brew install bitwarden-cli</code> o descárgala del sitio de Bitwarden.</li>
       <li><b>“You are not logged in”.</b> Ejecuta <code>bw login</code> en Terminal. Ahí también completas la autenticación en dos pasos de tu cuenta de Bitwarden.</li>
       <li><b>Servidor equivocado.</b> Si tu cuenta está en bitwarden.eu, elígelo en el paso del servidor. Para cambiar de servidor, primero ejecuta <code>bw logout</code>.</li>
-      <li><b>¿Hay cambios en Bitwarden?</b> Usa <b>Refresh…</b> Antes de guardar, ves qué se añadió, qué cambió y qué se eliminó.</li>
+      <li><b>¿Hay cambios en Bitwarden?</b> Usa <b>Refresh…</b> Antes de guardar, ves qué se agregó, qué cambió y qué se eliminó.</li>
     </ul>
 
     <h2 id="trade-off">Qué guarda CodeCatch y qué cedes a cambio</h2>
     <ul class="ticks">
       <li>Guarda el nombre, el usuario, el sitio y la clave de autenticación de cada inicio de sesión en el llavero de inicio de sesión de tu Mac.</li>
       <li>Los códigos se generan en tu Mac. No hace falta conexión.</li>
-      <li>Los códigos quedan ocultos hasta que desbloqueas con Touch ID o la contraseña de tu Mac, y se bloquean otra vez cuando tu Mac entra en reposo.</li>
+      <li>Los códigos quedan ocultos hasta que los desbloqueas con Touch ID o la contraseña de tu Mac, y se bloquean otra vez cuando tu Mac entra en reposo.</li>
       <li><b>Remove Bitwarden Codes…</b> borra las claves guardadas. Tu caja fuerte de Bitwarden no cambia.</li>
     </ul>
     <p>Lo que cedes a cambio es sencillo: una copia de tus claves de autenticación queda en tu Mac, fuera de Bitwarden. Si prefieres tenerlas solo en tu caja fuerte, usa una de las tres primeras formas.</p>
@@ -304,11 +304,11 @@
     <h2 id="questions">Preguntas frecuentes</h2>
     <div class="faq-list">
       <details><summary>¿Qué son los códigos TOTP de Bitwarden?</summary><p>Son los códigos 2FA de seis dígitos que cambian cada 30 segundos. Bitwarden guarda la clave secreta de cada servicio y la combina con la hora actual para generar el código. Puedes guardar la clave en cualquier plan, pero Bitwarden solo muestra los códigos con Premium o con un plan de organización de pago.</p></details>
-      <details><summary>¿CodeCatch guarda mi contraseña maestra de Bitwarden?</summary><p>No. CodeCatch se la pasa una sola vez a la propia herramienta de línea de comandos de Bitwarden, que desbloquea la caja fuerte para la importación, y no la guarda. Después, la caja fuerte vuelve a quedar bloqueada.</p></details>
+      <details><summary>¿CodeCatch guarda mi contraseña maestra de Bitwarden?</summary><p>No. CodeCatch se la pasa una sola vez a la herramienta de línea de comandos de Bitwarden, que desbloquea la caja fuerte para importar. CodeCatch no la guarda, y después la caja fuerte vuelve a quedar bloqueada.</p></details>
       <details><summary>¿Los códigos funcionan sin conexión a internet?</summary><p>Sí. Tu Mac calcula cada código a partir de la clave guardada y la hora actual. No se consulta nada en línea.</p></details>
       <details><summary>¿Es seguro guardar los códigos junto a mis contraseñas?</summary><p>Tiene pros y contras. Tener ambos en Bitwarden es cómodo, pero quien acceda a tu caja fuerte se lleva las dos cosas. Mucha gente protege sus cuentas más importantes, como el correo y el banco, con una app de autenticación aparte y usa Bitwarden para el resto.</p></details>
       <details><summary>¿Por qué el código no coincide con el de mi teléfono?</summary><p>Los códigos dependen de la hora. Si el reloj de tu Mac va adelantado o atrasado, el código no es correcto. Activa <b>Establecer hora y fecha automáticamente</b> en Configuración del Sistema (Ajustes del Sistema en España) → General → Fecha y hora.</p></details>
-      <details><summary>¿Por qué falta un inicio de sesión en CodeCatch?</summary><p>Solo se importan los inicios de sesión que tienen una clave de autenticación en Bitwarden. Añade la clave al elemento en Bitwarden, en el campo <b>Clave de autenticación (TOTP)</b>, y luego usa <b>Refresh…</b> en CodeCatch.</p></details>
+      <details><summary>¿Por qué falta un inicio de sesión en CodeCatch?</summary><p>Solo se importan los inicios de sesión que tienen una clave de autenticación en Bitwarden. Agrega la clave al elemento en Bitwarden, en el campo <b>Clave de autenticación (TOTP)</b>, y luego usa <b>Refresh…</b> en CodeCatch.</p></details>
       <details><summary>¿Funciona con el servidor europeo de Bitwarden?</summary><p>Sí. La lista de pasos de la configuración incluye uno para elegir el servidor: bitwarden.com o bitwarden.eu. Para cambiar de servidor, primero ejecuta <code>bw logout</code>.</p></details>
     </div>
   </div>

@@ -163,7 +163,7 @@
      "name": "Kann ein Agent einen Link zum Zurücksetzen des Passworts bekommen?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Nein. Links zum Zurücksetzen des Passworts bekommt ein Agent nie. Anmeldelinks bekommen sie nur, wenn du unter Settings → Agents „Sign-In Links“ einschaltest."
+      "text": "Nein. Links zum Zurücksetzen des Passworts bekommt ein Agent nie. Anmeldelinks bekommt er nur, wenn du unter Settings → Agents „Sign-In Links“ einschaltest."
      }
     }
    ]
@@ -193,7 +193,7 @@
   <header class="vs-hero">
     <p class="eyebrow">Anleitung</p>
     <h1>2FA-Codes für Claude Code, Codex und Cursor am Mac</h1>
-    <p class="lede">Das Anmeldeformular füllt dein KI-Agent selbst aus. Nur der Bestätigungscode landet auf deinem Handy oder in deinem Postfach. CodeCatch gibt ihm den Code – aber erst, wenn du zustimmst.</p>
+    <p class="lede">Das Anmeldeformular füllt dein KI-Agent selbst aus. Doch der Bestätigungscode landet auf deinem Handy oder in deinem Postfach. CodeCatch gibt ihm den Code, aber erst, wenn du zustimmst.</p>
     <p class="byline"><span class="avatar" aria-hidden="true">UG</span><span>Von <a href="/de/#why" rel="author">Uros Gazvoda</a> · <time datetime="2026-10-10">Veröffentlicht am 10.&nbsp;Oktober 2026</time></span></p>
   </header>
   <div class="feature-art article-art" aria-hidden="true">
@@ -226,12 +226,12 @@
     </div>
   </aside>
   <div class="prose">
-    <p>Du sagst Claude Code, es soll sich bei einer Website anmelden und kurz etwas nachschauen. Der Agent findet die Seite, trägt deine E-Mail-Adresse ein, klickt auf <b>Code senden</b> – und dann geht nichts mehr. Der Code ist auf deinem Handy, und da kommt der Agent nicht dran.</p>
+    <p>Du sagst Claude Code, es soll sich bei einer Website anmelden und kurz etwas nachschauen. Der Agent findet die Seite, trägt deine E-Mail-Adresse ein, klickt auf <b>Code senden</b>. Dann geht nichts mehr. Der Code ist auf deinem Handy, und da kommt der Agent nicht dran.</p>
 
     <p class="callout"><b>Kurz gesagt:</b> Installiere CodeCatch, schalte unter Settings → Agents <b>Let Agents Ask for Codes</b> ein und klicke neben deinem Agenten auf <b>Connect</b>. Schickt eine Website einen Code, fragt der Agent bei CodeCatch nach, und du gibst den Code per Touch ID frei.</p>
 
     <h2 id="why-agents-get-stuck">Warum Agenten bei 2FA hängen bleiben</h2>
-    <p>Zwei-Faktor-Authentifizierung soll jeden aufhalten, der nur dein Passwort hat. Ein Agent steckt genau in dieser Lage: Den Browser kann er bedienen, aber der Code landet in der Nachrichten-App oder in deinem Postfach. Also wartet er, bis du den Code eintippst – oder gibt auf.</p>
+    <p>Zwei-Faktor-Authentifizierung soll jeden aufhalten, der nur dein Passwort hat. Ein Agent steckt genau in dieser Lage: Den Browser kann er bedienen, aber der Code landet in der Nachrichten-App oder in deinem Postfach. Also wartet er, bis du den Code eintippst, oder er gibt auf.</p>
 
     <h2 id="how-codecatch-helps">So hilft CodeCatch</h2>
     <p>CodeCatch fängt auf deinem Mac ohnehin Codes aus Nachrichten und Mail ab. Jetzt kann auch ein Agent mit einem kurzen Befehl danach fragen:</p>
@@ -278,7 +278,7 @@
     <h2 id="what-you-control">Was du in der Hand hast</h2>
     <ul class="ticks">
       <li><b>Jeder Code braucht dein OK.</b> Allow geht jedes Mal nur mit Touch ID oder deinem Mac-Passwort.</li>
-      <li><b>Always Allow</b> spart dir die Abfrage für eine App – bei einer bestimmten Website oder bei allen.</li>
+      <li><b>Always Allow</b> spart dir die Abfrage für eine App, bei einer bestimmten Website oder bei allen.</li>
       <li><b>Allow All Without Asking</b> gibt jedem Agenten Codes ohne Abfrage heraus. Schon das Einschalten geht nur mit Touch ID.</li>
       <li><b>Anmeldelinks</b> (Magic Links) haben einen eigenen Schalter und sind standardmäßig aus, denn so ein Link meldet den Agenten als dich an.</li>
       <li><b>Links zum Zurücksetzen des Passworts</b> bekommt ein Agent nie.</li>
@@ -309,7 +309,7 @@ codecatch get github.com --since $T --json</code></pre>
       <details><summary>Welche Agenten funktionieren damit?</summary><p>Claude Code, Codex und Cursor verbindest du mit einem Klick. Auch jeder andere Agent und jedes Skript, das Befehle ausführen kann, lässt sich anbinden: Füge die kurze Anleitung in die Einstellungen ein.</p></details>
       <details><summary>Muss CodeCatch dafür laufen?</summary><p>CodeCatch sitzt ohnehin in der Menüleiste. Läuft es gerade nicht, startet der Befehl die App.</p></details>
       <details><summary>Gehen meine Codes dabei übers Internet?</summary><p>Nein. Der Befehl verbindet sich mit CodeCatch über einen Socket, den auf deinem Mac nur du öffnen kannst. Nichts läuft übers Netzwerk.</p></details>
-      <details><summary>Kann ein Agent einen Link zum Zurücksetzen des Passworts bekommen?</summary><p>Nein. Links zum Zurücksetzen des Passworts bekommt ein Agent nie. Anmeldelinks bekommen sie nur, wenn du unter Settings → Agents „Sign-In Links“ einschaltest.</p></details>
+      <details><summary>Kann ein Agent einen Link zum Zurücksetzen des Passworts bekommen?</summary><p>Nein. Links zum Zurücksetzen des Passworts bekommt ein Agent nie. Anmeldelinks bekommt er nur, wenn du unter Settings → Agents „Sign-In Links“ einschaltest.</p></details>
     </div>
   </div>
 </article>
@@ -332,7 +332,7 @@ codecatch get github.com --since $T --json</code></pre>
   <div class="footer-top">
     <div class="footer-brand">
       <a class="brand" href="/de/"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><span>CodeCatch</span></a>
-      <p>Bestätigungscodes – kopiert, sobald sie ankommen.</p>
+      <p>Dein Bestätigungscode ist kopiert, sobald er ankommt.</p>
       <a class="footer-gh" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>Open Source auf GitHub</a>
     </div>
     <nav aria-label="Fußzeile">

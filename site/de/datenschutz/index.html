@@ -133,7 +133,7 @@
       <p>Du entscheidest, welche Quellen CodeCatch liest, und kannst jede wieder ausschalten. E-Mails öffnet es nur zum Lesen: Es markiert nichts als gelesen, verschiebt nichts und löscht nichts.</p>
       <ul class="ticks">
         <li>Neue Nachrichten, die in der App „Nachrichten“ ankommen</li>
-        <li>Neue E-Mails in den Posteingängen, die du einschaltest – von jeder höchstens die ersten 256 KB</li>
+        <li>Neue E-Mails in den Posteingängen, die du einschaltest (von jeder höchstens die ersten 256 KB)</li>
         <li>Die Bitwarden-Zugangsdaten, die du importierst: Name, Benutzername, Website und Authentifizierungsschlüssel</li>
       </ul>
     </div>
@@ -159,8 +159,8 @@
       <h2>Codes liegen im Arbeitsspeicher, Passwörter und Schlüssel im Schlüsselbund</h2>
       <p>Codes und Links landen nie auf der Festplatte. Beim Start liest die App sie neu aus deinen Nachrichten und E-Mails ein, je nach Einstellung 1, 7 oder 30 Tage zurück.</p>
       <ul class="ticks">
-        <li>Welche Nachrichten du verworfen hast – ohne den Code und ohne den Link</li>
-        <li>Die Logos der Dienste – einmal gespeichert, damit sie schnell laden</li>
+        <li>Eine Liste der Nachrichten, die du verworfen hast, ohne Code und Link</li>
+        <li>Die Logos der Dienste, damit sie schnell laden</li>
       </ul>
     </div>
     <div class="feature-art" aria-hidden="true">
@@ -185,10 +185,10 @@
       <h2>Fünf Verbindungen, sonst keine</h2>
       <p>Kein Tracking deiner Nutzung, keine Absturzberichte, keine Werbung. CodeCatch geht nur für diese fünf Dinge online:</p>
       <dl class="points">
-        <div><dt>Dein Mailserver</dt><dd>Zum Lesen deiner E-Mails – nur in den Posteingängen, die du einschaltest.</dd></div>
+        <div><dt>Dein Mailserver</dt><dd>Um deine E-Mails zu lesen, aber nur in den Posteingängen, die du einschaltest.</dd></div>
         <div><dt>Google oder Microsoft</dt><dd>Nur wenn du dich dort anmeldest, damit CodeCatch Gmail oder Outlook lesen kann.</dd></div>
         <div><dt>Bitwarden</dt><dd>Beim Import deiner Zugangsdaten, über das eigene Tool von Bitwarden.</dd></div>
-        <div><dt>Logos der Dienste</dt><dd>CodeCatch lädt sie über den Favicon-Dienst von Google. Hat Google kein klares Logo, nimmt es den von DuckDuckGo. Google bzw. DuckDuckGo sieht dabei deine IP-Adresse und die Domain des Dienstes. Die Website des Dienstes selbst ruft CodeCatch nie auf. Die Logos sind standardmäßig an; abschalten kannst du sie in CodeCatch unter Settings → Privacy.</dd></div>
+        <div><dt>Logos der Dienste</dt><dd>CodeCatch lädt sie über den Favicon-Dienst von Google. Hat Google kein klares Logo, nimmt es den von DuckDuckGo. Google oder DuckDuckGo sieht dabei deine IP-Adresse und die Domain des Dienstes. Die Website des Dienstes selbst ruft CodeCatch nie auf. Die Logos sind standardmäßig an. Abschalten kannst du sie in CodeCatch unter Settings → Privacy.</dd></div>
         <div><dt>Suche nach Updates</dt><dd>Einmal am Tag fragt CodeCatch bei codecatch.app nach. Dabei schickt es eine zufällige Installations-ID, die App-Version, die macOS-Version und das Mac-Modell mit. Aus deiner IP-Adresse notiert der Server Land, Stadt und Internetanbieter. Die Adresse selbst speichert er nie. So lässt sich zählen, auf wie vielen Macs CodeCatch läuft und in welcher Version. Deine Codes, Nachrichten und E-Mails sind nie dabei, ebenso wenig, was du in der App tust. Wenn du das nicht willst, schalte in CodeCatch unter Settings → General „Update Automatically“ aus.</dd></div>
       </dl>
     </div>
@@ -242,8 +242,8 @@
     </div>
     <div>
       <h3>KI-Agenten und die Kommandozeile</h3>
-      <p>Standardmäßig aus. Schaltest du die Funktion in CodeCatch unter Settings → Agents ein, können KI-Agenten wie Claude Code mit dem Tool <code>codecatch</code> nach einem Code fragen. Das Tool spricht mit der App über einen Socket auf deinem Mac, den nur du öffnen kannst – nie über das Netzwerk. Jeden Code gibst du per Touch ID oder Mac-Passwort frei. Ausnahmen: Du hast diese Website für diese App erlaubt oder „Allow All Without Asking“ eingeschaltet.</p>
-      <p>Der Schalter und deine Regeln liegen in deinem Schlüsselbund. Die letzten 50 Anfragen behält CodeCatch in seinen Einstellungen, bis du sie löschst: welche App, welche Website, mit welchem Ergebnis – nie den Code.</p>
+      <p>Standardmäßig aus. Schaltest du die Funktion in CodeCatch unter Settings → Agents ein, können KI-Agenten wie Claude Code mit dem Tool <code>codecatch</code> nach einem Code fragen. Das Tool spricht mit der App über einen Socket auf deinem Mac, den nur du öffnen kannst. Über das Netzwerk läuft nichts. Jeden Code gibst du per Touch ID oder Mac-Passwort frei. Ausnahmen: Du hast diese Website für diese App erlaubt oder „Allow All Without Asking“ eingeschaltet.</p>
+      <p>Der Schalter und deine Regeln liegen in deinem Schlüsselbund. Die letzten 50 Anfragen behält CodeCatch in seinen Einstellungen, bis du sie löschst: welche App, welche Website, mit welchem Ergebnis. Den Code speichert es nie.</p>
     </div>
     <div>
       <h3>Recent Emails</h3>
@@ -278,7 +278,7 @@
   <div class="footer-top">
     <div class="footer-brand">
       <a class="brand" href="/de/"><svg class="mark" viewBox="208 208 608 608" aria-hidden="true"><use href="#mark"/></svg><span>CodeCatch</span></a>
-      <p>Bestätigungscodes – kopiert, sobald sie ankommen.</p>
+      <p>Dein Bestätigungscode ist kopiert, sobald er ankommt.</p>
       <a class="footer-gh" href="https://github.com/ugzv/CodeCatch"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg>Open Source auf GitHub</a>
     </div>
     <nav aria-label="Fußzeile">

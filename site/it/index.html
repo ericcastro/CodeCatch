@@ -133,7 +133,7 @@
      "name": "Che differenza c’è tra CodeCatch e l’inserimento automatico di macOS?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOS suggerisce un codice solo nei campi che il sito ha predisposto per questo, e il menu di un gestore di password può coprire il suggerimento. Per i codici via email, macOS usa solo l’app Mail, che deve essere aperta per ricevere la posta nuova. CodeCatch copia ogni codice appena arriva, quindi ⌘V funziona in qualsiasi campo. In più legge direttamente Gmail e Outlook, intercetta i link di accesso, tiene una cronologia e mostra i tuoi codici Bitwarden."
+      "text": "macOS suggerisce un codice solo nei campi che il sito ha predisposto per questo. Il menu di un gestore di password può anche coprire il suggerimento. Per i codici via email, macOS usa solo l’app Mail, che deve essere aperta per ricevere la posta nuova. CodeCatch copia ogni codice appena arriva, quindi ⌘V funziona in qualsiasi campo. In più legge direttamente Gmail e Outlook, trova i link di accesso, tiene una cronologia e mostra i tuoi codici Bitwarden."
      }
     },
     {
@@ -141,7 +141,7 @@
      "name": "Quali account email può leggere CodeCatch?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Qualsiasi casella configurata in Apple Mail, senza dover accedere. Anche Gmail, Outlook e altri account (IMAP), che CodeCatch legge direttamente, così Mail può restare chiusa. CodeCatch si limita a leggere: non segna, non sposta e non elimina mai la posta."
+      "text": "Qualsiasi casella configurata in Apple Mail, senza dover accedere. Anche Gmail, Outlook e altri account IMAP: CodeCatch li legge direttamente, quindi Mail può restare chiusa. CodeCatch si limita a leggere: non segna, non sposta e non elimina mai la posta."
      }
     },
     {
@@ -149,7 +149,7 @@
      "name": "Perché CodeCatch chiede l’Accesso completo al disco?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOS lo richiede prima che un’app possa leggere Messaggi e Apple Mail. CodeCatch legge solo queste due app. Se usi solo Gmail, Outlook o altri account di posta, puoi farne a meno. L’accesso ad Accessibilità serve solo se vuoi che CodeCatch digiti i codici per te."
+      "text": "macOS lo richiede prima che un’app possa leggere Messaggi e Apple Mail. CodeCatch legge solo queste due app. Se usi solo Gmail, Outlook o altri account di posta, puoi farne a meno. Il permesso Accessibilità serve solo se vuoi che CodeCatch digiti i codici per te."
      }
     },
     {
@@ -231,7 +231,7 @@
   </div>
 
   <!-- The app's own banner and menu bar label, ported from CodeCard.swift and MenuBarLabel.swift. -->
-  <div class="stage" id="stage" role="img" aria-label="Un codice di verifica di Google arriva via SMS, CodeCatch lo mostra in un banner e Comando-V lo incolla nella pagina di accesso. Poi arriva via email un codice di accesso di Notion, incollato allo stesso modo. Infine, sulla pagina di accesso di Slack, arriva via email un link di accesso e CodeCatch mostra dove porta">
+  <div class="stage" id="stage" role="img" aria-label="Un codice di verifica di Google arriva via SMS. CodeCatch lo mostra in un banner e Comando-V lo incolla nella pagina di accesso. Poi arriva via email un codice di accesso di Notion, incollato allo stesso modo. Infine, sulla pagina di accesso di Slack, arriva via email un link di accesso e CodeCatch mostra dove porta">
     <div class="menubar" aria-hidden="true">
       <span class="menubar-app">Chrome</span><span>File</span><span>Modifica</span><span>Vista</span><span>Cronologia</span>
       <span class="menubar-right">
@@ -536,7 +536,7 @@
           <th scope="col">Inserimento automatico di macOS</th><th scope="col">2FHey</th><th scope="col">MessAuto</th></tr>
       </thead>
       <tbody>
-        <tr><th scope="row">Funziona in</th><td class="us" data-label="CodeCatch">Qualsiasi app</td><td class="has" data-label="Inserimento di macOS">Safari, tutti su 26</td><td class="has" data-label="2FHey">Qualsiasi app</td><td class="has" data-label="MessAuto">Qualsiasi app</td></tr>
+        <tr><th scope="row">Funziona in</th><td class="us" data-label="CodeCatch">Qualsiasi app</td><td class="has" data-label="Inserimento di macOS">Safari, tutti su macOS 26</td><td class="has" data-label="2FHey">Qualsiasi app</td><td class="has" data-label="MessAuto">Qualsiasi app</td></tr>
         <tr><th scope="row">Codici via email</th><td class="us" data-label="CodeCatch">Qualsiasi account</td><td class="has" data-label="Inserimento di macOS">Solo Apple Mail</td><td class="no" data-label="2FHey">No</td><td class="has" data-label="MessAuto">Solo Apple Mail</td></tr>
         <tr><th scope="row">Link di accesso</th><td class="us" data-label="CodeCatch">Sì, mostra il sito</td><td class="no" data-label="Inserimento di macOS">No</td><td class="no" data-label="2FHey">No</td><td class="no" data-label="MessAuto">No</td></tr>
         <tr><th scope="row">Agenti AI</th><td class="us" data-label="CodeCatch">Sì, con il tuo OK</td><td class="no" data-label="Inserimento di macOS">No</td><td class="no" data-label="2FHey">No</td><td class="no" data-label="MessAuto">No</td></tr>
@@ -617,15 +617,15 @@
   </details>
   <details>
     <summary>Che differenza c’è tra CodeCatch e l’inserimento automatico di macOS?</summary>
-    <p>macOS suggerisce un codice solo nei campi che il sito ha predisposto per questo, e il menu di un gestore di password può coprire il suggerimento. Per i codici via email, macOS usa solo l’app Mail, che deve essere aperta per ricevere la posta nuova. CodeCatch copia ogni codice appena arriva, quindi ⌘V funziona in qualsiasi campo. In più legge direttamente Gmail e Outlook, intercetta i link di accesso, tiene una cronologia e mostra i tuoi codici Bitwarden. Se l’inserimento automatico ha smesso di funzionare, leggi <a href="/it/guide/codici-otp-chrome-mac/">la guida</a>.</p>
+    <p>macOS suggerisce un codice solo nei campi che il sito ha predisposto per questo. Il menu di un gestore di password può anche coprire il suggerimento. Per i codici via email, macOS usa solo l’app Mail, che deve essere aperta per ricevere la posta nuova. CodeCatch copia ogni codice appena arriva, quindi ⌘V funziona in qualsiasi campo. In più legge direttamente Gmail e Outlook, trova i link di accesso, tiene una cronologia e mostra i tuoi codici Bitwarden. Se l’inserimento automatico ha smesso di funzionare, leggi <a href="/it/guide/codici-otp-chrome-mac/">la guida</a>.</p>
   </details>
   <details>
     <summary>Quali account email può leggere CodeCatch?</summary>
-    <p>Qualsiasi casella configurata in Apple Mail, senza dover accedere. Anche Gmail, Outlook e altri account (IMAP), che CodeCatch legge direttamente, così Mail può restare chiusa. CodeCatch si limita a leggere: non segna, non sposta e non elimina mai la posta.</p>
+    <p>Qualsiasi casella configurata in Apple Mail, senza dover accedere. Anche Gmail, Outlook e altri account IMAP: CodeCatch li legge direttamente, quindi Mail può restare chiusa. CodeCatch si limita a leggere: non segna, non sposta e non elimina mai la posta.</p>
   </details>
   <details>
     <summary>Perché CodeCatch chiede l’Accesso completo al disco?</summary>
-    <p>macOS lo richiede prima che un’app possa leggere Messaggi e Apple Mail. CodeCatch legge solo queste due app. Se usi solo Gmail, Outlook o altri account di posta, puoi farne a meno. L’accesso ad Accessibilità serve solo se vuoi che CodeCatch digiti i codici per te.</p>
+    <p>macOS lo richiede prima che un’app possa leggere Messaggi e Apple Mail. CodeCatch legge solo queste due app. Se usi solo Gmail, Outlook o altri account di posta, puoi farne a meno. Il permesso Accessibilità serve solo se vuoi che CodeCatch digiti i codici per te.</p>
   </details>
   <details>
     <summary>Esce qualcosa dal mio Mac?</summary>
