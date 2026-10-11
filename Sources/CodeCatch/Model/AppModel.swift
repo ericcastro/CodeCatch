@@ -487,7 +487,7 @@ final class AppModel: ObservableObject {
         }
     }
 
-    /// "Clear" / "Not a Code": gone for good, even when the source is re-read later.
+    /// "Clear": gone for good, even when the source is re-read later.
     func dismiss(_ item: CodeItem) {
         defaults.set(Array((dismissed + [item.dismissKey]).suffix(500)), forKey: Prefs.dismissed)
         remove { $0.id == item.id }
