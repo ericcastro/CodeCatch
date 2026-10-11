@@ -167,7 +167,7 @@ final class AppModel: ObservableObject {
     // MARK: - Sources
 
     func monitoring(_ key: String) -> Bool { key == Prefs.unlockWithMac ? unlockPolicy.enabled : defaults.bool(forKey: key) }
-    var receiving: Bool { [Prefs.receivedCodes, Prefs.signInLinks, Prefs.resetLinks].contains(where: monitoring) }
+    var receiving: Bool { Prefs.receiving.contains(where: monitoring) }
 
     func setMonitoring(_ key: String, enabled: Bool) {
         guard monitoring(key) != enabled else { return }

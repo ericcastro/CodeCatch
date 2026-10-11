@@ -10,6 +10,8 @@ enum Prefs {
     static let hotkeys = "hotkeys", welcomed = "welcomed"
 
     static let receivedCodes = "receivedCodes", signInLinks = "signInLinks", resetLinks = "passwordResetLinks", bitwarden = "bitwardenEnabled"
+    /// What messages are read for: with all three off, no source is watched.
+    static let receiving = [receivedCodes, signInLinks, resetLinks]
 
     static func register(in defaults: UserDefaults = .standard) {
         defaults.register(defaults: [
