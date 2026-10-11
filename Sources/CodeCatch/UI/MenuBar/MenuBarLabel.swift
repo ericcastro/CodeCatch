@@ -8,7 +8,7 @@ struct MenuBarLabel: View {
     var body: some View {
         HStack(spacing: 4) {
             Image(nsImage: AppBrand.menuBarImage).accessibilityLabel(AppBrand.name)
-            if showCode, !blurCodes, model.isUnlocked, let item = model.latestCode, !item.used, model.now.timeIntervalSince(item.received) < 180 {
+            if showCode, !blurCodes, model.isUnlocked, let item = model.latestCode, !item.used, item.shouldAnnounce(at: model.now) {
                 Text(groupedCode(item.code)).monospacedDigit()
             } else if !model.isUnlocked, model.latest != nil {
                 Image(systemName: "lock.fill").accessibilityLabel("Locked")
