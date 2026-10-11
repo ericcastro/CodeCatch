@@ -444,20 +444,20 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
 .compare h2 { font-size: clamp(28px, 3.4vw, 40px); font-weight: 720; max-width: 720px; }
 .table-wrap { margin-top: 20px; overflow-x: auto; border-radius: 22px; border: 1px solid var(--line); background: var(--surface); }
 .compare table { width: 100%; min-width: 840px; border-collapse: collapse; table-layout: fixed; font-size: 16px; }
-.compare th, .compare td { padding: 15px 20px; text-align: left; vertical-align: top; }
+.compare th, .compare td { padding: 15px 12px 15px 20px; text-align: left; vertical-align: top; }
 .compare thead th { padding-top: 20px; padding-bottom: 16px; font-size: 15px; font-weight: 650; color: var(--muted); vertical-align: baseline; }
 .compare thead th:first-child { width: 18%; }
 .compare thead th.us { color: var(--text); font-size: 17px; }
-.compare thead .mark { position: absolute; left: 18px; top: calc(50% + 2px); translate: 0 -50%; font-size: 20px; }
+.compare thead .mark { position: absolute; left: 16px; top: calc(50% + 2px); translate: 0 -50%; font-size: 20px; }
 .compare tbody tr { border-top: 1px solid var(--line); }
 .compare tbody th { font-weight: 600; }
 .compare td { color: var(--muted); }
-.compare td.us { position: relative; padding-left: 46px; color: var(--text); }
+.compare td.us { position: relative; padding-left: 42px; color: var(--text); }
 .compare .us { background: color-mix(in srgb, var(--brand-1) 9%, transparent); }
-.compare tbody td, .compare thead th + th { position: relative; padding-left: 46px; }
+.compare tbody td, .compare thead th + th { position: relative; padding-left: 42px; }
 /* A dot in the gutter: orange for us, grey for a rival's yes, silver for no. */
 @media (min-width: 901px) {
-  .compare tbody td::before { content: ""; position: absolute; left: 23px; top: calc(1.72em - 3px); width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(180deg, var(--brand-1), var(--brand-2)); }
+  .compare tbody td::before { content: ""; position: absolute; left: 21px; top: calc(1.72em - 3px); width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(180deg, var(--brand-1), var(--brand-2)); }
   .compare td.has::before { background: var(--muted); opacity: 0.7; }
   .compare td.no::before { background: var(--faint); opacity: 0.45; }
 }
