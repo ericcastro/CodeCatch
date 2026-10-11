@@ -360,11 +360,13 @@ section[id] { scroll-margin-top: 60px; }
 .row-pill { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 90px; min-height: 24px; padding: 0 10px; border-radius: 999px; background: var(--tint); box-shadow: inset 0 0 0 0.500px var(--line); color: var(--text); font: 500 12px/1 var(--font); white-space: nowrap; }
 .row-code { font-size: 15px; font-variant-numeric: tabular-nums; }
 .row.expired .row-pill { color: var(--faint); }
-/* On the clipboard: the code turns blue, its ring goes and a checkmark draws in before it. */
+/* On the clipboard: the code turns blue, its ring shrinks away and a checkmark draws in before it.
+   A Copy button draws the same checkmark as it turns to Copied. */
 .row-pill .tick { display: none; font-size: 12px; stroke-dasharray: 21; }
 li.copied .row-pill { color: var(--accent); }
-li.copied .tick { display: block; animation: draw-on 0.35s ease-out both; }
-.row.copied .ring { display: none; }
+li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; animation: draw-on 0.35s ease-out both; }
+.row .ring { transition: opacity 0.3s, transform 0.3s cubic-bezier(0.3, 1.3, 0.5, 1); }
+.row.copied .ring { opacity: 0; transform: rotate(-90deg) scale(0.6); }  /* its slot stays, as in the app */
 @keyframes draw-on { from { stroke-dashoffset: 21; } to { stroke-dashoffset: 0; } }
 #rows .row:has(.row-code) { cursor: pointer; }
 .row:hover .row-pill { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, #fff), var(--accent)); box-shadow: none; color: #fff; }
@@ -727,9 +729,9 @@ li.copied .tick { display: block; animation: draw-on 0.35s ease-out both; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .reveal, .banner, .keys, .ring .arc, .button, .toc ol::before { transition: none; }
+  .reveal, .banner, .keys, .ring .arc, .row .ring, .button, .toc ol::before { transition: none; }
   .reveal { opacity: 1; transform: none; }
-  li.copied .tick { animation: none; }
+  li.copied .tick, button.copied > svg { animation: none; }
 }
 
 /* AgentCard.swift and AgentsTab.swift: an agent's request for a code, and Settings → Agents. */

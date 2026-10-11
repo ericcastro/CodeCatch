@@ -137,7 +137,8 @@
     empty.hidden = shown > 0;
   });
 
-  // A click plays the app's copy: the pill says "Copied" for a moment, then shows the code again.
+  // A click plays the app's copy: the pill fades to "Copied" for a moment, then back to the code.
+  const swap = (label, text) => { label.textContent = text; if (!still) label.animate({ opacity: [0, 1] }, 300); };
   let flash, restore = () => {};
   for (const row of rows) {
     const label = row.querySelector(".row-code > span");
@@ -149,8 +150,8 @@
       rows.forEach((other) => other.classList.remove("copied"));
       void row.offsetWidth;  // restart the checkmark's draw-on
       row.classList.add("copied");
-      label.textContent = "Copied";
-      restore = () => { label.textContent = digits; };
+      swap(label, "Copied");
+      restore = () => { if (label.textContent !== digits) swap(label, digits); };
       flash = setTimeout(restore, 1200);
     });
   }

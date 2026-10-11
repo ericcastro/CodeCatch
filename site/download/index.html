@@ -52,7 +52,7 @@
   copy.addEventListener("click", async () => {
     const copied = await navigator.clipboard.writeText(link).then(() => true, () => false);
     copy.querySelector("span").textContent = copied ? "Copied" : "Couldn’t copy";
-    if (copied) copy.querySelector("use").setAttribute("href", "#i-check");
+    if (copied) { copy.classList.add("copied"); copy.querySelector("use").setAttribute("href", "#i-check"); }
   });
 </script>
 </main>
