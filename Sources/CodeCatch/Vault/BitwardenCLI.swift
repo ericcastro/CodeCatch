@@ -18,7 +18,8 @@ enum BitwardenCLI {
     }
 
     enum Region: String, CaseIterable, Identifiable {
-        case us = "US", eu = "EU"
+        case us = "US"
+        case eu = "EU"
         var id: Self { self }
         var domain: String { self == .us ? "bitwarden.com" : "bitwarden.eu" }
         var server: String { "https://vault.\(domain)" }

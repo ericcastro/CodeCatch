@@ -48,7 +48,10 @@ enum AppBrand {
         NSApp.orderFrontStandardAboutPanel(options: [.applicationName: name])
     }
 
-    enum Issue: String { case bug = "bug_report.yml", feature = "feature_request.yml" }
+    enum Issue: String {
+        case bug = "bug_report.yml"
+        case feature = "feature_request.yml"
+    }
 
     /// Opens a GitHub issue form; a bug report arrives with the build and Mac already filled in.
     static func openIssue(_ issue: Issue) {

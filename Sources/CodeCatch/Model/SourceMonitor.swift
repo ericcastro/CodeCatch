@@ -47,8 +47,8 @@ final class SourceMonitor: ObservableObject {
 
     deinit {
         pathMonitor?.cancel()
-        local.values.forEach { $0.stop() }
-        tasks.values.forEach { $0.cancel() }
+        for watcher in local.values { watcher.stop() }
+        for task in tasks.values { task.cancel() }
     }
 
     func start(accounts: [MailAccount]) {

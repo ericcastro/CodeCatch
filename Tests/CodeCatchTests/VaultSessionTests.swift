@@ -66,7 +66,7 @@ private enum VaultTestFailure: Error { case unavailable }
 
     func release() {
         released = true
-        waiting.forEach { $0.resume() }
+        for continuation in waiting { continuation.resume() }
         waiting = []
     }
 }

@@ -13,7 +13,7 @@ enum Hotkeys {
     private static var handler: EventHandlerRef?
 
     static func sync() {
-        registered.forEach { UnregisterEventHotKey($0) }
+        for hotkey in registered { UnregisterEventHotKey(hotkey) }
         registered = []
         guard Prefs[Prefs.hotkeys] else { return }
         if handler == nil {
