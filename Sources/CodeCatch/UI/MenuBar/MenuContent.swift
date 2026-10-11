@@ -158,14 +158,11 @@ struct MenuContent: View {
         return .handled
     }
 
-    /// Today / Yesterday / "Monday 27 Sep", newest first.
+    /// Grouped under day headings, newest first.
     private func days(_ items: [CodeItem]) -> [(title: String, items: [CodeItem])] {
-        let calendar = Calendar.current
         var out: [(title: String, items: [CodeItem])] = []
         for item in items {
-            let title = calendar.isDateInToday(item.received) ? "Today"
-                : calendar.isDateInYesterday(item.received) ? "Yesterday"
-                : item.received.formatted(.dateTime.weekday(.wide).day().month(.abbreviated))
+            let title = item.received.dayTitle
             if out.last?.title == title { out[out.count - 1].items.append(item) } else { out.append((title, [item])) }
         }
         return out

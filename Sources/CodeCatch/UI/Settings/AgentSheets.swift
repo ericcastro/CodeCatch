@@ -93,7 +93,7 @@ struct AgentHistorySheet: View {
             List {
                 // Day titles as plain rows: a List's section headers stick with an opaque background here.
                 ForEach(days, id: \.day) { group in
-                    Text(title(group.day)).font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
+                    Text(group.day.dayTitle).font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
                         .padding(.top, 6)
                         .listRowSeparator(.hidden)
                     ForEach(group.entries) { AgentLogRow(entry: $0) }
@@ -120,11 +120,6 @@ struct AgentHistorySheet: View {
         Dictionary(grouping: access.log) { Calendar.current.startOfDay(for: $0.date) }
             .map { ($0.key, $0.value) }
             .sorted { $0.day > $1.day }
-    }
-
-    private func title(_ day: Date) -> String {
-        Calendar.current.isDateInToday(day) ? "Today" : Calendar.current.isDateInYesterday(day) ? "Yesterday"
-            : day.formatted(.dateTime.weekday(.wide).day().month(.wide))
     }
 }
 
