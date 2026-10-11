@@ -26,7 +26,9 @@ final class AppModel: ObservableObject {
     /// Why the last unlock failed; cleared when the next one starts.
     @Published private(set) var unlockError: String?
     /// Senders whose messages are never read for codes: addresses, domains and SMS senders.
-    @Published private(set) var ignoredSenders: [String]
+    @Published private(set) var ignoredSenders: [String] {
+        didSet { defaults.set(ignoredSenders, forKey: Prefs.ignoredSenders) }
+    }
     let vaultSession: VaultSession
     let monitor: SourceMonitor
     let search: CodeSearch
@@ -119,16 +121,12 @@ final class AppModel: ObservableObject {
             }
         }
         center.addObserver(forName: NSWorkspace.willSleepNotification, object: nil, queue: .main) { [weak self] _ in
-            Task { @MainActor in
-                self?.vaultSession.lock()
-                self?.agents.cancel("The Mac went to sleep before the request was approved.")
-            }
+            Task { @MainActor in self?.lock(because: "The Mac went to sleep") }
         }
         DistributedNotificationCenter.default().addObserver(forName: .init("com.apple.screenIsLocked"), object: nil, queue: .main) { [weak self] _ in
             Task { @MainActor in
                 guard let self else { return }
-                self.vaultSession.lock()
-                self.agents.cancel("The Mac locked before the request was approved.")
+                self.lock(because: "The Mac locked")
                 guard self.monitoring(Prefs.clearOnLock) else { return }
                 self.clearHistory()
                 Clipboard.clearIfOurs()
@@ -148,6 +146,12 @@ final class AppModel: ObservableObject {
         monitor.start(accounts: accounts)
         // `open CodeCatch.app --args -demoCode YES`: a test code on launch, for trying the banner and chip.
         if monitoring("demoCode") { DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in self?.showTestCode() } }
+    }
+
+    /// Whoever unlocked is gone: unload the vault and end a request waiting on the card.
+    private func lock(because event: String) {
+        vaultSession.lock()
+        agents.cancel("\(event) before the request was approved.")
     }
 
     private func tick() {
@@ -215,7 +219,7 @@ final class AppModel: ObservableObject {
         guard item.origin == .mail else { return item.origination }
         let account = accounts.first { $0.id.uuidString == item.sourceKey }
         // The badge is the mailbox's logo (Apple Mail: Mail's own icon); with logos off, every mailbox wears the mail app's.
-        let sharingBadge = !defaults.bool(forKey: Prefs.serviceIcons) ? mailSourceKeys.count
+        let sharingBadge = !monitoring(Prefs.serviceIcons) ? mailSourceKeys.count
             : account.map { mine in accounts.filter { $0.enabled && $0.iconDomain == mine.iconDomain }.count } ?? 1
         guard sharingBadge > 1 else { return "" }
         guard let account else { return item.sourceLabel }
@@ -312,9 +316,9 @@ final class AppModel: ObservableObject {
         // clipboard or into a field, and not onto a banner that would cover the request's card.
         guard !agents.isWaiting else { return }
         if let code, isUnlocked {
-            if defaults.bool(forKey: Prefs.autoCopy) { copyToClipboard(code, item.id) }
+            if monitoring(Prefs.autoCopy) { copyToClipboard(code, item.id) }
             // Opt-in: the code goes to whatever field has focus, so only as it arrives, never later.
-            if defaults.bool(forKey: Prefs.autoType) { typeCode(code) }
+            if monitoring(Prefs.autoType) { typeCode(code) }
         }
         if monitoring(Prefs.showBanner) {
             unlockError = nil  // a failure from an earlier code isn't about this one
@@ -502,14 +506,12 @@ final class AppModel: ObservableObject {
         let entry = sender.lowercased()
         guard !entry.isEmpty, !isIgnored(entry) else { return }
         ignoredSenders.append(entry)
-        defaults.set(ignoredSenders, forKey: Prefs.ignoredSenders)
         remove { ServiceIdentity.ignores(entry, sender: $0.sender) }
         recovery.remove(ignored: entry)
     }
 
     func stopIgnoring(_ entries: Set<String>) {
         ignoredSenders.removeAll { entries.contains($0) }
-        defaults.set(ignoredSenders, forKey: Prefs.ignoredSenders)
         restartMessages()  // re-read the sources so those senders' codes come back
         restartMail()
     }
