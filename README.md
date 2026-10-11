@@ -98,8 +98,9 @@ has the rest.
 Codes and messages stay on your Mac. Received codes live in memory only. Mail
 passwords and Bitwarden secrets live in your login Keychain (service
 `com.uros.codecatch`). CodeCatch connects only to your mail provider, Bitwarden
-when you import, `codecatch.app` for updates, and Google's logo service (turn
-off in Settings → Privacy).
+when you import, Google or Microsoft if you sign in with them, `codecatch.app`
+for updates, and Google's or DuckDuckGo's logo service (turn off in
+Settings → Privacy).
 
 The full list is at [codecatch.app/privacy](https://codecatch.app/privacy/).
 How it works inside is in [ARCHITECTURE.md](ARCHITECTURE.md).

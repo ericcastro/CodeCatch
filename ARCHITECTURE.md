@@ -1,14 +1,32 @@
 # Architecture and privacy boundaries
 
-CodeCatch has two Swift targets. `CodeCatchCore` handles extraction, MIME,
-service names and TOTP calculation without UI or account access. `CodeCatch`
-contains macOS adapters, orchestration and SwiftUI views. Sparkle is the only
-package dependency; its resolved version is checked in.
+CodeCatch has three Swift targets. Sparkle is the only package dependency; its
+resolved version is checked in.
+
+| Target | What it holds |
+|---|---|
+| `CodeCatchCore` | Code extraction, MIME, service names, sign-in links, TOTP and the agent socket protocol. No UI, no account access. |
+| `CodeCatch` | The app: macOS adapters, orchestration and SwiftUI views. |
+| `CodeCatchCLI` | `codecatch`, the command agents run to ask the app for a code. |
+
+Inside `Sources/CodeCatch`:
+
+| Folder | What it holds |
+|---|---|
+| `App` | Entry point, plus debug-only tools (`--probe`, `--snapshot`, …) left out of release builds |
+| `Model` | `AppModel`, received codes, search, preferences and the source monitor |
+| `Messages` | Reading the Messages database |
+| `Mail` | Apple Mail, IMAP, and Gmail / Outlook through their APIs, with sign-in |
+| `Vault` | Bitwarden import and the locked store of TOTP secrets |
+| `Agents` | The socket server, approval rules and skill files for `codecatch` |
+| `System` | Clipboard, Keychain, hotkeys, typing, login item and updates |
+| `UI` | Menu bar popover, banner, settings and shared components |
 
 ## Received messages
 
 `MessagesStore` and `AppleMailStore` read local stores through `LocalWatcher`.
-`MailWatcher` uses TLS IMAP with `EXAMINE` and `BODY.PEEK`. `SourceMonitor` owns
+`MailWatcher` uses TLS IMAP with `EXAMINE` and `BODY.PEEK`. `APIWatcher` reads
+Gmail and Outlook accounts through `GmailAPI` and `OutlookAPI`. `SourceMonitor` owns
 worker lifetimes and rejects callbacks from replaced workers using generations.
 Every source delivers `IncomingMessage` to `AppModel.ingest` for extraction,
 deduplication, history limits and announcement decisions.
@@ -55,8 +73,9 @@ the Mac password on the request's card every time, or a rule: an app (bundle ID
 and team), one site or all. Allow All, turned on with the same authentication,
 releases to any caller; it shares the hourly cap and never covers a text that
 names no site. Sign-in links go to agents only while their own switch is on
-(also behind authentication), then under the same card, rules and Allow All. An approval covers the
-one item the card showed. Mail matches by the sender's registrable domain only.
+(also behind authentication), then under the same card, rules and Allow All.
+An approval covers the one item the card showed. Mail matches by the sender's
+registrable domain only.
 Links go out only from verified senders, to the requested site, and never for a
 password reset or a link the lookalike check warns about. While a request waits,
 new codes skip auto-copy, auto-type and the banner. Lock and sleep cancel a
@@ -65,26 +84,29 @@ Three denials in a row turn access off, and rules give out at most 20 codes an
 hour before asking again. The log keeps who asked, the site and the outcome,
 never the code. Connect writes `codecatch/SKILL.md` into an agent's
 own skills folder (`~/.claude`, `~/.codex`, `~/.cursor`), marked as CodeCatch's;
-Disconnect and launch-time refresh touch only files with that mark. None of this stops a program that already has Full Disk Access
-from reading Messages or Mail directly.
+Disconnect and launch-time refresh touch only files with that mark. None of
+this stops a program that already has Full Disk Access from reading Messages
+or Mail directly.
 
 ## Network boundaries
 
 | Component | Destination and purpose |
 |---|---|
 | `MailWatcher` | Configured IMAP server over TLS; inbox reads |
-| `GoogleOAuth` | Google authorization/token endpoints; optional sign-in |
+| `OAuth` | Google or Microsoft sign-in and token endpoints; only for accounts added with Sign in with Google or Microsoft |
+| `GmailAPI`, `OutlookAPI` | Gmail API or Microsoft Graph; read-only inbox reads for those accounts |
 | `BitwardenCLI` | User's configured Bitwarden service; explicit sync/import |
-| `IconStore` | Google favicon service only; receives the inferred domain, never message text or codes |
+| `IconStore` | Google's favicon service, then DuckDuckGo's when Google has no sharp logo; receives the inferred domain, never message text or codes |
 | `Updater` | codecatch.app for the Sparkle feed (with a random install ID, build, macOS version and Mac model, counted by `functions/_middleware.js`) and signed release downloads |
 
-Logos are on by default and can be disabled in Privacy. Only Google favicon
-hosts are allowed; redirects to service websites are rejected. Google receives
-the requesting IP address and domain. Other servers receive ordinary connection
-metadata for their respective features. Opening a
-sign-in link also sends its token to the chosen destination. Apart from that install count, there is
-no app analytics or crash-upload pipeline. The public [privacy page](site/privacy/index.html)
-must stay consistent with implementation changes.
+Logos are on by default and can be disabled in Privacy. Only the two favicon
+services' hosts are allowed; redirects to service websites are rejected. They
+receive the requesting IP address and domain. Other servers receive ordinary
+connection metadata for their respective features. Opening a sign-in link also
+sends its token to the chosen destination. Apart from that install count, there
+is no app analytics or crash-upload pipeline. The public
+[privacy page](site/privacy/index.html) must stay consistent with implementation
+changes.
 
 ## Verification and releases
 
