@@ -20,19 +20,21 @@ enum MailAPIError: LocalizedError {
         case .http(let status, let message): "The mail service answered \(status): \(message)"
         }
     }
+}
 
+extension APIAuth {
     /// Sends `request` with the account's access token, refreshing it once if it was refused,
     /// and maps the provider's errors. Returns the body of a successful answer.
-    static func send(_ request: URLRequest, auth: APIAuth, provider: String) async throws -> Data {
+    func send(_ request: URLRequest, provider: String) async throws -> Data {
         var request = request
-        request.setValue("Bearer \(try await auth.accessToken())", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(try await accessToken())", forHTTPHeaderField: "Authorization")
         let (data, response) = try await OAuth.session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
         let message = ((json["error"] as? [String: Any])?["message"] as? String) ?? HTTPURLResponse.localizedString(forStatusCode: status)
         switch status {
         case 200: return data
-        case 401 where auth.forget(): return try await send(request, auth: .issued(try await auth.accessToken()), provider: provider)
+        case 401 where forget(): return try await APIAuth.issued(try await accessToken()).send(request, provider: provider)
         case 401: throw OAuth.Failure.token("unauthorized")
         case 403 where message.localizedCaseInsensitiveContains("insufficient") || message.localizedCaseInsensitiveContains("denied"):
             throw OAuth.Failure.noMailAccess(provider)

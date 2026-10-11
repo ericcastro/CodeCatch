@@ -7,7 +7,7 @@ struct OutlookAPI: MailAPI {
     private let send: @Sendable (URLRequest) async throws -> Data
 
     init(auth: APIAuth, send: (@Sendable (URLRequest) async throws -> Data)? = nil) {
-        self.send = send ?? { try await MailAPIError.send($0, auth: auth, provider: "Microsoft") }
+        self.send = send ?? { try await auth.send($0, provider: "Microsoft") }
     }
     init(account: MailAccount) { self.init(auth: .saved(.microsoft, tokenKey: account.refreshTokenKey)) }
 

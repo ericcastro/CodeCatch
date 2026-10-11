@@ -62,7 +62,7 @@ struct GmailAPI: MailAPI {
     private func get(_ path: String, _ query: [String: String] = [:]) async throws -> [String: Any] {
         var url = URLComponents(string: "https://gmail.googleapis.com/gmail/v1/users/me/" + path)!
         if !query.isEmpty { url.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) } }
-        let data = try await MailAPIError.send(URLRequest(url: url.url!, timeoutInterval: 60), auth: auth, provider: "Google")
+        let data = try await auth.send(URLRequest(url: url.url!, timeoutInterval: 60), provider: "Google")
         return (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
     }
 }
