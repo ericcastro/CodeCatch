@@ -15,12 +15,12 @@ Inside `Sources/CodeCatch`:
 |---|---|
 | `App` | Entry point and app delegate |
 | `Debug` | Debug-only launch flags (`--probe`, `--snapshot`, …), left out of release builds |
-| `Model` | `AppModel`, received codes, search, preferences and the source monitor |
+| `Model` | `AppModel`, received codes, search, preferences, the source monitor and the local-database watcher |
 | `Messages` | Reading the Messages database |
 | `Mail` | Apple Mail, IMAP, and Gmail / Outlook through their APIs, with sign-in |
 | `Vault` | Bitwarden import and the locked store of TOTP secrets |
 | `Agents` | The socket server, approval rules and skill files for `codecatch` |
-| `System` | Clipboard, Keychain, hotkeys, typing, login item and updates |
+| `System` | Clipboard, Keychain, Touch ID, hotkeys, typing, service logos, login item and updates |
 | `UI` | Menu bar popover, banner, settings and shared components |
 
 ## Received messages
