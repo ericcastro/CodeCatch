@@ -26,11 +26,16 @@ Do not use a personal inbox or vault as a test fixture.
 Swift package folders are capitalized as SwiftPM expects; `functions/` is the name Cloudflare
 Pages looks for; everything else is lowercase.
 
-Python scripts follow `ruff.toml`. Before committing a script change, run:
+Swift follows `.swift-format` and Python scripts follow `ruff.toml`; CI checks both. To format
+and check before a commit:
 
 ```sh
-ruff check scripts && ruff format --check scripts
+swift format -i -r -p Sources Tests Package.swift && swift format lint --strict -r -p Sources Tests Package.swift
+ruff format scripts && ruff check scripts
 ```
+
+The one-time reformat is listed in `.git-blame-ignore-revs`; run
+`git config blame.ignoreRevsFile .git-blame-ignore-revs` so `git blame` skips it.
 
 ## Changes
 

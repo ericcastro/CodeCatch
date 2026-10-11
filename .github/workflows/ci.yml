@@ -43,6 +43,10 @@ jobs:
       # The Liquid Glass APIs need the macOS 26 SDK; the image defaults to an older Xcode.
       - name: Select Xcode 26
         run: sudo xcode-select -s "$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)"
+      # Settings in .swift-format; `swift format -i -r -p Sources Tests Package.swift` fixes most findings.
+      - name: Swift format
+        if: matrix.os == 'macos-15'
+        run: swift format lint --strict -r -p Sources Tests Package.swift
       - name: Release privacy tests
         run: python3 scripts/test-release-privacy.py
       - name: Test
