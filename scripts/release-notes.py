@@ -5,6 +5,7 @@ The notes list the changelog headings that <ref> (default HEAD) has and <previou
 newest entry first, then a link to the full changelog. A release with no new headings says
 "Small fixes." Leave <previous-tag> empty for the first release.
 """
+
 import html
 import re
 import subprocess
@@ -18,9 +19,11 @@ def headings(ref):
         return []
     page = subprocess.run(["git", "show", f"{ref}:{PAGE}"], capture_output=True, text=True, check=True).stdout
     # Only the "points" lists: the app pictures in an entry have <dt>s of their own.
-    return [html.unescape(re.sub(r"<[^>]+>", "", dt)).strip()
-            for points in re.findall(r'<dl class="points">(.*?)</dl>', page, re.S)
-            for dt in re.findall(r"<dt>(.*?)</dt>", points, re.S)]
+    return [
+        html.unescape(re.sub(r"<[^>]+>", "", dt)).strip()
+        for points in re.findall(r'<dl class="points">(.*?)</dl>', page, re.DOTALL)
+        for dt in re.findall(r"<dt>(.*?)</dt>", points, re.DOTALL)
+    ]
 
 
 old = set(headings(sys.argv[1]))

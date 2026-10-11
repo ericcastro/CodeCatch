@@ -1,0 +1,12 @@
+# Lint and format for the Python scripts: `ruff check` and `ruff format --check` (CI runs both).
+line-length = 120
+target-version = "py39"
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "C4", "EXE", "FURB", "PLW"]
+# The formatter wraps code; long strings and comments stay readable as they are.
+ignore = ["E501"]
+
+[lint.per-file-ignores]
+# dmgbuild runs this file with `defines` already set.
+"scripts/dmg-settings.py" = ["F821"]

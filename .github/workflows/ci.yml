@@ -16,6 +16,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      # Settings in ruff.toml; the same version locally gives the same result.
+      - name: Ruff
+        run: |
+          pipx run ruff==0.16.8 check scripts
+          pipx run ruff==0.16.8 format --check scripts
+
   verify:
     strategy:
       fail-fast: false

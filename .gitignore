@@ -10,3 +10,4 @@ site/download/*.dmg
 *.p8
 *.pem
 *.key
+__pycache__/

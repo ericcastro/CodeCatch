@@ -6,6 +6,7 @@ The image is the page's own heading next to its own app picture, drawn with the 
 styles by headless Chrome, so it changes when the page does. Run it after editing a
 page's heading or picture:  python3 scripts/make-og.py
 """
+
 import glob
 import os
 import re
@@ -47,7 +48,7 @@ TEMPLATE = """<!doctype html>
 
 
 def grab(pattern, html, page):
-    match = re.search(pattern, html, re.S)
+    match = re.search(pattern, html, re.DOTALL)
     if not match:
         sys.exit(f"{page}: nothing matches {pattern}")
     return match.group(1)
@@ -59,14 +60,19 @@ def main():
     work = tempfile.mkdtemp()
     try:
         for page in sorted(glob.glob(os.path.join(SITE, "**/index.html"), recursive=True)):
-            html = open(page).read()
+            with open(page) as file:
+                html = file.read()
             if 'class="feature-art article-art"' not in html:
                 continue
             name = os.path.basename(os.path.dirname(page))
             lang = grab(r'<html lang="([a-z-]+)"', html, page)
             folder = out_dir if lang == "en" else os.path.join(out_dir, lang)
             os.makedirs(folder, exist_ok=True)
-            art = grab(r'<div class="feature-art article-art" aria-hidden="true">\s*(<div class="cc">.*?)\n  </div>\n', html, page)
+            art = grab(
+                r'<div class="feature-art article-art" aria-hidden="true">\s*(<div class="cc">.*?)\n  </div>\n',
+                html,
+                page,
+            )
             source = TEMPLATE.format(
                 lang=lang,
                 site="file://" + SITE,
@@ -76,11 +82,22 @@ def main():
                 sprite=grab(r'(<svg width="0" height="0".*?</svg>)\s*(?:<script|</body>)', html, page),
             )
             draft = os.path.join(work, lang + "-" + name + ".html")
-            open(draft, "w").write(source)
+            with open(draft, "w") as file:
+                file.write(source)
             image = os.path.join(folder, name + ".png")
-            subprocess.run([CHROME, "--headless", "--hide-scrollbars", "--force-device-scale-factor=1",
-                            "--window-size=1200,630", f"--screenshot={image}", "file://" + draft],
-                           check=True, capture_output=True)
+            subprocess.run(
+                [
+                    CHROME,
+                    "--headless",
+                    "--hide-scrollbars",
+                    "--force-device-scale-factor=1",
+                    "--window-size=1200,630",
+                    f"--screenshot={image}",
+                    "file://" + draft,
+                ],
+                check=True,
+                capture_output=True,
+            )
             if shutil.which("oxipng"):
                 subprocess.run(["oxipng", "-q", "-o", "3", "--strip", "safe", image], check=True)
             print(os.path.relpath(image, ROOT), os.path.getsize(image) // 1024, "KB")

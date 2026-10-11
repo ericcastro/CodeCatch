@@ -11,6 +11,7 @@
   (the language switcher is the exception);
 - the sitemap lists exactly the indexed pages.
 """
+
 import glob
 import os
 import re
@@ -29,7 +30,8 @@ class Page(HTMLParser):
         super().__init__()
         self.lang, self.canonical, self.og_url, self.noindex = None, None, None, False
         self.alternates, self.switcher, self.links, self.ids = {}, {}, [], set()
-        self.feed(open(path).read())
+        with open(path) as file:
+            self.feed(file.read())
 
     def handle_starttag(self, tag, attrs):
         a = {key: value or "" for key, value in attrs}
@@ -66,10 +68,14 @@ def main():
     errors = []
     paths = sorted(glob.glob(os.path.join(SITE, "**/*.html"), recursive=True))
     pages = {url_of(p): Page(p) for p in paths}
-    redirects = {line.split()[0] for line in open(os.path.join(SITE, "_redirects")) if line.strip()}
+    with open(os.path.join(SITE, "_redirects")) as file:
+        redirects = {line.split()[0] for line in file if line.strip()}
 
     for url, page in pages.items():
-        say = lambda message: errors.append(f"{url.removeprefix(ORIGIN)}: {message}")
+
+        def say(message, url=url):
+            return errors.append(f"{url.removeprefix(ORIGIN)}: {message}")
+
         first = url.removeprefix(ORIGIN + "/").split("/")[0]
         lang = first if first in LANGUAGES else "en"
         if page.lang != lang:
@@ -113,7 +119,8 @@ def main():
             elif twin and not switcher and twin.lang != lang and lang in twin.alternates:
                 say(f"links to {href}; link to {twin.alternates[lang].removeprefix(ORIGIN)} instead")
 
-    sitemap = set(re.findall(r"<loc>(.*?)</loc>", open(os.path.join(SITE, "sitemap.xml")).read()))
+    with open(os.path.join(SITE, "sitemap.xml")) as file:
+        sitemap = set(re.findall(r"<loc>(.*?)</loc>", file.read()))
     listed = {url for url, page in pages.items() if not page.noindex and not url.endswith("404.html")}
     errors += [f"sitemap.xml: missing {url}" for url in sorted(listed - sitemap)]
     errors += [f"sitemap.xml: {url} is not an indexed page" for url in sorted(sitemap - listed)]

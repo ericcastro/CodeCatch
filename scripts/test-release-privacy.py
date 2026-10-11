@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Exercise the release privacy checker through its public CLI."""
 
-from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
-
+from pathlib import Path
 
 CHECKER = Path(__file__).with_name("check-release-privacy.py")
 
@@ -22,15 +21,18 @@ class ReleasePrivacyTests(unittest.TestCase):
             [sys.executable, str(CHECKER), *map(str, paths)],
             capture_output=True,
             text=True,
+            check=False,
             timeout=10,
         )
 
     def test_embedded_home_paths_block_release_without_echoing_private_content(self):
-        for home in (b"/Users/synthetic-developer/project/source.swift",
-                     b"/home/synthetic-developer/project/source.swift",
-                     b"/System/Volumes/Data/Users/synthetic-developer/project/source.swift",
-                     b"/Users/synthetic-developer",
-                     b"/home/synthetic-developer"):
+        for home in (
+            b"/Users/synthetic-developer/project/source.swift",
+            b"/home/synthetic-developer/project/source.swift",
+            b"/System/Volumes/Data/Users/synthetic-developer/project/source.swift",
+            b"/Users/synthetic-developer",
+            b"/home/synthetic-developer",
+        ):
             for prefix in (b"build source: ", b"\x00\xff\x01", b"file://", b"source:"):
                 with self.subTest(home=home, prefix=prefix):
                     artifact = self.root / "leaking-artifact"
