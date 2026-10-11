@@ -2,6 +2,28 @@ import CodeCatchCore
 import Darwin
 import Foundation
 
+/// The app a request came through, by its verified code signature: iTerm2, Terminal, Claude.
+struct AgentApp: Codable, Hashable {
+    /// The bundle identifier.
+    let id: String
+    /// Nil for Apple's own apps, such as Terminal.
+    let team: String?
+    let name: String
+
+    func same(as other: AgentApp) -> Bool { id == other.id && team == other.team }
+}
+
+struct AgentCaller: Equatable {
+    /// Nil when no app in the chain of parent processes has a valid signature (a script run by launchd, ssh).
+    var app: AgentApp?
+    var appPath: URL?
+    /// The asking program's own name ("claude", "node"). Any program can call itself anything.
+    var process: String
+
+    var name: String { app?.name ?? "An unverified program" }
+    var logLabel: String { [app?.name ?? "Unverified", process].joined(separator: " · ") }
+}
+
 /// Who is asking, as far as the kernel and code signatures can tell: the first app up the chain
 /// of parent processes whose signature checks out (iTerm2, Terminal, Claude), and the program
 /// that asked inside it. A program's own name is its choice, so the card marks it unverified.
