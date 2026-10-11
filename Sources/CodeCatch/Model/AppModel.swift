@@ -93,10 +93,10 @@ final class AppModel: ObservableObject {
         self.monitor.deliver = { [weak self] in self?.ingest($0) }
     }
 
-    var latest: CodeItem? { items.first(where: isFresh) }
-    /// What the menu bar shows: codes only, never a link.
-    var latestCode: CodeItem? { items.first { isFresh($0) && !$0.isLink } }
-    /// Still valid: shown in the menu bar.
+    var latest: CodeItem? { items.first { $0.isRecent(at: now) } }
+    /// What the menu bar shows and the shortcut copies: codes only, never a link.
+    var latestCode: CodeItem? { items.first { $0.isRecent(at: now) && !$0.isLink } }
+    /// Still valid: not marked Expired.
     func isFresh(_ item: CodeItem) -> Bool { now < item.expires }
 
     /// Sources in display order, each with its current status.

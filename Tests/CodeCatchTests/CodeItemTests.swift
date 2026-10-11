@@ -32,6 +32,15 @@ func expiredCodesDoNotTriggerAutomaticCopyWhileClockSkewStillWorks(age: TimeInte
     #expect(item.shouldAnnounce(at: now) == expected)
 }
 
+/// A link valid for 24 hours must not hold the popover's top card all day; an expired code must not take it either.
+@Test(arguments: [("This link will expire in 24 hours.", 540.0, true), ("This link will expire in 24 hours.", 660.0, false),
+                  ("Valid for 5 minutes.", 240.0, true), ("Valid for 5 minutes.", 360.0, false)])
+func topCardShowsOnlyARecentLiveItem(text: String, age: TimeInterval, expected: Bool) {
+    let now = Date(timeIntervalSince1970: 1_700_000_000)
+    let item = CodeItem(message(text, at: now.addingTimeInterval(-age)), code: nil, link: URL(string: "https://example.com/reset")!)
+    #expect(item.isRecent(at: now) == expected)
+}
+
 @Suite(.serialized) struct ClipboardTests {
     @Test @MainActor func rotatedTOTPDoesNotClaimThePreviousCodeIsCopied() throws {
         let vault = VaultCode(id: UUID().uuidString, name: "Example", username: nil, domain: nil,

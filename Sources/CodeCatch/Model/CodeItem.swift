@@ -58,6 +58,11 @@ struct CodeItem: Identifiable, Equatable {
     /// What Copy puts on the clipboard.
     var copyValue: String { isLink ? link?.absoluteString ?? "" : code }
 
+    /// Live and at most 10 minutes old: what the popover's top card shows. A 24-hour link stays in the list.
+    func isRecent(at date: Date) -> Bool {
+        date.timeIntervalSince(received) < 600 && date < expires
+    }
+
     func shouldAnnounce(at date: Date) -> Bool {
         date.timeIntervalSince(received) < 180 && date < expires
     }
