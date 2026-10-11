@@ -99,8 +99,9 @@ struct MenuContent: View {
                                             sectionTitle(day.title, count: day.items.count, noun: day.items.contains(where: \.isLink) ? "item" : "code")
                                         }
                                     }
-                                    if !showOlder, model.items.count - (latest == nil ? 0 : 1) > Self.recent {
-                                        Button("Show \(model.items.count - (latest == nil ? 0 : 1) - Self.recent) Older") { showOlder = true }
+                                    let older = model.items.count - (latest == nil ? 0 : 1) - Self.recent
+                                    if !showOlder, older > 0 {
+                                        Button("Show \(older) Older") { showOlder = true }
                                             .buttonStyle(.plain).font(.subheadline).foregroundStyle(.secondary)
                                             .frame(maxWidth: .infinity).padding(.vertical, 10)
                                     }
