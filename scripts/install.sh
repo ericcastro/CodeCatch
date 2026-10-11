@@ -125,8 +125,11 @@ if [ "${1:-}" = "--release" ] || [ "${1:-}" = "--publish" ]; then
         echo "Released $DMG; --publish uploads it"
         exit 0
     fi
+    # Notes list the changelog headings added since the last release.
+    git fetch --quiet --tags origin
+    NOTES=$(python3 scripts/release-notes.py "$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)")
     gh release create "$TAG" "$DMG" --repo ugzv/CodeCatch --target "$(git rev-parse HEAD)" \
-        --title "CodeCatch $TAG" --notes "https://codecatch.app/changelog/"
+        --title "CodeCatch $TAG" --notes "$NOTES"
     # Installed copies see the update once CI deploys the pushed feed.
     git commit --quiet -m "chore(release): $TAG" -- site/appcast.xml
     git push --quiet origin HEAD:main
