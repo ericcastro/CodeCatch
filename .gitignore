@@ -10,10 +10,3 @@ site/download/*.dmg
 *.p8
 *.pem
 *.key
-
-# Local assistant state and personal instructions
-.state/
-.claude/
-.codex/
-CLAUDE.md
-AGENTS.md
