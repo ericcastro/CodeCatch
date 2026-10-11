@@ -14,3 +14,17 @@ import Testing
     #expect(!LocalSocket.send(String(repeating: "x", count: 4 << 20), to: fds[0], within: 0.3))
     #expect(ContinuousClock.now - started < .seconds(2))
 }
+
+/// The app reads requests with a short socket timeout and a longer deadline: a client that pauses
+/// longer than the timeout, but within the deadline, must still be heard.
+@Test func readLineWaitsOutSocketTimeoutsUntilItsDeadline() throws {
+    var fds: [Int32] = [0, 0]
+    #expect(socketpair(AF_UNIX, SOCK_STREAM, 0, &fds) == 0)
+    defer { close(fds[0]); close(fds[1]) }
+    var timeout = timeval(tv_sec: 0, tv_usec: 100_000)
+    setsockopt(fds[0], SOL_SOCKET, SO_RCVTIMEO, &timeout, socklen_t(MemoryLayout<timeval>.size))
+    let writer = fds[1]
+    DispatchQueue.global().asyncAfter(deadline: .now() + 0.3) { _ = write(writer, "hello\n", 6) }
+    var buffer = Data()
+    #expect(LocalSocket.readLine(from: fds[0], buffer: &buffer, within: 2) == Data("hello".utf8))
+}

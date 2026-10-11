@@ -126,7 +126,8 @@ public enum LocalSocket {
             }
             guard buffer.count <= limit else { return nil }
             let n = Darwin.read(fd, &chunk, chunk.count)
-            if n < 0, errno == EINTR { continue }
+            // With a deadline, a socket read timeout only means: check the deadline again.
+            if n < 0, errno == EINTR || (deadline != nil && errno == EAGAIN) { continue }
             guard n > 0 else { return nil }
             buffer.append(contentsOf: chunk[0..<n])
         }
