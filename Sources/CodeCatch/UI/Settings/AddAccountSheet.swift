@@ -22,11 +22,7 @@ struct AddAccountSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Add a Mail Account").font(.title3.weight(.semibold))
-                Text("CodeCatch watches the inbox for codes and sign-in links. Your mail stays on the server.")
-                    .font(.callout).foregroundStyle(.secondary)
-            }
+            SheetHeader(title: "Add a Mail Account", about: "CodeCatch watches the inbox for codes and sign-in links. Your mail stays on the server.")
             VStack(spacing: 0) {
                 row(icon: AnyView(logo("google.com", fallback: "g.circle.fill", color: .red)), name: "Google",
                     detail: "Gmail · Sign in with Google (beta) or an app password") {

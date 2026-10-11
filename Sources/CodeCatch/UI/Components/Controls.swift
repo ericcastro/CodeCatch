@@ -104,6 +104,19 @@ struct GlyphMenu<Content: View>: View {
     }
 }
 
+/// The title and the line under it at the top of a sheet.
+struct SheetHeader: View {
+    let title: String
+    let about: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title).font(.title3.weight(.semibold))
+            Text(about).font(.callout).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+        }
+    }
+}
+
 /// An error or warning, drawn the same everywhere: orange, with a warning sign. The caller
 /// sets the font. `compact` keeps it to one line, with the full text on hover.
 struct WarningText: View {

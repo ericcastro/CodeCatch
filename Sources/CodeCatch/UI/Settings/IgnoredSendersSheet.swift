@@ -10,11 +10,7 @@ struct IgnoredSendersSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Ignored Senders").font(.title3.weight(.semibold))
-                Text("CodeCatch skips codes and links from these senders. To ignore one, right-click its code in the menu, or click +.")
-                    .font(.callout).foregroundStyle(.secondary)
-            }
+            SheetHeader(title: "Ignored Senders", about: "CodeCatch skips codes and links from these senders. To ignore one, right-click its code in the menu, or click +.")
             VStack(spacing: 0) {
                 List(selection: $selection) {
                     ForEach(entries, id: \.self) { IgnoredSenderRow(entry: $0) }

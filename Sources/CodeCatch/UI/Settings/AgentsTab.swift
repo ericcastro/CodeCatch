@@ -273,11 +273,7 @@ struct AgentRulesSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Always Allowed").font(.title3.weight(.semibold))
-                Text("These apps get codes without asking you. To add one, choose Always Allow on a request.")
-                    .font(.callout).foregroundStyle(.secondary)
-            }
+            SheetHeader(title: "Always Allowed", about: "These apps get codes without asking you. To add one, choose Always Allow on a request.")
             VStack(spacing: 0) {
                 List(selection: $selection) {
                     ForEach(rules) { AgentRuleRow(rule: $0) }
@@ -353,11 +349,7 @@ struct AgentHistorySheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Request History").font(.title3.weight(.semibold))
-                Text("What agents and scripts asked for, and what happened. Codes are never saved here.")
-                    .font(.callout).foregroundStyle(.secondary)
-            }
+            SheetHeader(title: "Request History", about: "What agents and scripts asked for, and what happened. Codes are never saved here.")
             VStack(spacing: 0) {
                 List {
                     // Day titles as plain rows: a List's section headers stick with an opaque background here.
