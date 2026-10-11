@@ -173,6 +173,12 @@ extension View {
     func bottomBar() -> some View {
         padding(.horizontal, 20).padding(.vertical, 10).background(.background).overlay(alignment: .top) { Divider() }
     }
+
+    /// The faint rounded box behind a list or group in Settings; clipped so the end rows' hover stays inside the corners.
+    func well(cornerRadius: CGFloat = 12) -> some View {
+        background(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous).fill(.primary.opacity(0.04)))
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+    }
 }
 
 /// Asks before something that can't be undone. An alert rather than a SwiftUI dialog,

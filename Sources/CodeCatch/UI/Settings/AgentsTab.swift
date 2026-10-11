@@ -305,8 +305,7 @@ struct AgentRulesSheet: View {
                 .padding(4)
             }
             .frame(height: 280)
-            .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(.primary.opacity(0.04)))
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .well()
             HStack {
                 Spacer()
                 Button("Done") { dismiss() }.keyboardShortcut(.defaultAction)
@@ -387,8 +386,7 @@ struct AgentHistorySheet: View {
                 .padding(.vertical, 6)
             }
             .frame(height: 320)
-            .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(.primary.opacity(0.04)))
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .well()
             HStack {
                 Spacer()
                 Button("Done") { dismiss() }.keyboardShortcut(.defaultAction)

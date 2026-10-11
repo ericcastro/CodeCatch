@@ -48,8 +48,7 @@ struct AddAccountSheet: View {
                     }
                 }
             }
-            .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(.primary.opacity(0.04)))
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))  // keeps the end rows' hover inside the corners
+            .well()
             HStack {
                 Spacer()
                 Button("Cancel", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
