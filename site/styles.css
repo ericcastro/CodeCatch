@@ -450,14 +450,15 @@ li.copied .tick { display: block; animation: draw-on 0.35s ease-out both; }
 .compare tbody tr { border-top: 1px solid var(--line); }
 .compare tbody th { font-weight: 600; }
 .compare td { color: var(--muted); }
-.compare td.us { position: relative; padding-left: 46px; color: var(--text); font-weight: 550; }
+.compare td.us { position: relative; padding-left: 46px; color: var(--text); }
 .compare .us { background: color-mix(in srgb, var(--brand-1) 9%, transparent); }
-.compare .yes { position: absolute; left: 20px; top: 1.35em; font-size: 15px; }
-/* Every value starts at the same edge, with or without a mark in front. */
 .compare tbody td, .compare thead th + th { position: relative; padding-left: 46px; }
-.compare .yes.grey { fill: var(--faint); }
-/* Every "no" gets a dash in the gutter, so it reads apart from a mark at a glance. */
-@media (min-width: 901px) { .compare td.no::before { content: ""; position: absolute; left: 22px; top: 1.720em; width: 10px; height: 2px; border-radius: 2px; background: var(--faint); opacity: 0.7; } }
+/* A dot in the gutter: orange for us, grey for a rival's yes, silver for no. */
+@media (min-width: 901px) {
+  .compare tbody td::before { content: ""; position: absolute; left: 23px; top: calc(1.72em - 3px); width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(180deg, var(--brand-1), var(--brand-2)); }
+  .compare td.has::before { background: var(--muted); opacity: 0.7; }
+  .compare td.no::before { background: var(--faint); opacity: 0.45; }
+}
 .compare.first { border-top: 0; padding-top: 0 !important; }
 .fine a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
 .fine a:hover { color: var(--text); }
@@ -697,7 +698,6 @@ li.copied .tick { display: block; animation: draw-on 0.35s ease-out both; }
   .compare td::before { content: attr(data-label); flex: none; white-space: nowrap; text-align: left; font-size: 14px; font-weight: 500; color: var(--faint); }
   .compare td.us::before { color: var(--red); font-weight: 600; }
   .compare td.no { color: var(--faint); }
-  .compare .yes { display: none; }
   .privacy { padding-bottom: 72px !important; }
   .why { padding-top: 72px !important; padding-bottom: 72px !important; }
   .faq { grid-template-columns: minmax(0, 1fr); }
