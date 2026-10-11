@@ -139,7 +139,7 @@
      "name": "メールで届くコードは？",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOSは、「メール」アプリに届いたコードをSafariで候補に出せます。ブラウザで開いたGmailは読みません。CodeCatchはApple Mail、Gmail、そのほかのメールアカウントを直接読みます。"
+      "text": "macOSは、「メール」アプリに届いたコードを候補に出せます。ただし新しいメールを受け取るには、「メール」アプリを開いておく必要があります。ブラウザで開いたGmailは読みません。CodeCatchはApple Mailも読み、Gmail、Outlook、そのほかのアカウントは直接読むので、「メール」アプリは閉じたままでかまいません。"
      }
     },
     {
@@ -261,6 +261,7 @@
     <ul class="ticks">
       <li><b>SiriとApple Intelligence。</b>これらをオフにしていたら候補が出なくなり、オンに戻したら出るようになった、という声があります。</li>
       <li><b>ターミナルでの設定。</b>フォーラムのスレッドでは、問題のあるバージョンで自動入力を復活させる隠し設定が紹介されています。ただ、同じスレッドでChromeベースのアプリが重くなったり落ちたりしたとも報告されているので、おすすめしません。アップデートするほうが安全です。</li>
+      <li><b>パスワードマネージャー。</b>ChromeやEdgeでは、1Passwordなどの拡張機能がコード入力欄に独自のメニューを出し、Macの候補を隠してしまうという<a href="https://www.reddit.com/r/1Password/comments/1w3uk19/anyone_else_seeing_1password_override_sms_otp/" rel="noopener">報告があります</a>。使っているなら、コードが出ない原因はそれかもしれません。</li>
     </ul>
     <p class="callout">すべてのバージョンで試したわけではありません。上でリンクしたスレッドからの情報です。</p>
 
@@ -276,7 +277,7 @@
       <details><summary>Safariでは自動入力されるのに、Chromeではされないのはなぜ？</summary><p>認証コードの自動入力はmacOSの機能で、AppleはまずSafariに組み込みました。ほかのブラウザが使えるようになったのはmacOS 26からで、そこでも安定していません。</p></details>
       <details><summary>iPhoneは必要？</summary><p>SMSで届くコードには必要です。iPhoneがSMSを受け取り、Macに転送します。Androidのスマートフォンでは、SMSがMacの「メッセージ」アプリに届かないので、自動入力でもCodeCatchでも読み取れません。</p></details>
       <details><summary>Macに認証コードが届かないときは？</summary><p>SMSのコードなら、iPhoneの「設定」＞「アプリ」＞「メッセージ」＞「テキストメッセージ転送」でMacをオンにします。両方のデバイスで同じApple Accountを使っている必要があります。それでも届かなければ、両方を再起動し、アップデートをインストールして、Macの日付と時刻を確認してください。</p></details>
-      <details><summary>メールで届くコードは？</summary><p>macOSは、「メール」アプリに届いたコードをSafariで候補に出せます。ブラウザで開いたGmailは読みません。CodeCatchはApple Mail、Gmail、そのほかのメールアカウントを直接読みます。</p></details>
+      <details><summary>メールで届くコードは？</summary><p>macOSは、「メール」アプリに届いたコードを候補に出せます。ただし新しいメールを受け取るには、「メール」アプリを開いておく必要があります。ブラウザで開いたGmailは読みません。CodeCatchはApple Mailも読み、Gmail、Outlook、そのほかのアカウントは直接読むので、「メール」アプリは閉じたままでかまいません。</p></details>
       <details><summary>Macにコードが届くのが遅いのはなぜ？</summary><p>SMSのコードはまずiPhoneに届き、そこからMacに転送されます。iPhoneの電源が入っていて、ネットにつながっている必要があります。Macで「メッセージ」アプリを開いたままにしておくと改善します。</p></details>
       <details><summary>コードが自動で入力されても安全？</summary><p>コードの安全性は、入力先のページしだいです。コードを送ってもらう前に、アドレスバーを確認してください。自動入力でも、ペーストでも同じです。</p></details>
     </div>

@@ -147,7 +147,7 @@
      "name": "Was ist mit Codes per E-Mail?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOS kann in Safari Codes aus der App „Mail“ vorschlagen. Gmail im Browser liest macOS dagegen nicht. CodeCatch liest Apple Mail, Gmail und andere E-Mail-Konten direkt."
+      "text": "macOS kann Codes aus der App „Mail“ vorschlagen. Neue E-Mails kommen dort aber nur an, solange „Mail“ geöffnet ist. Gmail im Browser liest macOS dagegen nicht. CodeCatch liest Apple Mail ebenfalls. Gmail, Outlook und andere Konten ruft es selbst ab, „Mail“ kann also geschlossen bleiben."
      }
     },
     {
@@ -269,6 +269,7 @@
     <ul class="ticks">
       <li><b>Siri und Apple Intelligence.</b> Einige Nutzer schreiben, dass keine Vorschläge mehr kamen, solange beides aus war. Nach dem Einschalten waren sie wieder da.</li>
       <li><b>Eine versteckte Terminal-Einstellung.</b> Im Forumsthread steht eine Einstellung, die das automatische Ausfüllen auf betroffenen Versionen zurückbringt. Laut demselben Thread hat sie Chrome-basierte Apps aber langsam gemacht und abstürzen lassen. Wir raten deshalb davon ab – ein Update ist der sicherere Weg.</li>
+      <li><b>Ein Passwortmanager.</b> In Chrome und Edge können 1Password und ähnliche Erweiterungen ihr eigenes Menü über das Codefeld legen und so den Vorschlag des Macs verdecken. Das <a href="https://www.reddit.com/r/1Password/comments/1w3uk19/anyone_else_seeing_1password_override_sms_otp/" rel="noopener">berichten einige Nutzer</a>. Nutzt du einen, könnte das der Grund sein, warum kein Code erscheint.</li>
     </ul>
     <p class="callout">Ich habe diese Tipps nicht auf jeder macOS-Version ausprobiert. Sie stammen aus den oben verlinkten Threads.</p>
 
@@ -285,7 +286,7 @@
       <details><summary>Füllt Chrome unter macOS 15 SMS-Codes automatisch aus?</summary><p>Nein. Unter macOS 15 und älter füllt nur Safari Codes automatisch aus. Chrome, Firefox, Arc und Edge konnten das dort noch nie – es ist also nichts kaputt. Was mit jeder Version klappt: den Code kopieren und mit ⌘V einfügen.</p></details>
       <details><summary>Brauche ich dafür ein iPhone?</summary><p>Für Codes per SMS ja. Das iPhone empfängt die SMS und leitet sie an deinen Mac weiter. Mit einem Android-Smartphone landet die SMS nie in „Nachrichten“ auf dem Mac. Dann sehen weder das automatische Ausfüllen noch CodeCatch den Code.</p></details>
       <details><summary>Wie schalte ich die SMS-Weiterleitung ein?</summary><p>Öffne auf dem iPhone Einstellungen → Apps → Nachrichten → SMS-Weiterleitung und aktiviere deinen Mac. Beide Geräte müssen denselben Apple Account verwenden. Ist „Nachrichten in iCloud“ aktiv, ist die Weiterleitung für diesen Mac schon eingeschaltet.</p></details>
-      <details><summary>Was ist mit Codes per E-Mail?</summary><p>macOS kann in Safari Codes aus der App „Mail“ vorschlagen. Gmail im Browser liest macOS dagegen nicht. CodeCatch liest Apple Mail, Gmail und andere E-Mail-Konten direkt.</p></details>
+      <details><summary>Was ist mit Codes per E-Mail?</summary><p>macOS kann Codes aus der App „Mail“ vorschlagen. Neue E-Mails kommen dort aber nur an, solange „Mail“ geöffnet ist. Gmail im Browser liest macOS dagegen nicht. CodeCatch liest Apple Mail ebenfalls. Gmail, Outlook und andere Konten ruft es selbst ab, „Mail“ kann also geschlossen bleiben.</p></details>
       <details><summary>Warum kommt der Code am Mac erst so spät an?</summary><p>SMS-Codes landen zuerst auf deinem iPhone und werden dann weitergeleitet. Das iPhone muss eingeschaltet und online sein. Lass am besten „Nachrichten“ auf dem Mac geöffnet.</p></details>
       <details><summary>Ist es sicher, Codes automatisch ausfüllen zu lassen?</summary><p>Ein Code ist nur so sicher wie die Seite, auf der du ihn eingibst. Prüfe die Adressleiste, bevor du einen Code anforderst. Das gilt beim automatischen Ausfüllen genauso wie beim Einfügen.</p></details>
     </div>

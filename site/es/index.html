@@ -133,7 +133,7 @@
      "name": "¿En qué se diferencia CodeCatch del autorrelleno de macOS?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOS solo sugiere el código en los campos que lo admiten. CodeCatch copia todos los códigos, así que funciona en cualquier parte. Además lee Gmail, detecta enlaces de acceso, tiene historial y muestra tus códigos de Bitwarden."
+      "text": "macOS solo sugiere el código en los campos marcados para ello, y el menú de un gestor de contraseñas puede tapar la sugerencia. Para los códigos por correo, macOS solo usa la app Mail, que tiene que estar abierta para recibir correo nuevo. CodeCatch copia cada código en cuanto llega, así que ⌘V funciona en cualquier campo. Además lee Gmail y Outlook directamente, detecta enlaces de acceso, tiene historial y muestra tus códigos de Bitwarden."
      }
     },
     {
@@ -141,7 +141,7 @@
      "name": "¿Qué cuentas de correo puede leer CodeCatch?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Cualquier bandeja de entrada que tengas en Apple Mail, sin iniciar sesión. También Gmail y otras cuentas (IMAP), con una contraseña de aplicación. CodeCatch solo lee: nunca marca, mueve ni borra correos."
+      "text": "Cualquier bandeja de entrada que tengas en Apple Mail, sin iniciar sesión. También Gmail, Outlook y otras cuentas (IMAP), que CodeCatch lee por sí mismo, así que la app Mail puede quedarse cerrada. CodeCatch solo lee: nunca marca, mueve ni borra correos."
      }
     },
     {
@@ -149,7 +149,7 @@
      "name": "¿Por qué CodeCatch necesita Acceso total al disco?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOS lo exige antes de que cualquier app pueda leer Mensajes y Mail. CodeCatch solo lee esas dos. El permiso de Accesibilidad solo lo necesita si activas que escriba los códigos por ti."
+      "text": "macOS lo exige antes de que cualquier app pueda leer Mensajes y Apple Mail. CodeCatch solo lee esas dos. Si solo usas Gmail, Outlook u otras cuentas de correo, no te hace falta. El permiso de Accesibilidad solo lo necesita si activas que escriba los códigos por ti."
      }
     },
     {
@@ -332,7 +332,7 @@
       <p>Tu código de verificación ya está copiado antes de que vayas a buscarlo. El cursor sigue en el campo del código: solo presiona <kbd>⌘</kbd><kbd>V</kbd>.</p>
       <ul class="ticks">
         <li>SMS que llegan a tu iPhone</li>
-        <li>Códigos por correo, sin abrir la bandeja de entrada</li>
+        <li>Códigos de Gmail y Outlook, con la app Mail cerrada</li>
         <li>Códigos en 35 idiomas</li>
       </ul>
     </div>
@@ -576,7 +576,7 @@
       </div>
       <p class="step-n">Paso 2</p>
       <h3>Activa Acceso total al disco</h3>
-      <p>macOS pide este permiso antes de que cualquier app pueda leer Mensajes y Mail. CodeCatch te lleva directo a la opción.</p>
+      <p>macOS pide este permiso antes de que cualquier app pueda leer Mensajes y Apple Mail. CodeCatch te lleva directo a la opción. Gmail y Outlook no lo necesitan.</p>
     </li>
     <li>
       <div class="step-art" aria-hidden="true">
@@ -617,15 +617,15 @@
   </details>
   <details>
     <summary>¿En qué se diferencia CodeCatch del autorrelleno de macOS?</summary>
-    <p>macOS solo sugiere el código en los campos que lo admiten. CodeCatch copia todos los códigos, así que funciona en cualquier parte. Además lee Gmail, detecta enlaces de acceso, tiene historial y muestra tus códigos de Bitwarden. Si el autorrelleno ya no te funciona, consulta <a href="/es/guias/autocompletar-codigos-sms-chrome-mac/">la guía para autocompletar códigos</a>.</p>
+    <p>macOS solo sugiere el código en los campos marcados para ello, y el menú de un gestor de contraseñas puede tapar la sugerencia. Para los códigos por correo, macOS solo usa la app Mail, que tiene que estar abierta para recibir correo nuevo. CodeCatch copia cada código en cuanto llega, así que ⌘V funciona en cualquier campo. Además lee Gmail y Outlook directamente, detecta enlaces de acceso, tiene historial y muestra tus códigos de Bitwarden. Si el autorrelleno ya no te funciona, consulta <a href="/es/guias/autocompletar-codigos-sms-chrome-mac/">la guía para autocompletar códigos</a>.</p>
   </details>
   <details>
     <summary>¿Qué cuentas de correo puede leer CodeCatch?</summary>
-    <p>Cualquier bandeja de entrada que tengas en Apple Mail, sin iniciar sesión. También Gmail y otras cuentas (IMAP), con una contraseña de aplicación. CodeCatch solo lee: nunca marca, mueve ni borra correos.</p>
+    <p>Cualquier bandeja de entrada que tengas en Apple Mail, sin iniciar sesión. También Gmail, Outlook y otras cuentas (IMAP), que CodeCatch lee por sí mismo, así que la app Mail puede quedarse cerrada. CodeCatch solo lee: nunca marca, mueve ni borra correos.</p>
   </details>
   <details>
     <summary>¿Por qué CodeCatch necesita Acceso total al disco?</summary>
-    <p>macOS lo exige antes de que cualquier app pueda leer Mensajes y Mail. CodeCatch solo lee esas dos. El permiso de Accesibilidad solo lo necesita si activas que escriba los códigos por ti.</p>
+    <p>macOS lo exige antes de que cualquier app pueda leer Mensajes y Apple Mail. CodeCatch solo lee esas dos. Si solo usas Gmail, Outlook u otras cuentas de correo, no te hace falta. El permiso de Accesibilidad solo lo necesita si activas que escriba los códigos por ti.</p>
   </details>
   <details>
     <summary>¿Sale algo de mi Mac?</summary>

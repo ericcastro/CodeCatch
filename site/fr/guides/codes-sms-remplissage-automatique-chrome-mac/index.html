@@ -147,7 +147,7 @@
      "name": "Et les codes envoyés par e-mail ?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Dans Safari, macOS peut proposer les codes reçus dans l’app Mail. Il ne lit pas Gmail dans votre navigateur. CodeCatch lit directement Apple Mail, Gmail et vos autres comptes de messagerie."
+      "text": "macOS peut proposer les codes reçus dans l’app Mail, qui doit être ouverte pour recevoir les nouveaux messages. Il ne lit pas Gmail dans votre navigateur. CodeCatch lit Apple Mail lui aussi, mais il lit lui-même Gmail, Outlook et vos autres comptes : Mail peut donc rester fermé."
      }
     },
     {
@@ -269,6 +269,7 @@
     <ul class="ticks">
       <li><b>Siri et Apple Intelligence.</b> Certains ont vu les suggestions disparaître quand ces fonctions étaient désactivées, puis revenir une fois qu’ils les ont réactivées.</li>
       <li><b>Un réglage dans Terminal.</b> La discussion du forum cite un réglage caché qui rétablit le remplissage automatique sur les versions touchées. La même discussion indique qu’il a causé des ralentissements et des plantages dans les apps basées sur Chrome. Nous ne le recommandons donc pas : la mise à jour est la solution la plus sûre.</li>
+      <li><b>Un gestionnaire de mots de passe.</b> Dans Chrome et Edge, 1Password et d’autres extensions du même genre peuvent afficher leur propre menu sur le champ du code et masquer la suggestion du Mac, <a href="https://www.reddit.com/r/1Password/comments/1w3uk19/anyone_else_seeing_1password_override_sms_otp/" rel="noopener">selon certains utilisateurs</a>. Si vous en utilisez un, c’est peut-être pour cela qu’aucun code n’apparaît.</li>
     </ul>
     <p class="callout">Je n’ai pas testé ces pistes sur toutes les versions. Elles viennent des discussions citées plus haut.</p>
 
@@ -285,7 +286,7 @@
       <details><summary>Chrome remplit-il les codes SMS sous macOS 15 ?</summary><p>Non. Sous macOS 15 et les versions antérieures, seul Safari remplit les codes automatiquement. Chrome, Firefox, Arc et Edge ne l’ont jamais fait : rien n’est cassé. Ce qui marche avec toutes les versions : copier le code et le coller avec ⌘V.</p></details>
       <details><summary>Faut-il un iPhone ?</summary><p>Pour les codes envoyés par SMS, oui. L’iPhone reçoit le SMS et le transfère à votre Mac. Avec un téléphone Android, le SMS n’arrive jamais dans Messages sur le Mac. Ni le remplissage automatique ni CodeCatch ne peuvent alors le voir.</p></details>
       <details><summary>Comment activer le Transfert de SMS ?</summary><p>Sur l’iPhone, ouvrez Réglages → Apps → Messages → Transfert de SMS, puis activez votre Mac. Les deux appareils doivent utiliser le même compte Apple. Si Messages sur iCloud est activé, le transfert est déjà actif pour ce Mac.</p></details>
-      <details><summary>Et les codes envoyés par e-mail ?</summary><p>Dans Safari, macOS peut proposer les codes reçus dans l’app Mail. Il ne lit pas Gmail dans votre navigateur. CodeCatch lit directement Apple Mail, Gmail et vos autres comptes de messagerie.</p></details>
+      <details><summary>Et les codes envoyés par e-mail ?</summary><p>macOS peut proposer les codes reçus dans l’app Mail, qui doit être ouverte pour recevoir les nouveaux messages. Il ne lit pas Gmail dans votre navigateur. CodeCatch lit Apple Mail lui aussi, mais il lit lui-même Gmail, Outlook et vos autres comptes : Mail peut donc rester fermé.</p></details>
       <details><summary>Le code arrive en retard sur mon Mac. Pourquoi ?</summary><p>Les codes SMS arrivent d’abord sur votre iPhone, qui les transfère ensuite. L’iPhone doit donc être allumé et connecté. Laisser Messages ouvert sur le Mac aide aussi.</p></details>
       <details><summary>Peut-on laisser les codes se remplir tout seuls sans risque ?</summary><p>Un code n’est pas plus sûr que la page où vous le saisissez. Avant d’en demander un, vérifiez la barre d’adresse. C’est vrai pour le remplissage automatique comme pour le collage.</p></details>
     </div>

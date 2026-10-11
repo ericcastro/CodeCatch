@@ -133,7 +133,7 @@
      "name": "Was unterscheidet CodeCatch vom automatischen Ausfüllen in macOS?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOS schlägt einen Code nur in Feldern vor, die das unterstützen. CodeCatch kopiert jeden Code und funktioniert deshalb überall. Außerdem liest es Gmail, fängt Anmeldelinks ab, hat einen Verlauf und zeigt deine Bitwarden-Codes."
+      "text": "macOS schlägt einen Code nur in Feldern vor, die dafür markiert sind. Zudem kann das Menü eines Passwortmanagers den Vorschlag verdecken. Codes aus E-Mails holt macOS nur aus Apple Mail. Neue E-Mails kommen dort nur an, solange die App geöffnet ist. CodeCatch kopiert jeden Code, sobald er ankommt. So klappt ⌘V in jedem Feld. Außerdem liest es Gmail und Outlook direkt, fängt Anmeldelinks ab, hat einen Verlauf und zeigt deine Bitwarden-Codes."
      }
     },
     {
@@ -141,7 +141,7 @@
      "name": "Welche E-Mail-Konten kann CodeCatch lesen?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Jedes Postfach, das du in Apple Mail eingerichtet hast – ohne extra Anmeldung. Dazu Gmail und andere Konten (IMAP) mit einem App-Passwort. CodeCatch liest nur: Es markiert, verschiebt oder löscht nie E-Mails."
+      "text": "Jedes Postfach, das du in Apple Mail eingerichtet hast – ohne extra Anmeldung. Dazu Gmail, Outlook und andere Konten (IMAP). Diese ruft CodeCatch selbst ab, Apple Mail kann also geschlossen bleiben. CodeCatch liest nur: Es markiert, verschiebt oder löscht nie E-Mails."
      }
     },
     {
@@ -149,7 +149,7 @@
      "name": "Warum braucht CodeCatch Festplattenvollzugriff?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOS verlangt ihn, bevor eine App Nachrichten und Mail lesen darf. CodeCatch liest nur diese beiden. Zugriff auf die Bedienungshilfen braucht es nur, wenn CodeCatch Codes für dich eintippen soll."
+      "text": "macOS verlangt ihn, bevor eine App Nachrichten und Apple Mail lesen darf. CodeCatch liest nur diese beiden. Nutzt du nur Gmail, Outlook oder andere E-Mail-Konten, brauchst du ihn nicht. Zugriff auf die Bedienungshilfen braucht es nur, wenn CodeCatch Codes für dich eintippen soll."
      }
     },
     {
@@ -332,7 +332,7 @@
       <p>Ob Bestätigungscode, Verifizierungscode oder Einmalcode: Er ist schon kopiert, bevor du überhaupt danach suchst. Dein Cursor bleibt im Codefeld, du drückst nur noch <kbd>⌘</kbd><kbd>V</kbd>.</p>
       <ul class="ticks">
         <li>SMS von deinem iPhone</li>
-        <li>Codes aus E-Mails, ohne das Postfach zu öffnen</li>
+        <li>Codes aus Gmail und Outlook, ohne Apple Mail zu öffnen</li>
         <li>Codes in 35 Sprachen</li>
       </ul>
     </div>
@@ -576,7 +576,7 @@
       </div>
       <p class="step-n">Schritt 2</p>
       <h3>Festplattenvollzugriff erlauben</h3>
-      <p>Ohne diese Erlaubnis lässt macOS keine App Nachrichten und Mail lesen. CodeCatch öffnet die passende Einstellung für dich.</p>
+      <p>Ohne diese Erlaubnis lässt macOS keine App Nachrichten und Apple Mail lesen. CodeCatch öffnet die passende Einstellung für dich. Für Gmail und Outlook brauchst du sie nicht.</p>
     </li>
     <li>
       <div class="step-art" aria-hidden="true">
@@ -617,15 +617,15 @@
   </details>
   <details>
     <summary>Was unterscheidet CodeCatch vom automatischen Ausfüllen in macOS?</summary>
-    <p>macOS schlägt einen Code nur in Feldern vor, die das unterstützen. CodeCatch kopiert jeden Code und funktioniert deshalb überall. Außerdem liest es Gmail, fängt Anmeldelinks ab, hat einen Verlauf und zeigt deine Bitwarden-Codes. Klappt das automatische Ausfüllen bei dir nicht mehr, hilft <a href="/de/anleitungen/sms-codes-automatisch-ausfuellen-chrome-mac/">diese Anleitung</a>.</p>
+    <p>macOS schlägt einen Code nur in Feldern vor, die dafür markiert sind. Zudem kann das Menü eines Passwortmanagers den Vorschlag verdecken. Codes aus E-Mails holt macOS nur aus Apple Mail. Neue E-Mails kommen dort nur an, solange die App geöffnet ist. CodeCatch kopiert jeden Code, sobald er ankommt. So klappt ⌘V in jedem Feld. Außerdem liest es Gmail und Outlook direkt, fängt Anmeldelinks ab, hat einen Verlauf und zeigt deine Bitwarden-Codes. Klappt das automatische Ausfüllen bei dir nicht mehr, hilft <a href="/de/anleitungen/sms-codes-automatisch-ausfuellen-chrome-mac/">diese Anleitung</a>.</p>
   </details>
   <details>
     <summary>Welche E-Mail-Konten kann CodeCatch lesen?</summary>
-    <p>Jedes Postfach, das du in Apple Mail eingerichtet hast – ohne extra Anmeldung. Dazu Gmail und andere Konten (IMAP) mit einem App-Passwort. CodeCatch liest nur: Es markiert, verschiebt oder löscht nie E-Mails.</p>
+    <p>Jedes Postfach, das du in Apple Mail eingerichtet hast – ohne extra Anmeldung. Dazu Gmail, Outlook und andere Konten (IMAP). Diese ruft CodeCatch selbst ab, Apple Mail kann also geschlossen bleiben. CodeCatch liest nur: Es markiert, verschiebt oder löscht nie E-Mails.</p>
   </details>
   <details>
     <summary>Warum braucht CodeCatch Festplattenvollzugriff?</summary>
-    <p>macOS verlangt ihn, bevor eine App Nachrichten und Mail lesen darf. CodeCatch liest nur diese beiden. Zugriff auf die Bedienungshilfen braucht es nur, wenn CodeCatch Codes für dich eintippen soll.</p>
+    <p>macOS verlangt ihn, bevor eine App Nachrichten und Apple Mail lesen darf. CodeCatch liest nur diese beiden. Nutzt du nur Gmail, Outlook oder andere E-Mail-Konten, brauchst du ihn nicht. Zugriff auf die Bedienungshilfen braucht es nur, wenn CodeCatch Codes für dich eintippen soll.</p>
   </details>
   <details>
     <summary>Verlassen Daten meinen Mac?</summary>

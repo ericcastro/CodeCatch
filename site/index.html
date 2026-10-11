@@ -132,7 +132,7 @@
      "name": "How is CodeCatch different from macOS autofill?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOS only suggests a code in fields that support it. CodeCatch copies every code, so it works everywhere. It also reads Gmail, catches sign-in links, keeps a history and shows your Bitwarden codes."
+      "text": "macOS suggests a code only in fields marked for it, and a password manager’s menu can cover the suggestion. For email codes, macOS uses only the Mail app, which has to be open to get new mail. CodeCatch copies every code the moment it arrives, so ⌘V works in any field. It also reads Gmail and Outlook directly, catches sign-in links, keeps a history and shows your Bitwarden codes."
      }
     },
     {
@@ -140,7 +140,7 @@
      "name": "Which mail accounts can CodeCatch read?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Any inbox set up in Apple Mail, with no sign-in. Also Gmail and other accounts (IMAP), with an app password. CodeCatch only reads: it never marks, moves or deletes mail."
+      "text": "Any inbox set up in Apple Mail, with no sign-in. Also Gmail, Outlook and other accounts (IMAP), which CodeCatch reads itself, so Mail can stay closed. CodeCatch only reads: it never marks, moves or deletes mail."
      }
     },
     {
@@ -148,7 +148,7 @@
      "name": "Why does CodeCatch need Full Disk Access?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "macOS requires it before any app can read Messages and Mail. CodeCatch reads only those two. It needs Accessibility access only if you turn on typing codes for you."
+      "text": "macOS requires it before any app can read Messages and Apple Mail. CodeCatch reads only those two. If you only use Gmail, Outlook or other mail accounts, you can skip it. It needs Accessibility access only if you turn on typing codes for you."
      }
     },
     {
@@ -323,7 +323,7 @@
       <p>The code is copied before you look for it. Your cursor stays in the code field, so you just press <kbd>⌘</kbd><kbd>V</kbd>.</p>
       <ul class="ticks">
         <li>Texts from your iPhone</li>
-        <li>Email codes, without opening your inbox</li>
+        <li>Gmail and Outlook codes, with Mail closed</li>
         <li>Codes in 35 languages</li>
       </ul>
     </div>
@@ -567,7 +567,7 @@
       </div>
       <p class="step-n">Step 2</p>
       <h3>Allow Full Disk Access</h3>
-      <p>macOS asks for this before any app can read Messages and Mail. CodeCatch opens the setting for you.</p>
+      <p>macOS asks for this before any app can read Messages and Apple Mail. CodeCatch opens the setting for you. Gmail and Outlook don’t need it.</p>
     </li>
     <li>
       <div class="step-art" aria-hidden="true">
@@ -608,15 +608,15 @@
   </details>
   <details>
     <summary>How is CodeCatch different from macOS autofill?</summary>
-    <p>macOS only suggests a code in fields that support it. CodeCatch copies every code, so it works everywhere. It also reads Gmail, catches sign-in links, keeps a history and shows your Bitwarden codes. If autofill stopped working for you, see <a href="/guides/verification-code-autofill-chrome-mac/">the autofill guide</a>.</p>
+    <p>macOS suggests a code only in fields marked for it, and a password manager’s menu can cover the suggestion. For email codes, macOS uses only the Mail app, which has to be open to get new mail. CodeCatch copies every code the moment it arrives, so ⌘V works in any field. It also reads Gmail and Outlook directly, catches sign-in links, keeps a history and shows your Bitwarden codes. If autofill stopped working for you, see <a href="/guides/verification-code-autofill-chrome-mac/">the autofill guide</a>.</p>
   </details>
   <details>
     <summary>Which mail accounts can CodeCatch read?</summary>
-    <p>Any inbox set up in Apple Mail, with no sign-in. Also Gmail and other accounts (IMAP), with an app password. CodeCatch only reads: it never marks, moves or deletes mail.</p>
+    <p>Any inbox set up in Apple Mail, with no sign-in. Also Gmail, Outlook and other accounts (IMAP), which CodeCatch reads itself, so Mail can stay closed. CodeCatch only reads: it never marks, moves or deletes mail.</p>
   </details>
   <details>
     <summary>Why does CodeCatch need Full Disk Access?</summary>
-    <p>macOS requires it before any app can read Messages and Mail. CodeCatch reads only those two. It needs Accessibility access only if you turn on typing codes for you.</p>
+    <p>macOS requires it before any app can read Messages and Apple Mail. CodeCatch reads only those two. If you only use Gmail, Outlook or other mail accounts, you can skip it. It needs Accessibility access only if you turn on typing codes for you.</p>
   </details>
   <details>
     <summary>Does anything leave my Mac?</summary>
