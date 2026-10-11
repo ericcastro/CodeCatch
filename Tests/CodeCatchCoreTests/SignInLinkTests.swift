@@ -25,6 +25,11 @@ import Testing
     ("New sign-in to your Slack account", [("https://slack.com/reset?t=1", "Reset your password"),
                                            ("https://slack.com/secure", "Secure your account")], nil),
     ("Sign in to Outlook", [("https://outlook.example.com/login?t=1", "Sign in to Exchange")], "https://outlook.example.com/login?t=1"),
+    // "Access" buttons are magic links too; "Manage access" in the footer is not.
+    ("Your sign-in link", [("https://example.org/temp-access/123abc", "Your temporary access link")], "https://example.org/temp-access/123abc"),
+    ("Your sign-in link", [("https://example.org/account?token=abc", "Click here to access")], "https://example.org/account?token=abc"),
+    ("Sign-in request", [("https://login.example.com/authorize?token=abc", "Access your account")], "https://login.example.com/authorize?token=abc"),
+    ("Your sign-in link", [("https://example.com/team/access", "Manage access"), ("https://example.com/access/request", "Request access")], nil),
     ("Pricing change for Instagram Profile Scraper – Followers, Bio, Posts, Verified",
      [("https://console.apify.com/actors/bGhA", "Instagram Profile Scraper – Followers, Bio, Posts, Verified")], nil),
 ] as [(String, [(String, String)], String?)])

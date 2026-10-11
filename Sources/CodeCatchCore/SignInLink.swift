@@ -33,7 +33,7 @@ public enum SignInLink {
     private static let context = rx(
         #"\bverif(y|ication)\b|confirm (your )?(sign|log|e-?mail|account|identity|device)|sign[- ]?in (link|request|attempt|to)|log[- ]?in (link|request|attempt|code|to)|(secure|magic|one-time) link|activate your|approve (your )?(sign|log)|is (this|it) you|potrdi|\bpovezava za prijavo\b|\bprijav[ao] v (vaš )?(račun|profil|naročniški center)\b|aktivir|bestätig|anmeld"#)
     private static let action = rx(
-        #"\bverif(y|ication)\b|confirm|sign[- ]?in|log[- ]?in|magic|activat|approv|authori[sz]|yes|it'?s me|was me|continue|potrdi|prijava|prijavi|aktiviraj|bestätig|anmelden|click here to (sign|log|verify|confirm)"#)
+        #"\bverif(y|ication)\b|confirm|sign[- ]?in|log[- ]?in|magic|activat|approv|authori[sz]|yes|it'?s me|was me|continue|access link|access (your|my) (\w+ )?account|to access\b|potrdi|prijava|prijavi|aktiviraj|bestätig|anmelden|click here to (sign|log|verify|confirm)"#)
     private static let actionPath = rx(#"verif|confirm|magic|log-?in|sign-?in|auth|activat|approv|token=|code=|otp|reset|password|recover"#)
     private static let resetContext = rx(
         #"password reset|reset (your |the )?password|(forgot|forgotten|change|set|create|choose) (a |your |the )?(new )?password|new password|passwort (zurücksetzen|vergessen)|ponastavi(tev)? gesl|pozablje\w* gesl|novo geslo"#)
