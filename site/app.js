@@ -2,6 +2,16 @@
 // already copied, ⌘V pastes it into the page. Then a code by email, then a sign-in link. With reduced motion it shows the end state, still.
 (() => {
   const $ = (id) => document.getElementById(id);
+
+  // The menu bar clocks show the visitor's own day, date and time, as their Mac would.
+  const day = new Intl.DateTimeFormat(undefined, { weekday: "short", day: "numeric", month: "short" });
+  const time = new Intl.DateTimeFormat(undefined, { timeStyle: "short" });
+  const clock = () => {
+    const now = new Date();
+    for (const el of document.querySelectorAll(".clock")) el.textContent = day.format(now).replace(/,/g, "") + " " + time.format(now);
+    setTimeout(clock, 60000 - now % 60000);
+  };
+  clock();
   const banner = $("banner"), code = $("banner-code"), left = $("banner-left"), menubar = $("menubar-code");
   const copy = $("banner-copy"), keys = $("keys"), field = $("otp"), typed = $("otp-text");
   const ring = banner.querySelector(".ring"), linkBanner = $("banner-link");
