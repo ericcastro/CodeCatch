@@ -474,6 +474,7 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
 .article-art { min-height: 0; max-width: 760px; padding: 36px 20px; margin-bottom: 40px; }
 .byline { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
 .byline a { color: var(--text); font-weight: 600; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--brand-2) 60%, transparent); text-underline-offset: 3px; }
+.byline time { white-space: nowrap; }
 .avatar { display: block; flex: none; width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
 .prose { max-width: 720px; display: grid; gap: 16px; }
 .prose h2 { margin-top: 28px; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; scroll-margin-top: 72px; }
