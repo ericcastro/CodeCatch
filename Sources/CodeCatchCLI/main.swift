@@ -37,8 +37,15 @@ func note(_ text: String) { stderr.write(Data("codecatch: \(text)\n".utf8)) }
 
 var json = false
 
+/// With `--json`, prints the reply as one line of JSON; false when it printed nothing.
+func printJSON(_ reply: AgentReply) -> Bool {
+    guard json, let data = try? AgentWire.encoder.encode(reply) else { return false }
+    print(String(decoding: data, as: UTF8.self))
+    return true
+}
+
 func finish(_ error: AgentError) -> Never {
-    if json, let data = try? AgentWire.encoder.encode(AgentReply(error: error)) { print(String(decoding: data, as: UTF8.self)) }
+    _ = printJSON(AgentReply(error: error))
     note(error.message)
     exit(error.exitCode)
 }
@@ -161,18 +168,14 @@ while let line = LocalSocket.readLine(from: fd, buffer: &buffer, limit: 1 << 16)
     if let progress = reply.progress { note(progress) }
     if let error = reply.error { finish(error) }
     if let item = reply.item {
-        if json, let data = try? AgentWire.encoder.encode(AgentReply(item: item)) {
-            print(String(decoding: data, as: UTF8.self))
-        } else {
+        if !printJSON(AgentReply(item: item)) {
             print(item.value)
             if !raw { note("\(item.kind == .link ? "sign-in link" : "code") from \(item.service), \(item.source == "mail" ? "Mail" : "Messages")") }
         }
         exit(0)
     }
     if let status = reply.status {
-        if json, let data = try? AgentWire.encoder.encode(AgentReply(status: status)) {
-            print(String(decoding: data, as: UTF8.self))
-        } else {
+        if !printJSON(AgentReply(status: status)) {
             print("CodeCatch \(status.appVersion ?? "") is running. This is codecatch \(version).")
             print("Command-line access: \(status.access ? "on" : "off")")
             if status.access {
