@@ -363,15 +363,8 @@ final class AgentAccess: ObservableObject {
 
     // MARK: - Settings
 
-    /// Turning access on asks for Touch ID or the Mac password; off never does.
     func setEnabled(_ on: Bool) async {
-        guard on != config.enabled else { return }
-        if on {
-            do { try await authenticate("let agents and scripts ask for your codes") } catch { return }
-        }
-        var updated = config
-        updated.enabled = on
-        guard store(updated, revoking: !on) else { return }
+        guard await set(\.enabled, on, asking: "let agents and scripts ask for your codes") else { return }
         denials = 0
         if !on {
             cancel("Command-line access was turned off.")
@@ -379,27 +372,27 @@ final class AgentAccess: ObservableObject {
         }
     }
 
-    /// Links on asks again: a link signs the agent in, not just past a second step. Off never asks.
+    /// Links on asks again: a link signs the agent in, not just past a second step.
     func setLinks(_ on: Bool) async {
-        guard on != config.links else { return }
-        if on {
-            do { try await authenticate("let agents get sign-in links, which sign them in as you") } catch { return }
-        }
-        var updated = config
-        updated.links = on
-        store(updated, revoking: !on)
+        guard await set(\.links, on, asking: "let agents get sign-in links, which sign them in as you") else { return }
         if !on, request?.item?.isLink == true { cancel("Sign-in links were turned off.") }
     }
 
-    /// On asks for Touch ID or the Mac password, and says plainly what it grants; off never asks.
     func setAllowAll(_ on: Bool) async {
-        guard on != config.allowAll else { return }
+        await set(\.allowAll, on, asking: "give any agent your codes without asking")
+    }
+
+    /// On asks for Touch ID or the Mac password, saying plainly what it grants; off never asks.
+    /// True once the switch changed.
+    @discardableResult
+    private func set(_ setting: WritableKeyPath<AgentConfig, Bool>, _ on: Bool, asking reason: String) async -> Bool {
+        guard on != config[keyPath: setting] else { return false }
         if on {
-            do { try await authenticate("give any agent your codes without asking") } catch { return }
+            do { try await authenticate(reason) } catch { return false }
         }
         var updated = config
-        updated.allowAll = on
-        store(updated, revoking: !on)
+        updated[keyPath: setting] = on
+        return store(updated, revoking: !on)
     }
 
     func removeRules(_ ids: Set<AgentRule.ID>) {
