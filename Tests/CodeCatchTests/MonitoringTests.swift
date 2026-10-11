@@ -90,7 +90,7 @@ private func monitoringMessage() -> IncomingMessage {
         await fixture.model.setUnlockWithMac(true)
 
         #expect(fixture.ownerChecks == 1)
-        #expect(fixture.model.monitoring(Prefs.unlockWithMac) == scenario.confirms)
+        #expect(fixture.model.isOn(Prefs.unlockWithMac) == scenario.confirms)
         #expect(fixture.model.isUnlocked == (scenario.unlocked || scenario.confirms))
     }
 
@@ -104,7 +104,7 @@ private func monitoringMessage() -> IncomingMessage {
         await fixture.model.setUnlockWithMac(false)
 
         #expect(fixture.ownerChecks == 1)
-        #expect(!fixture.model.monitoring(Prefs.unlockWithMac))
+        #expect(!fixture.model.isOn(Prefs.unlockWithMac))
         #expect(!fixture.model.isUnlocked)
     }
 
@@ -114,7 +114,7 @@ private func monitoringMessage() -> IncomingMessage {
         fixture.defaults.set(true, forKey: Prefs.unlockWithMac)
         fixture.authenticationAllowed = false
         let model = fixture.makeModel(session: fixture.storedSession())
-        #expect(!model.monitoring(Prefs.unlockWithMac))
+        #expect(!model.isOn(Prefs.unlockWithMac))
         await #expect(throws: (any Error).self) { try await model.authenticate() }
         #expect(!model.isUnlocked)
     }
@@ -133,8 +133,8 @@ private func monitoringMessage() -> IncomingMessage {
         case .dismiss: fixture.model.dismiss(retained)
         case .clear: fixture.model.clearHistory()
         case .disableFeatures:
-            fixture.model.setMonitoring(Prefs.receivedCodes, enabled: false)
-            fixture.model.setMonitoring(Prefs.signInLinks, enabled: false)
+            fixture.model.set(Prefs.receivedCodes, on: false)
+            fixture.model.set(Prefs.signInLinks, on: false)
         }
         try #require(fixture.model.items.isEmpty)
         fixture.model.copy(retained)
@@ -161,7 +161,7 @@ private func monitoringMessage() -> IncomingMessage {
             case .ignore: fixture.model.ignore("support@other.example")
             case .dismiss: fixture.model.dismiss(retained)
             case .clear: fixture.model.clearHistory()
-            case .disableFeatures: fixture.model.setMonitoring(Prefs.signInLinks, enabled: false)
+            case .disableFeatures: fixture.model.set(Prefs.signInLinks, on: false)
             }
             return true
         }
@@ -199,8 +199,8 @@ private func monitoringMessage() -> IncomingMessage {
     func ingestionDoesNotLeakDisabledPortionsOfMixedMail(codes: Bool, links: Bool) throws {
         let fixture = try MonitoringFixture()
         defer { fixture.cleanUp() }
-        fixture.model.setMonitoring(Prefs.receivedCodes, enabled: codes)
-        fixture.model.setMonitoring(Prefs.signInLinks, enabled: links)
+        fixture.model.set(Prefs.receivedCodes, on: codes)
+        fixture.model.set(Prefs.signInLinks, on: links)
         fixture.model.ingest(monitoringMessage())
 
         #expect(fixture.model.items.contains { !$0.code.isEmpty } == codes)
@@ -213,8 +213,8 @@ private func monitoringMessage() -> IncomingMessage {
     func passwordResetLinksFollowTheirOwnSetting(signIn: Bool, reset: Bool) throws {
         let fixture = try MonitoringFixture()
         defer { fixture.cleanUp() }
-        fixture.model.setMonitoring(Prefs.signInLinks, enabled: signIn)
-        fixture.model.setMonitoring(Prefs.resetLinks, enabled: reset)
+        fixture.model.set(Prefs.signInLinks, on: signIn)
+        fixture.model.set(Prefs.resetLinks, on: reset)
         let mail = { (subject: String, label: String) in
             IncomingMessage(text: label, subject: subject, senderName: "Example", senderID: "support@example.com",
                             sourceKey: "test-mail", sourceLabel: "Test", date: Date().addingTimeInterval(-300), isMail: true,
@@ -226,8 +226,8 @@ private func monitoringMessage() -> IncomingMessage {
         #expect(fixture.model.items.contains { $0.resetsPassword } == reset)
         #expect(fixture.model.items.contains { !$0.resetsPassword } == signIn)
 
-        fixture.model.setMonitoring(Prefs.signInLinks, enabled: false)
-        fixture.model.setMonitoring(Prefs.resetLinks, enabled: false)
+        fixture.model.set(Prefs.signInLinks, on: false)
+        fixture.model.set(Prefs.resetLinks, on: false)
         #expect(fixture.model.items.isEmpty)
     }
 
@@ -240,18 +240,18 @@ private func monitoringMessage() -> IncomingMessage {
         #expect(fixture.model.items.contains { !$0.code.isEmpty })
         #expect(fixture.model.items.contains { $0.link != nil })
         let disabledKey = disableCodes ? Prefs.receivedCodes : Prefs.signInLinks
-        fixture.model.setMonitoring(disabledKey, enabled: false)
+        fixture.model.set(disabledKey, on: false)
 
         #expect(fixture.model.items.contains { !$0.code.isEmpty } == !disableCodes)
         #expect(fixture.model.items.contains { $0.link != nil } == disableCodes)
 
-        fixture.model.setMonitoring(disabledKey, enabled: true)
+        fixture.model.set(disabledKey, on: true)
         fixture.model.ingest(message)
         #expect(fixture.model.items.contains { !$0.code.isEmpty })
         #expect(fixture.model.items.contains { $0.link != nil })
 
-        fixture.model.setMonitoring(Prefs.receivedCodes, enabled: false)
-        fixture.model.setMonitoring(Prefs.signInLinks, enabled: false)
+        fixture.model.set(Prefs.receivedCodes, on: false)
+        fixture.model.set(Prefs.signInLinks, on: false)
         #expect(fixture.model.items.isEmpty)
         fixture.model.ingest(message)
         #expect(fixture.model.items.isEmpty)
@@ -272,7 +272,7 @@ private func monitoringMessage() -> IncomingMessage {
         fixture.model.copy(retained)
         #expect(fixture.copied == [retained.copyValue])
 
-        fixture.model.setMonitoring(code ? Prefs.receivedCodes : Prefs.signInLinks, enabled: false)
+        fixture.model.set(code ? Prefs.receivedCodes : Prefs.signInLinks, on: false)
         #expect(fixture.model.items.isEmpty)
         fixture.model.copy(retained)
         #expect(fixture.copied.count == 1)
@@ -298,7 +298,7 @@ private func monitoringMessage() -> IncomingMessage {
         defer { fixture.cleanUp() }
         #expect(!fixture.defaults.bool(forKey: Prefs.autoType))
         fixture.defaults.set(scenario.autoType, forKey: Prefs.autoType)
-        fixture.model.setMonitoring(Prefs.receivedCodes, enabled: scenario.monitored)
+        fixture.model.set(Prefs.receivedCodes, on: scenario.monitored)
         if scenario.unlocked { try await fixture.session.unlock() }
         let message = IncomingMessage(
             text: scenario.hasCode ? "Your verification code is 482913." : "Confirm your sign-in.",
@@ -327,7 +327,7 @@ private func monitoringMessage() -> IncomingMessage {
         fixture.model.copyLink(retained)
         #expect(fixture.copied == [link.absoluteString])
 
-        fixture.model.setMonitoring(Prefs.signInLinks, enabled: false)
+        fixture.model.set(Prefs.signInLinks, on: false)
         fixture.model.copyLink(retained)
         #expect(fixture.copied.count == 1)
         fixture.session.lock()
@@ -340,14 +340,14 @@ private func monitoringMessage() -> IncomingMessage {
         let fixture = try MonitoringFixture()
         defer { fixture.cleanUp() }
         for key in [Prefs.receivedCodes, Prefs.signInLinks, Prefs.resetLinks, Prefs.bitwarden] {
-            fixture.model.setMonitoring(key, enabled: false)
+            fixture.model.set(key, on: false)
             #expect(!fixture.defaults.bool(forKey: key))
         }
         let restored = fixture.makeModel()
         restored.ingest(monitoringMessage())
         #expect(restored.items.isEmpty)
         #expect(restored.vaultItems.isEmpty)
-        restored.setMonitoring(Prefs.signInLinks, enabled: true)
+        restored.set(Prefs.signInLinks, on: true)
         let next = fixture.makeModel()
         next.ingest(monitoringMessage())
         #expect(next.items.contains { $0.link != nil })
@@ -361,7 +361,7 @@ private func monitoringMessage() -> IncomingMessage {
         let model = fixture.makeModel(session: session)
         try await session.unlock()
         let retained = try #require(model.vaultItems.first)
-        model.setMonitoring(Prefs.bitwarden, enabled: false)
+        model.set(Prefs.bitwarden, on: false)
 
         #expect(!session.isUnlocked)
         #expect(model.vaultItems.isEmpty)
@@ -375,7 +375,7 @@ private func monitoringMessage() -> IncomingMessage {
         #expect(fixture.copied.isEmpty)
         #expect(fixture.search.recents.isEmpty)
 
-        model.setMonitoring(Prefs.bitwarden, enabled: true)
+        model.set(Prefs.bitwarden, on: true)
         try await session.unlock()
         #expect(model.vaultItems.map(\.sourceKey) == fixture.stored.map(\.id))
         model.copy(retained)
@@ -387,7 +387,7 @@ private func monitoringMessage() -> IncomingMessage {
         defer { fixture.cleanUp() }
         let session = fixture.storedSession()
         let model = fixture.makeModel(session: session)
-        model.setMonitoring(Prefs.bitwarden, enabled: false)
+        model.set(Prefs.bitwarden, on: false)
         model.ingest(monitoringMessage())
         let item = try #require(model.items.first { !$0.code.isEmpty })
         fixture.authenticationAllowed = false

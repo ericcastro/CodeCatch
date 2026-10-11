@@ -79,7 +79,7 @@ private func missedCode(date: Date = Date(), id: String = "mail-1", source: Stri
     @Test func disablingLinkMonitoringDoesNotTurnDetectedLinksIntoMissedCodes() throws {
         let fixture = try RecoveryFixture()
         defer { fixture.cleanUp() }
-        fixture.model.setMonitoring(Prefs.signInLinks, enabled: false)
+        fixture.model.set(Prefs.signInLinks, on: false)
         var message = missedCode()
         fixture.model.ingest(message)
         #expect(fixture.model.recovery.entries.count == 1)
@@ -172,7 +172,7 @@ private func missedCode(date: Date = Date(), id: String = "mail-1", source: Stri
         fixture.model.ingest(message)
         let id = try #require(fixture.model.recovery.entries.first?.id)
         try await fixture.session.unlock()
-        fixture.model.setMonitoring(Prefs.receivedCodes, enabled: false)
+        fixture.model.set(Prefs.receivedCodes, on: false)
         fixture.model.ingest(message)
         #expect(fixture.model.recovery.entries.isEmpty)
         #expect(!fixture.model.copyRecoveryText(message.text, from: id))

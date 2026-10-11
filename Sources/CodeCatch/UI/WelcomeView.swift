@@ -31,7 +31,7 @@ struct WelcomeView: View {
                 SettingRow(symbol: "rectangle.inset.topright.filled", color: .blue, title: "Show a Test Code",
                            subtitle: "A banner appears at the top right, as a real code would. Click it to unlock and copy.") {
                     Button("Try It") { model.showTestCode() }
-                        .disabled(!model.monitoring(Prefs.receivedCodes))
+                        .disabled(!model.isOn(Prefs.receivedCodes))
                 }
             }
             Section("What to Catch") {

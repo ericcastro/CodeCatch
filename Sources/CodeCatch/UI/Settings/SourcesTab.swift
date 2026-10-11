@@ -39,7 +39,7 @@ struct SourcesTab: View {
             }
             Section("Messages") {
                 let status = model.status[MessagesStore.sourceKey] ?? .off
-                let codes = model.monitoring(Prefs.receivedCodes)
+                let codes = model.isOn(Prefs.receivedCodes)
                 let about = "Reads codes from iMessage and SMS on this Mac. For SMS, turn on Text Message Forwarding in your iPhone’s Messages settings. Needs Full Disk Access."
                 SettingRow(symbol: SourceKind.messages.symbol, color: SourceKind.messages.color, title: "Messages",
                            subtitle: codes ? problem(status) : "Paused while Verification Codes is off", info: about, status: status,
@@ -104,7 +104,7 @@ struct SourcesTab: View {
                         Toggle("Bitwarden", isOn: setting(Prefs.bitwarden)).labelsHidden()
                     } else {
                         Button("Set Up…") {
-                            model.setMonitoring(Prefs.bitwarden, enabled: true)
+                            model.set(Prefs.bitwarden, on: true)
                             bitwarden = true
                         }
                     }
@@ -130,7 +130,7 @@ struct SourcesTab: View {
     }
 
     private var aboutBitwarden: String {
-        let shown = model.monitoring(Prefs.unlockWithMac) ? "show whenever your Mac is unlocked"
+        let shown = model.isOn(Prefs.unlockWithMac) ? "show whenever your Mac is unlocked"
             : "stay hidden until you unlock with \(DeviceAuthentication.unlockMethods)"
         let about = "Shows Bitwarden codes for your saved logins. Codes are made on this Mac and \(shown)."
         return model.hasVault ? about + " Turning this off hides the codes and keeps them saved. It also locks CodeCatch." : about
@@ -142,12 +142,12 @@ struct SourcesTab: View {
             Divider()
             HStack {
                 PopoverButton("Refresh…") { bitwarden = true }
-                    .disabled(!model.monitoring(Prefs.bitwarden))
+                    .disabled(!model.isOn(Prefs.bitwarden))
                 if model.vaultSession.isUnlocked {
                     Button("Lock") { vaultError = nil; model.vaultSession.lock() }
                 } else {
                     VaultUnlockButton(isBusy: model.vaultSession.isBusy) { vaultError = nil; model.unlocked {} }
-                        .disabled(!model.monitoring(Prefs.bitwarden))
+                        .disabled(!model.isOn(Prefs.bitwarden))
                 }
                 Spacer()
                 PopoverButton("Remove Bitwarden Codes…", role: .destructive) {
@@ -164,14 +164,14 @@ struct SourcesTab: View {
 
     private var vaultSubtitle: String? {
         guard model.hasVault else { return nil }
-        guard model.monitoring(Prefs.bitwarden) else { return "Off · codes kept" }
+        guard model.isOn(Prefs.bitwarden) else { return "Off · codes kept" }
         let state = model.vaultSession.isUnlocked ? "\(model.vault.count) codes" : "Locked"
         guard let imported = UserDefaults.standard.object(forKey: Prefs.vaultImportedAt) as? Date else { return state }
         return state + " · imported " + imported.formatted(.relative(presentation: .named))
     }
 
     private func setting(_ key: String) -> Binding<Bool> {
-        Binding(get: { model.monitoring(key) }, set: { model.setMonitoring(key, enabled: $0) })
+        Binding(get: { model.isOn(key) }, set: { model.set(key, on: $0) })
     }
 
     @ViewBuilder private func diskAccessRow(_ status: SourceStatus) -> some View {

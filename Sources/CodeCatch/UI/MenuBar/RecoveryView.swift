@@ -15,10 +15,10 @@ struct RecoveryView: View {
     private var enabledAccounts: [MailAccount] { model.accounts.filter(\.enabled) }
     private var checking: Bool { model.mailSourceKeys.contains { model.status[$0] == .connecting } }
     private var monitoringSummary: String {
-        guard model.monitoring(Prefs.receivedCodes) else { return "Paused" }
+        guard model.isOn(Prefs.receivedCodes) else { return "Paused" }
         let count = enabledAccounts.count
         let accounts = "\(count) mail \(count == 1 ? "account" : "accounts")"
-        if model.monitoring(Prefs.appleMail) {
+        if model.isOn(Prefs.appleMail) {
             return count == 0 ? "Watching Apple Mail" : "Watching \(accounts) + Apple Mail"
         }
         return "Watching \(accounts)"
@@ -51,13 +51,13 @@ struct RecoveryView: View {
                 Button(action: refresh) {
                     Label(checking ? "Checking…" : "Check Again", systemImage: "arrow.clockwise")
                 }
-                .disabled(checking || model.mailSourceKeys.isEmpty || !model.monitoring(Prefs.receivedCodes))
+                .disabled(checking || model.mailSourceKeys.isEmpty || !model.isOn(Prefs.receivedCodes))
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
             Divider()
             Group {
-                if !model.monitoring(Prefs.receivedCodes) {
+                if !model.isOn(Prefs.receivedCodes) {
                     notice("Turn on Verification Codes to see recent emails.") {
                         Button("Open Sources") { openSettings(at: .sources) }
                     }
@@ -152,7 +152,7 @@ struct RecoveryView: View {
 
     private func refresh() {
         model.recovery.prune()
-        guard model.monitoring(Prefs.receivedCodes) else { return }
+        guard model.isOn(Prefs.receivedCodes) else { return }
         model.mailSourceKeys.forEach(model.monitor.check)
     }
     private func copy(_ text: String, from id: UUID) -> Bool {

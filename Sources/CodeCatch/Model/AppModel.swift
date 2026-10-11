@@ -47,7 +47,7 @@ final class AppModel: ObservableObject {
     private let confirmLink: LinkConfirmation
     private let openURL: @MainActor (URL) -> Void
 
-    var vault: [VaultCode] { monitoring(Prefs.bitwarden) ? vaultSession.codes : [] }
+    var vault: [VaultCode] { isOn(Prefs.bitwarden) ? vaultSession.codes : [] }
     var isUnlocked: Bool { vaultSession.isUnlocked }
     var hasVault: Bool { defaults.object(forKey: Prefs.vaultImportedAt) != nil || !vault.isEmpty }
     var status: [String: SourceStatus] { monitor.health.mapValues(\.status) }
@@ -104,7 +104,7 @@ final class AppModel: ObservableObject {
     /// Sources in display order, each with its current status.
     var sources: [(key: String, label: String, status: SourceStatus)] {
         [(MessagesStore.sourceKey, "Messages", status[MessagesStore.sourceKey] ?? .off)]
-            + (monitoring(Prefs.appleMail) ? [(AppleMailStore.sourceKey, "Apple Mail", status[AppleMailStore.sourceKey] ?? .off)] : [])
+            + (isOn(Prefs.appleMail) ? [(AppleMailStore.sourceKey, "Apple Mail", status[AppleMailStore.sourceKey] ?? .off)] : [])
             + accounts.map { ($0.id.uuidString, $0.label, status[$0.id.uuidString] ?? .off) }
     }
 
@@ -127,7 +127,7 @@ final class AppModel: ObservableObject {
             Task { @MainActor in
                 guard let self else { return }
                 self.lock(because: "The Mac locked")
-                guard self.monitoring(Prefs.clearOnLock) else { return }
+                guard self.isOn(Prefs.clearOnLock) else { return }
                 self.clearHistory()
                 Clipboard.clearIfOurs()
             }
@@ -145,7 +145,7 @@ final class AppModel: ObservableObject {
         Hotkeys.sync()
         monitor.start(accounts: accounts)
         // `open CodeCatch.app --args -demoCode YES`: a test code on launch, for trying the banner and chip.
-        if monitoring("demoCode") { DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in self?.showTestCode() } }
+        if isOn("demoCode") { DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in self?.showTestCode() } }
     }
 
     /// Whoever unlocked is gone: unload the vault and end a request waiting on the card.
@@ -158,22 +158,24 @@ final class AppModel: ObservableObject {
         now = Date()
         // Every window, including menus and tooltips, follows a change within a second; the banner,
         // the popover and Recent Emails are also covered from their first frame.
-        let sharing: NSWindow.SharingType = monitoring(Prefs.hideFromCapture) ? .none : .readOnly
+        let sharing: NSWindow.SharingType = isOn(Prefs.hideFromCapture) ? .none : .readOnly
         for window in NSApp.windows where window.sharingType != sharing { window.sharingType = sharing }
         items.removeAll { now.timeIntervalSince($0.received) > history }
         recovery.prune(at: now)
     }
 
-    // MARK: - Sources
+    // MARK: - Settings
 
-    func monitoring(_ key: String) -> Bool { key == Prefs.unlockWithMac ? unlockPolicy.enabled : defaults.bool(forKey: key) }
-    var receiving: Bool { Prefs.receiving.contains(where: monitoring) }
+    /// Any on/off setting in `Prefs`; Unlock with Mac lives in the Keychain instead.
+    func isOn(_ key: String) -> Bool { key == Prefs.unlockWithMac ? unlockPolicy.enabled : defaults.bool(forKey: key) }
+    var receiving: Bool { Prefs.receiving.contains(where: isOn) }
 
-    func setMonitoring(_ key: String, enabled: Bool) {
-        guard monitoring(key) != enabled else { return }
+    /// A switch that changes what is caught: drops what it no longer allows and restarts the sources.
+    func set(_ key: String, on: Bool) {
+        guard isOn(key) != on else { return }
         objectWillChange.send()
-        defaults.set(enabled, forKey: key)
-        if key == Prefs.receivedCodes, !enabled { recovery.removeAll() }
+        defaults.set(on, forKey: key)
+        if key == Prefs.receivedCodes, !on { recovery.removeAll() }
         if key == Prefs.bitwarden {
             // Invalidate pending authentication and unload saved secrets, without deleting them.
             vaultSession.lock()
@@ -189,10 +191,12 @@ final class AppModel: ObservableObject {
 
     private func filtered(_ item: CodeItem) -> CodeItem? {
         var item = item
-        if !monitoring(Prefs.receivedCodes) { item.code = "" }
-        if !monitoring(item.linkSetting) { item.link = nil }
+        if !isOn(Prefs.receivedCodes) { item.code = "" }
+        if !isOn(item.linkSetting) { item.link = nil }
         return item.code.isEmpty && item.link == nil ? nil : item
     }
+
+    // MARK: - Sources
 
     func restartMessages() { monitor.restartMessages() }
 
@@ -210,7 +214,7 @@ final class AppModel: ObservableObject {
 
     /// The mail sources that are on: all that Recent Emails can show, since it reads only mail.
     var mailSourceKeys: [String] {
-        accounts.filter(\.enabled).map { $0.id.uuidString } + (monitoring(Prefs.appleMail) ? [AppleMailStore.sourceKey] : [])
+        accounts.filter(\.enabled).map { $0.id.uuidString } + (isOn(Prefs.appleMail) ? [AppleMailStore.sourceKey] : [])
     }
 
     /// Where a code came from, in words. A mail account is named only where its icon's badge can't tell
@@ -219,7 +223,7 @@ final class AppModel: ObservableObject {
         guard item.origin == .mail else { return item.origination }
         let account = accounts.first { $0.id.uuidString == item.sourceKey }
         // The badge is the mailbox's logo (Apple Mail: Mail's own icon); with logos off, every mailbox wears the mail app's.
-        let sharingBadge = !monitoring(Prefs.serviceIcons) ? mailSourceKeys.count
+        let sharingBadge = !isOn(Prefs.serviceIcons) ? mailSourceKeys.count
             : account.map { mine in accounts.filter { $0.enabled && $0.iconDomain == mine.iconDomain }.count } ?? 1
         guard sharingBadge > 1 else { return "" }
         guard let account else { return item.sourceLabel }
@@ -287,15 +291,15 @@ final class AppModel: ObservableObject {
         let age = Date().timeIntervalSince(message.date)
         guard age < history, message.date > clearedAt,
               !isIgnored(message.senderID) else { return }
-        let code = monitoring(Prefs.receivedCodes) ? CodeExtractor.code(in: message.fullText) : nil
+        let code = isOn(Prefs.receivedCodes) ? CodeExtractor.code(in: message.fullText) : nil
         let detectedLink = message.isMail ? SignInLink.find(in: message.links, subject: message.subject ?? "") : nil
         let resets = detectedLink?.kind == .passwordReset
-        let link = monitoring(resets ? Prefs.resetLinks : Prefs.signInLinks) ? detectedLink?.url : nil
+        let link = isOn(resets ? Prefs.resetLinks : Prefs.signInLinks) ? detectedLink?.url : nil
         let item = CodeItem(message, code: code, link: link, resetsPassword: resets)
         guard !dismissed.contains(item.dismissKey) else { return }
         if code != nil || detectedLink != nil { recovery.remove(messageKey: message.dismissKey) }
         guard code != nil || link != nil else {
-            if monitoring(Prefs.receivedCodes), detectedLink == nil { recovery.record(message) }
+            if isOn(Prefs.receivedCodes), detectedLink == nil { recovery.record(message) }
             return
         }
         monitor.receivedCode(sourceKey: message.sourceKey, date: message.date)
@@ -314,21 +318,21 @@ final class AppModel: ObservableObject {
         // clipboard or into a field, and not onto a banner that would cover the request's card.
         guard !agents.isWaiting else { return }
         if let code, isUnlocked {
-            if monitoring(Prefs.autoCopy) { copyToClipboard(code, item.id) }
+            if isOn(Prefs.autoCopy) { copyToClipboard(code, item.id) }
             // Opt-in: the code goes to whatever field has focus, so only as it arrives, never later.
-            if monitoring(Prefs.autoType) { typeCode(code) }
+            if isOn(Prefs.autoType) { typeCode(code) }
         }
-        if monitoring(Prefs.showBanner) {
+        if isOn(Prefs.showBanner) {
             unlockError = nil  // a failure from an earlier code isn't about this one
             Banner.shared.show(item.id)
         }
-        if monitoring(Prefs.sound) { NSSound(named: "Tink")?.play() }
+        if isOn(Prefs.sound) { NSSound(named: "Tink")?.play() }
     }
 
     /// The Unlock button. A code that arrived while locked is what the unlock was for: copy it.
     func unlock() async throws {
         try await authenticate()
-        if monitoring(Prefs.autoCopy), let item = latestCode, !item.used, item.shouldAnnounce(at: Date()) { copy(item) }
+        if isOn(Prefs.autoCopy), let item = latestCode, !item.used, item.shouldAnnounce(at: Date()) { copy(item) }
     }
 
     /// A click on a hidden code: authenticate once, then do what was asked.
@@ -340,7 +344,7 @@ final class AppModel: ObservableObject {
 
     /// "Unlock with Your Mac": unlocks without a prompt at launch, on wake and when the screen unlocks.
     func unlockWithMac() {
-        guard monitoring(Prefs.unlockWithMac), !isUnlocked, !Self.screenIsLocked else { return }
+        guard isOn(Prefs.unlockWithMac), !isUnlocked, !Self.screenIsLocked else { return }
         Task { try? await authenticate() }
     }
 
@@ -383,7 +387,7 @@ final class AppModel: ObservableObject {
 
     func copy(_ item: CodeItem, at date: Date = Date()) {
         let feature = item.origin == .vault ? Prefs.bitwarden : item.isLink ? item.linkSetting : Prefs.receivedCodes
-        guard isUnlocked, monitoring(feature) else { return }
+        guard isUnlocked, isOn(feature) else { return }
         var current = item
         if item.origin == .vault {
             guard let saved = vault.first(where: { $0.id == item.sourceKey }), let fresh = CodeItem(saved, at: date) else { return }
@@ -406,7 +410,7 @@ final class AppModel: ObservableObject {
 
     private func retainedLink(_ item: CodeItem) -> CodeItem? {
         guard isUnlocked, let current = items.first(where: { $0.id == item.id && $0.link == item.link }),
-              current.link != nil, monitoring(current.linkSetting), !isIgnored(current.sender) else { return nil }
+              current.link != nil, isOn(current.linkSetting), !isIgnored(current.sender) else { return nil }
         return current
     }
 
@@ -414,7 +418,7 @@ final class AppModel: ObservableObject {
     @discardableResult
     func copyRecoveryText(_ text: String, from id: UUID, at date: Date = Date()) -> Bool {
         recovery.prune(at: date)
-        guard isUnlocked, monitoring(Prefs.receivedCodes), !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+        guard isUnlocked, isOn(Prefs.receivedCodes), !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
               let entry = recovery.entries.first(where: { $0.id == id }), entry.message.fullText.contains(text) else { return false }
         copyToClipboard(text, id)
         return true
@@ -425,7 +429,7 @@ final class AppModel: ObservableObject {
         guard let item = latestCode else { return NSSound.beep() }
         unlocked { [self] in
             copy(item)
-            guard monitoring(Prefs.showBanner) else { return }
+            guard isOn(Prefs.showBanner) else { return }
             Banner.shared.show(item.id)
             Banner.shared.hide(after: 1.5)
         }

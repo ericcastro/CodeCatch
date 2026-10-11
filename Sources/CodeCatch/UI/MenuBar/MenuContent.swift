@@ -17,7 +17,7 @@ struct MenuContent: View {
     @Local private var showOlder = false
     private static let recent = 5
 
-    private var hasLogins: Bool { model.monitoring(Prefs.bitwarden) && model.hasVault }
+    private var hasLogins: Bool { model.isOn(Prefs.bitwarden) && model.hasVault }
     private var searching: Bool { !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 
     /// Search mixes all sources; at rest, only pinned or recently used logins join the inbox.
@@ -212,7 +212,7 @@ struct MenuContent: View {
             Divider()
             // Recent Emails reads only mail: with Messages alone it would be an empty window.
             Button("Recent Emails") { leave { openWindow(id: RecoveryView.windowID) } }
-                .disabled(!model.monitoring(Prefs.receivedCodes) || model.mailSourceKeys.isEmpty)
+                .disabled(!model.isOn(Prefs.receivedCodes) || model.mailSourceKeys.isEmpty)
             Button("Clear Code") { clearable.map(model.dismiss) }
                 .keyboardShortcut(.delete)
                 .disabled(clearable == nil)
@@ -221,7 +221,7 @@ struct MenuContent: View {
             Divider()
             Button("Welcome Guide") { leave { openWindow(id: WelcomeView.windowID) } }
             Button("Show Test Code") { model.showTestCode() }
-                .disabled(!model.monitoring(Prefs.receivedCodes))
+                .disabled(!model.isOn(Prefs.receivedCodes))
             Divider()
             Button("Report a Bug…") { AppBrand.openIssue(.bug) }
             Button("Suggest a Feature…") { AppBrand.openIssue(.feature) }
