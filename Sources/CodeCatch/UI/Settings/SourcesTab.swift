@@ -175,7 +175,7 @@ struct SourcesTab: View {
     }
 
     @ViewBuilder private func diskAccessRow(_ status: SourceStatus) -> some View {
-        if status == .attention(SourceStatus.needsDiskAccess) {
+        if status.needsDiskAccess {
             SettingRow(symbol: "lock.shield.fill", color: .orange, title: "Full Disk Access Needed",
                        subtitle: "Turn on CodeCatch in the list that opens.") {
                 Button("Open Settings") { SystemSettings.fullDiskAccess() }
@@ -185,7 +185,7 @@ struct SourcesTab: View {
 
     /// What is wrong, when something is. Missing Full Disk Access has its own row.
     private func problem(_ status: SourceStatus) -> String? {
-        status.needsAttention && status != .attention(SourceStatus.needsDiskAccess) ? status.summary : nil
+        status.needsAttention && !status.needsDiskAccess ? status.summary : nil
     }
 
     /// The source's health and actions, shown when its row is clicked.

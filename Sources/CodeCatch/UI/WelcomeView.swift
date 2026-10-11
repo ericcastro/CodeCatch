@@ -37,7 +37,7 @@ struct WelcomeView: View {
             Section("What to Catch") {
                 let messages = model.status[MessagesStore.sourceKey] ?? .off
                 SettingRow(symbol: SourceKind.messages.symbol, color: SourceKind.messages.color, title: "Messages",
-                           subtitle: messages == .attention(SourceStatus.needsDiskAccess)
+                           subtitle: messages.needsDiskAccess
                                ? "Needs Full Disk Access: turn on CodeCatch in the list that opens."
                                : "iMessage, and SMS once Text Message Forwarding is on in your iPhone’s Messages settings", status: messages) {
                     switch messages {

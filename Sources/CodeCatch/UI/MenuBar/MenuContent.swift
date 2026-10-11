@@ -210,7 +210,7 @@ struct MenuContent: View {
             Button("Settings…") { openSettings(at: nil) }.keyboardShortcut(",")
             Divider()
             // Recent Emails reads only mail: with Messages alone it would be an empty window.
-            Button("Recent Emails") { leave { openWindow(id: "recovery") } }
+            Button("Recent Emails") { leave { openWindow(id: RecoveryView.windowID) } }
                 .disabled(!model.monitoring(Prefs.receivedCodes) || model.mailSourceKeys.isEmpty)
             Button("Clear Code") { clearable.map(model.dismiss) }
                 .keyboardShortcut(.delete)
@@ -254,7 +254,7 @@ struct MenuContent: View {
             }
             Spacer(minLength: 6)
             Button("Fix…") {
-                if status == .attention(SourceStatus.needsDiskAccess) { return leave(SystemSettings.fullDiskAccess) }
+                if status.needsDiskAccess { return leave(SystemSettings.fullDiskAccess) }
                 openSettings(at: .sources)
             }
             .controlSize(.small)
@@ -315,7 +315,7 @@ struct MenuContent: View {
             VStack(alignment: .leading, spacing: 4) {
                 if let error = model.unlockError { WarningText(message: error, compact: true).font(.caption) }
                 if count > 0 {
-                    Button { leave { openWindow(id: "recovery") } } label: {
+                    Button { leave { openWindow(id: RecoveryView.windowID) } } label: {
                         HStack(spacing: 3) {
                             Text("\(count) \(count == 1 ? "email" : "emails") may have your code")
                             Image(systemName: "chevron.right").imageScale(.small).fontWeight(.semibold)

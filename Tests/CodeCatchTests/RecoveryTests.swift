@@ -199,7 +199,7 @@ private func missedCode(date: Date = Date(), id: String = "mail-1", source: Stri
         fixture.model.ingest(missedCode(id: "first", source: "first-source", sender: "first@example.invalid"))
         fixture.model.ingest(missedCode(id: "second", source: "second-source", sender: "second@example.invalid"))
         fixture.model.ingest(missedCode(id: "third", source: "second-source", sender: "third@example.invalid"))
-        fixture.model.recovery.remove(sourceKey: "first-source")
+        fixture.model.recovery.retainSources(["second-source"])
         #expect(fixture.model.recovery.entries.count == 2)
         #expect(!fixture.model.recovery.entries.contains { $0.message.sourceKey == "first-source" })
         fixture.model.recovery.remove(ignored: "second@example.invalid")

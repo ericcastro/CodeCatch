@@ -56,7 +56,7 @@ struct CodeCatchApp: App {
             SettingsView()
         }
 
-        Window("Recent Emails", id: "recovery") {
+        Window("Recent Emails", id: RecoveryView.windowID) {
             RecoveryView(model: AppModel.shared)
         }
         .defaultSize(width: 700, height: 450)

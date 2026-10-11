@@ -10,6 +10,8 @@ enum SourceStatus: Equatable {
     /// What a signed-in mail account reports when its provider no longer accepts the sign-in.
     static let signInExpired = "Sign-in expired. Sign in again."
 
+    var needsDiskAccess: Bool { self == .attention(Self.needsDiskAccess) }
+
     var needsAttention: Bool {
         switch self {
         case .attention, .failed: true

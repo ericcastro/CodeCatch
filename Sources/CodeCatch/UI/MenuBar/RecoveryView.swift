@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 
 struct RecoveryView: View {
+    static let windowID = "recovery"
     @ObservedObject var model: AppModel
     @Environment(\.openSettings) private var openSettings
     @Local private var selectedID: UUID?
@@ -74,7 +75,6 @@ struct RecoveryView: View {
                             WarningText(message: "\(problem.label): \(problem.status.summary)").font(.caption)
                         }
                         Button("Open Sources") { openSettings(at: .sources) }
-                            .buttonStyle(.bordered)
                     }
                 } else {
                     HStack(spacing: 0) {
