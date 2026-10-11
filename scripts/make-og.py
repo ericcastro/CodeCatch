@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Make each guide's and comparison's share image (site/assets/og/<page>.png, 1200x630).
+"""Make each guide's and comparison's share image (site/assets/og/<page>.png, 1200x630;
+site/assets/og/<lang>/<page>.png for a page in another language).
 
 The image is the page's own heading next to its own app picture, drawn with the site's
 styles by headless Chrome, so it changes when the page does. Run it after editing a
@@ -57,9 +58,14 @@ def main():
     os.makedirs(out_dir, exist_ok=True)
     work = tempfile.mkdtemp()
     try:
-        for page in sorted(glob.glob(os.path.join(SITE, "guides/*/index.html")) + glob.glob(os.path.join(SITE, "vs/*/index.html"))):
+        for page in sorted(glob.glob(os.path.join(SITE, "**/index.html"), recursive=True)):
             html = open(page).read()
+            if 'class="feature-art article-art"' not in html:
+                continue
             name = os.path.basename(os.path.dirname(page))
+            lang = grab(r'<html lang="([a-z-]+)"', html, page)
+            folder = out_dir if lang == "en" else os.path.join(out_dir, lang)
+            os.makedirs(folder, exist_ok=True)
             art = grab(r'<div class="feature-art article-art" aria-hidden="true">\s*(<div class="cc">.*?)\n  </div>\n', html, page)
             source = TEMPLATE.format(
                 site="file://" + SITE,
@@ -68,9 +74,9 @@ def main():
                 art=art.replace('src="/assets/', f'src="file://{SITE}/assets/').replace(' loading="lazy"', ""),
                 sprite=grab(r'(<svg width="0" height="0".*?</svg>)\s*(?:<script|</body>)', html, page),
             )
-            draft = os.path.join(work, name + ".html")
+            draft = os.path.join(work, lang + "-" + name + ".html")
             open(draft, "w").write(source)
-            image = os.path.join(out_dir, name + ".png")
+            image = os.path.join(folder, name + ".png")
             subprocess.run([CHROME, "--headless", "--hide-scrollbars", "--force-device-scale-factor=1",
                             "--window-size=1200,630", f"--screenshot={image}", "file://" + draft],
                            check=True, capture_output=True)

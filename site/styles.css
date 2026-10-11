@@ -115,7 +115,7 @@ kbd {
 .brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 650; font-size: 17px; }
 .brand .mark { font-size: 22px; }
 .nav nav { display: flex; gap: 22px; margin-left: auto; font-size: 15px; color: var(--muted); }
-.nav nav a:hover, .footer nav a:hover { color: var(--text); }
+.nav nav a:hover, .footer a:hover { color: var(--text); }
 
 main > section { padding: 0 max(20px, calc((100vw - 1120px) / 2)); }
 section[id] { scroll-margin-top: 60px; }
@@ -484,6 +484,7 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
 .prose-table { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
 .prose-table table { width: 100%; border-collapse: collapse; font-size: 15.500px; }
 .prose-table th, .prose-table td { padding: 11px 14px; text-align: left; vertical-align: top; }
+:lang(de) :is(h1, .prose-table td) { hyphens: auto; }  /* long German words, so narrow screens and tables still fit */
 .prose-table thead th { font-size: 13px; font-weight: 650; color: var(--muted); vertical-align: bottom; }
 /* Equal value columns where there is room; narrow screens keep content-sized columns and scroll. */
 @media (min-width: 901px) { .prose-table table { table-layout: fixed; } .prose-table thead th:first-child { width: 24%; } }
@@ -660,18 +661,20 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
 .cta > p:not(.fine) { color: var(--muted); font-size: 19px; }
 .cta .actions { justify-content: center; margin-top: 8px; }
 .footer { padding: 56px max(20px, calc((100vw - 1120px) / 2)) 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
-.footer-top { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 2.6fr); gap: 48px; }
-.footer-brand { display: grid; gap: 12px; align-content: start; justify-items: start; }
+/* The links sit beside the brand while they fit on one line each, and below it once they don't. */
+.footer-top { display: flex; flex-wrap: wrap; gap: 36px 48px; }
+.footer-brand { flex: 1 0 220px; display: grid; gap: 12px; align-content: start; justify-items: start; }
 .footer-brand .brand { color: var(--text); font-size: 17px; }
 .footer-brand p { max-width: 260px; }
 .footer-gh { display: inline-flex; align-items: center; gap: 7px; }
-.footer-gh:hover { color: var(--text); }
 .footer-gh svg { font-size: 16px; }
-.footer nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 24px; }
-.footer nav div { display: grid; gap: 10px; align-content: start; }
-.footer nav h2 { margin-bottom: 2px; font-size: 13px; font-weight: 650; letter-spacing: 0.02em; color: var(--text); }
-.footer nav a:hover { color: var(--text); }
-.footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--faint); }
+.footer-top nav { flex: 1 1 auto; display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; gap: 28px 32px; }
+.footer-top nav div { display: grid; gap: 10px; align-content: start; }
+.footer-top nav h2 { margin-bottom: 2px; font-size: 13px; font-weight: 650; letter-spacing: 0.02em; color: var(--text); }
+/* Notices on the left, languages on the right; the list wraps as languages are added. */
+.footer-bottom { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 24px; margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--faint); }
+.languages { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin-left: auto; }
+.languages a[aria-current] { color: var(--text); }
 
 /* Reveal on scroll */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
@@ -706,7 +709,6 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
   .guide-card { display: none; }  /* the footer lists the guides */
   .nav nav { display: none; }
   .nav .button { margin-left: auto; }
-  .footer-top { grid-template-columns: minmax(0, 1fr); gap: 36px; }
   .feature-art { min-height: 0; padding: 28px 12px; }
 }
 @media (min-width: 600px) and (max-width: 900px) {
@@ -714,9 +716,9 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
   .compare tbody tr { margin: 0; }
 }
 @media (max-width: 520px) {
-  .footer nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .footer-top nav { grid-template-columns: repeat(2, minmax(0, 1fr)); justify-content: stretch; }
   /* Taller links for a thumb, about as far apart as before. */
-  .footer nav div { gap: 0; }
+  .footer-top nav div { gap: 0; }
   .footer nav a, .footer-gh { padding-block: 6px; }
   body { font-size: 16px; }
   .lede { font-size: 18px; }

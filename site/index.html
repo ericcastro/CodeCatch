@@ -6,12 +6,17 @@
 <title>CodeCatch: verification codes and sign-in links for Mac</title>
 <meta name="description" content="CodeCatch is a Mac menu bar app that catches 2FA verification codes and sign-in links from Messages and mail and puts them on your clipboard. Paste in Chrome, Arc, Firefox or any app, or let AI agents like Claude Code ask for a code with your OK.">
 <link rel="canonical" href="https://codecatch.app/">
+<link rel="alternate" hreflang="en" href="https://codecatch.app/">
+<link rel="alternate" hreflang="de" href="https://codecatch.app/de/">
+<link rel="alternate" hreflang="x-default" href="https://codecatch.app/">
 <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#100d0e" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/icon-180.png">
 
 <meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="de_DE">
 <meta property="og:site_name" content="CodeCatch">
 <meta property="og:url" content="https://codecatch.app/">
 <meta property="og:title" content="CodeCatch: sign-in codes, caught the moment they arrive">
@@ -63,7 +68,7 @@
    "@id": "https://codecatch.app/#site",
    "name": "CodeCatch",
    "url": "https://codecatch.app/",
-   "inLanguage": "en",
+   "inLanguage": ["en", "de"],
    "publisher": {
     "@id": "https://codecatch.app/#org"
    }
@@ -237,6 +242,20 @@
       <button type="button" tabindex="-1"><img src="/assets/services/gmail.png" alt=""><span>Email code</span></button>
       <button type="button" tabindex="-1"><img src="/assets/services/mail.png" alt=""><span>Sign-in link</span></button>
     </div>
+    <!-- The sign-in pages of the email scenes (app.js). The Gmail badge already names the inbox, so "from" is empty. -->
+    <script type="application/json" id="scenes">
+    {
+      "emailed": {
+        "brand": "notion", "icon": "/assets/services/notion.png", "tab": "Log in – Notion", "url": "notion.so/login",
+        "title": "Log in", "note": "We sent a login code to y•••@gmail.com. Check your inbox.", "prefix": "", "button": "Continue",
+        "via": "/assets/services/gmail.png", "who": "Notion", "from": ""
+      },
+      "linked": {
+        "brand": "slack", "icon": "/assets/services/slack.png", "tab": "Check your email – Slack", "url": "slack.com/signin",
+        "title": "Check your email", "note": "We sent a sign-in link to you@work.com. It expires in 30 minutes.", "prefix": "", "button": "Open Mail"
+      }
+    }
+    </script>
 
     <div class="cc banner" id="banner" aria-hidden="true">
       <div class="card">
@@ -635,7 +654,6 @@
         <h2>Product</h2>
         <a href="/#features">Features</a>
         <a href="/#privacy">Privacy settings</a>
-        <a href="/#compare">Compare</a>
         <a href="/#faq">FAQ</a>
       </div>
       <div>
@@ -647,6 +665,7 @@
       </div>
       <div>
         <h2>Compare</h2>
+        <a href="/#compare">All apps compared</a>
         <a href="/vs/2fhey/">CodeCatch vs 2FHey</a>
         <a href="/vs/messauto/">CodeCatch vs MessAuto</a>
       </div>
@@ -662,7 +681,8 @@
   </div>
   <div class="footer-bottom">
     <p>© 2026 CodeCatch</p>
-    <p>Service names and logos belong to their owners and are shown as examples.</p>
+    <p>Other names and logos belong to their owners.</p>
+    <nav class="languages" aria-label="Language"><a href="/" hreflang="en" lang="en" aria-current="page">English</a><a href="/de/" hreflang="de" lang="de">Deutsch</a></nav>
   </div>
 </footer>
 

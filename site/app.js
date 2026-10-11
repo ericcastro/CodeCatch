@@ -3,9 +3,11 @@
 (() => {
   const $ = (id) => document.getElementById(id);
 
-  // The menu bar clocks show the visitor's own day, date and time, as their Mac would.
-  const day = new Intl.DateTimeFormat(undefined, { weekday: "short", day: "numeric", month: "short" });
-  const time = new Intl.DateTimeFormat(undefined, { timeStyle: "short" });
+  // The menu bar clocks show the visitor's own day, date and time, as their Mac would;
+  // on a translated page, in that page's language, like the menus beside them.
+  const lang = document.documentElement.lang, locale = lang === "en" ? undefined : lang;
+  const day = new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short" });
+  const time = new Intl.DateTimeFormat(locale, { timeStyle: "short" });
   const clock = () => {
     const now = new Date();
     for (const el of document.querySelectorAll(".clock")) el.textContent = day.format(now).replace(/,/g, "") + " " + time.format(now);
@@ -34,19 +36,12 @@
   };
 
   // Every scene sets the sign-in page it happens on; the code scenes also set who sent
-  // the code. The text scene's values are the ones in the HTML.
+  // the code. The text scene's values are the ones in the HTML, the others are in the
+  // page's #scenes, in its own language.
   const page = $("stage").querySelector(".window"), tile = banner.querySelector(".tile");
   const read = (el) => el.tagName === "IMG" ? el.getAttribute("src") : el.textContent;
   const texted = { ...Object.fromEntries([...$("stage").querySelectorAll("[data-fill]")].map((el) => [el.dataset.fill, read(el)])), brand: "google" };
-  const emailed = {
-    brand: "notion", icon: "/assets/services/notion.png", tab: "Log in – Notion", url: "notion.so/login",
-    title: "Log in", note: "We sent a login code to y•••@gmail.com. Check your inbox.", prefix: "", button: "Continue",
-    via: "/assets/services/gmail.png", who: "Notion", from: "",  // the Gmail badge already names the inbox
-  };
-  const linked = {
-    brand: "slack", icon: "/assets/services/slack.png", tab: "Check your email – Slack", url: "slack.com/signin",
-    title: "Check your email", note: "We sent a sign-in link to you@work.com. It expires in 30 minutes.", prefix: "", button: "Open Mail",
-  };
+  const { emailed, linked } = JSON.parse($("scenes").textContent);
   const fill = (root, values) => {
     for (const el of root.querySelectorAll("[data-fill]")) el.tagName === "IMG" ? el.src = values[el.dataset.fill] : el.textContent = values[el.dataset.fill];
   };

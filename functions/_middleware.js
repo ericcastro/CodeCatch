@@ -8,14 +8,16 @@
 // Bindings, set on the Pages project: DB (D1 codecatch-installs) and SALT (secret).
 const BOT = /bot|crawl|spider|slurp|preview|headless/i;
 
-// A phone or PC can't open the .dmg, so it gets a page that helps send the link to a Mac.
+// A phone or PC can't open the .dmg, so it gets a page that helps send the link to a Mac,
+// in the language of the page the download was clicked on.
 // Macs, and tools that name no system (curl), still get the file.
 const NOT_MAC = ["iOS", "Android", "Windows", "Linux"];
+const LANGUAGES = ["de"];  // the site's folders besides English, as in site/<lang>/
 
 export async function onRequest({ request, env, next, waitUntil }) {
   const url = new URL(request.url);
   const elsewhere = url.pathname === "/download/CodeCatch.dmg" && NOT_MAC.includes(system(request.headers.get("user-agent") ?? ""));
-  const response = elsewhere ? Response.redirect(new URL("/download/", url), 302) : await next();
+  const response = elsewhere ? Response.redirect(new URL(downloadPage(request), url), 302) : await next();
   const task = env.DB && request.method === "GET" && record(request, env, response);
   if (task) waitUntil(task.catch((error) => console.error("stats", error)));
   return response;
@@ -28,6 +30,11 @@ function record(request, env, response) {
   if (url.pathname === "/download/CodeCatch.dmg") return siteEvent(request, env, url, "download");
   if (tagged(url) && response.headers.get("content-type")?.startsWith("text/html")) return siteEvent(request, env, url, "landing");
   return null;
+}
+
+function downloadPage(request) {
+  const lang = URL.parse(request.headers.get("referer") ?? "")?.pathname.split("/")[1];
+  return LANGUAGES.includes(lang) ? `/${lang}/download/` : "/download/";
 }
 
 const tagged = (url) => url.searchParams.has("ref") || [...url.searchParams.keys()].some((key) => key.startsWith("utm_"));
