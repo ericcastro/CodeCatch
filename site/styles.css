@@ -640,6 +640,11 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
 /* Why: the hunt across apps, then the one row CodeCatch shows instead. */
 .why { padding-top: 88px !important; padding-bottom: 96px !important; border-top: 1px solid var(--line); }
 .why .tile { --size: 26px; }
+.why .signature { display: flex; align-items: center; gap: 12px; margin-top: 28px; }
+.why .signature .avatar { width: 40px; height: 40px; font-size: 14px; }
+.why .signature > span:last-child { display: flex; flex-direction: column; line-height: 1.35; font-size: 14px; }
+.why .signature strong { color: var(--text); font-size: 16px; font-weight: 600; }
+.why .signature a { width: fit-content; }
 .why .hunt li { opacity: 0.72; }
 .why .set-title .mark { margin-right: 6px; vertical-align: -2px; }
 .state { flex: none; color: var(--faint); font-size: 11px; }
