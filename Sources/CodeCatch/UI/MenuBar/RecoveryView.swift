@@ -10,8 +10,9 @@ struct RecoveryView: View {
     private var selected: RecoveryInbox.Entry? {
         model.recovery.entries.first { $0.id == selectedID } ?? model.recovery.entries.first
     }
-    /// Until something else is copied or the clipboard clears, like a code row's "Copied".
-    private var copied: Bool { selected.map { Clipboard.holds($0.id) } ?? false }
+    /// Set by a copy, so "Copied" shows at once; it goes when something else is copied or the clipboard clears.
+    @Local private var copiedID: UUID?
+    private var copied: Bool { selected.map { $0.id == copiedID && Clipboard.holds($0.id) } ?? false }
     private var enabledAccounts: [MailAccount] { model.accounts.filter(\.enabled) }
     private var checking: Bool { model.mailSourceKeys.contains { model.status[$0] == .connecting } }
     private var monitoringSummary: String {
@@ -156,9 +157,9 @@ struct RecoveryView: View {
         model.mailSourceKeys.forEach(model.monitor.check)
     }
     private func copy(_ text: String, from id: UUID) -> Bool {
-        let copied = model.copyRecoveryText(text, from: id)
-        if !copied { NSSound.beep() }
-        return copied
+        guard model.copyRecoveryText(text, from: id) else { NSSound.beep(); return false }
+        copiedID = id
+        return true
     }
 }
 

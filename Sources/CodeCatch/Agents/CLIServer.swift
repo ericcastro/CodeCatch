@@ -123,8 +123,7 @@ enum CLIServer {
         case .status:
             reply(AgentReply(status: model.agentStatus))
         case .get:
-            // `AgentAccess.get` checks that it names a site.
-            guard let site = request.site else {
+            guard let site = request.site, SiteQuery(site) != nil else {
                 return reply(AgentReply(error: AgentError(.usage, "Name the site, such as github.com.")))
             }
             let result = await model.agents.get(site: site, since: request.since, timeout: request.timeout, caller: caller) { note in
