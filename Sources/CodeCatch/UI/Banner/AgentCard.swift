@@ -69,15 +69,18 @@ struct AgentRequestCard: View {
                     if !request.caller.process.isEmpty { row("Program", "\(request.caller.process) (name not verified)") }
                 }
                 .font(.callout)
-                if item.isLink {
-                    note("This link signs \(request.caller.name) in to \(site) as you.")
+                Group {
+                    if item.isLink {
+                        WarningText(message: "This link signs \(request.caller.name) in to \(site) as you.")
+                    }
+                    if request.unnamed {
+                        WarningText(message: "This text doesn't say which site it is for. Allow it only if you just asked \(request.query.label) for a code.")
+                    }
+                    if item.origin == .mail, item.senderVerified != true {
+                        WarningText(message: "The sender isn't verified. Check the email before allowing this code.")
+                    }
                 }
-                if request.unnamed {
-                    note("This text doesn't say which site it is for. Allow it only if you just asked \(request.query.label) for a code.")
-                }
-                if item.origin == .mail, item.senderVerified != true {
-                    note("The sender isn't verified. Check the email before allowing this code.")
-                }
+                .font(.callout)
                 HStack {
                     if request.caller.app != nil, !request.unnamed, !item.isLink,
                        item.origin != .mail || item.senderVerified == true {
@@ -98,9 +101,7 @@ struct AgentRequestCard: View {
                 .disabled(!armed || access.authenticating)
             }
             .padding(16)
-            .frame(width: 356)
-            .modifier(GlassBackground(shape: RoundedRectangle(cornerRadius: 24, style: .continuous), shadowRadius: 14, shadowY: 6))
-            .padding(12)
+            .floatingCard()
             .task(id: item.id) {
                 armed = false
                 try? await Task.sleep(for: .milliseconds(700))
@@ -119,13 +120,6 @@ struct AgentRequestCard: View {
             Text(label).foregroundStyle(.secondary)
             Text(value).fixedSize(horizontal: false, vertical: true)
         }
-    }
-
-    private func note(_ text: String) -> some View {
-        Label(text, systemImage: "exclamationmark.triangle.fill")
-            .font(.callout)
-            .foregroundStyle(.orange)
-            .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -152,9 +146,7 @@ struct AgentNotice: View {
             }
         }
         .padding(16)
-        .frame(width: 356)
-        .modifier(GlassBackground(shape: RoundedRectangle(cornerRadius: 24, style: .continuous), shadowRadius: 14, shadowY: 6))
-        .padding(12)
+        .floatingCard()
     }
 }
 

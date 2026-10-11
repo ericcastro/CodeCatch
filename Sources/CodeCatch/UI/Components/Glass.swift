@@ -19,10 +19,8 @@ enum Glass {
 }
 
 /// Liquid Glass on macOS 26+, a vibrant material before that.
-struct GlassBackground<S: InsettableShape>: ViewModifier {
-    let shape: S
-    let shadowRadius: CGFloat
-    let shadowY: CGFloat
+private struct GlassBackground: ViewModifier {
+    private let shape = RoundedRectangle(cornerRadius: 24, style: .continuous)
 
     func body(content: Content) -> some View {
         if #available(macOS 26, *), !Glass.useMaterial {
@@ -31,7 +29,15 @@ struct GlassBackground<S: InsettableShape>: ViewModifier {
             content
                 .background(VisualEffect().clipShape(shape))
                 .overlay(shape.strokeBorder(.primary.opacity(0.1), lineWidth: 0.5))
-                .shadow(color: .black.opacity(0.18), radius: shadowRadius, y: shadowY)
+                .shadow(color: .black.opacity(0.18), radius: 14, y: 6)
         }
+    }
+}
+
+extension View {
+    /// A card in its own borderless panel (the code banner, an agent request): glass, with room
+    /// around it for the glass edge and shadow.
+    func floatingCard() -> some View {
+        frame(width: 356).modifier(GlassBackground()).padding(12)
     }
 }
