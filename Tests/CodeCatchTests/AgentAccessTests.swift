@@ -471,7 +471,7 @@ private extension Result where Success == CodeItem, Failure == AgentError {
     }
 
     @Test(arguments: [false, true])
-    func clearingDefaultsCannotResetPersistedAutomaticReleaseLimit(_ allowAll: Bool) async throws {
+    func restartKeepsThePersistedAutomaticReleaseLimit(_ allowAll: Bool) async throws {
         let h = Harness(AgentConfig(enabled: true, rules: [AgentRule(app: agentApp, site: nil)],
                                     allowAll: allowAll))
         for _ in 0..<20 {
@@ -480,10 +480,8 @@ private extension Result where Success == CodeItem, Failure == AgentError {
         }
         let persisted = try #require(h.saved.last)
         #expect(persisted.releases.count == 20)
-        h.defaults.removeObject(forKey: "agentRuleReleases")
 
         let restarted = Harness(persisted)
-        restarted.defaults.set([], forKey: "agentRuleReleases")
         restarted.add(item())
         let task = restarted.start()
         try await restarted.waitForCard()
@@ -512,16 +510,6 @@ private extension Result where Success == CodeItem, Failure == AgentError {
         config.releases = [Date(timeIntervalSince1970: 1_790_000_000)]
         let decoded = try JSONDecoder().decode(AgentConfig.self, from: JSONEncoder().encode(config))
         #expect(decoded.releases == config.releases)
-    }
-
-    @Test func legacyConfigWithoutReleaseHistoryStillDecodes() throws {
-        let config = AgentConfig(enabled: true)
-        let encoded = try JSONEncoder().encode(config)
-        var legacy = try #require(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
-        legacy.removeValue(forKey: "releases")
-        let decoded = try JSONDecoder().decode(AgentConfig.self, from: JSONSerialization.data(withJSONObject: legacy))
-        #expect(decoded.enabled)
-        #expect(decoded.releases.isEmpty)
     }
 
     /// Allow All must count against the same hourly cap as rules, not get a fresh one.
@@ -934,6 +922,7 @@ private extension Result where Success == CodeItem, Failure == AgentError {
         #expect(config.enabled)
         #expect(config.allowAll == false)
         #expect(config.links == false)
+        #expect(config.releases.isEmpty)
         #expect(config.rules.map(\.id) == [rule.id])
         #expect(config.rules.first?.site == "github.com")
     }

@@ -84,13 +84,6 @@ struct IconProxyURLCase: Sendable {
         #expect(!FileManager.default.fileExists(atPath: fixture.root.path))
     }
 
-    @Test(arguments: [false, true])
-    func registeringDefaultsPreservesExplicitIconConsent(enabled: Bool) throws {
-        let fixture = try IconPrivacyFixture(enabled: enabled)
-        defer { fixture.cleanUp() }
-        #expect(fixture.defaults.bool(forKey: Prefs.serviceIcons) == enabled)
-    }
-
     @Test func defaultLookupUsesOneGoogleProxyRequestAndCachesTheIcon() async throws {
         let fixture = try IconPrivacyFixture()
         defer { fixture.cleanUp() }

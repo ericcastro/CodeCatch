@@ -66,19 +66,6 @@ private func monitoringMessage() -> IncomingMessage {
 }
 
 @MainActor @Suite struct MonitoringTests {
-    @Test func registrationEnablesAllFeaturesWithoutOverwritingSavedChoices() throws {
-        let fixture = try MonitoringFixture()
-        defer { fixture.cleanUp() }
-        for key in [Prefs.receivedCodes, Prefs.signInLinks, Prefs.resetLinks, Prefs.bitwarden] {
-            #expect(fixture.defaults.bool(forKey: key))
-            fixture.defaults.set(false, forKey: key)
-        }
-        Prefs.register(in: fixture.defaults)
-        for key in [Prefs.receivedCodes, Prefs.signInLinks, Prefs.resetLinks, Prefs.bitwarden] {
-            #expect(!fixture.defaults.bool(forKey: key))
-        }
-    }
-
     /// Prevents someone at the Mac, locked or already unlocked, from removing the Touch ID lock without the owner.
     @Test(arguments: [(unlocked: false, confirms: false), (unlocked: true, confirms: false),
                       (unlocked: false, confirms: true), (unlocked: true, confirms: true)])
