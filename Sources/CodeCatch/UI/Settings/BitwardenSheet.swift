@@ -29,7 +29,7 @@ struct BitwardenSheet: View {
                 else { ProgressView().controlSize(.small).frame(maxWidth: .infinity) }
             }
             .padding(14)
-            .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(.primary.opacity(0.04)))
+            .well()
             if let error { WarningText(message: error).font(.callout) }
             HStack {
                 Button("Check Again") { pending = nil; Task { await refresh() } }.disabled(working)

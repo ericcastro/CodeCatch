@@ -84,7 +84,7 @@ struct AgentsTab: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(10)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(.primary.opacity(0.04)))
+                    .well(cornerRadius: 8)
             }
             // The same rows as Sources → What to Catch: what agents may get of what CodeCatch catches.
             Section("What to Share") {
@@ -409,7 +409,10 @@ private struct AgentLogRow: View {
             SiteIcon(site: entry.site.isEmpty ? nil : entry.site, size: 28)
             VStack(alignment: .leading, spacing: 1) {
                 Text(entry.site.isEmpty ? "CodeCatch" : entry.site).lineLimit(1)
-                Text(entry.caller).font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
+                // CodeCatch's own entries (access turned off) have no site, and would name it twice.
+                if !entry.site.isEmpty {
+                    Text(entry.caller).font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
+                }
             }
             Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 1) {

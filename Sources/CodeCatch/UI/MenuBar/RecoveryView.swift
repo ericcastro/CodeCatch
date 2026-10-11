@@ -6,11 +6,12 @@ struct RecoveryView: View {
     @ObservedObject var model: AppModel
     @Environment(\.openSettings) private var openSettings
     @Local private var selectedID: UUID?
-    @Local private var copied = false
 
     private var selected: RecoveryInbox.Entry? {
         model.recovery.entries.first { $0.id == selectedID } ?? model.recovery.entries.first
     }
+    /// Until something else is copied or the clipboard clears, like a code row's "Copied".
+    private var copied: Bool { selected.map { Clipboard.holds($0.id) } ?? false }
     private var enabledAccounts: [MailAccount] { model.accounts.filter(\.enabled) }
     private var checking: Bool { model.mailSourceKeys.contains { model.status[$0] == .connecting } }
     private var monitoringSummary: String {
@@ -113,7 +114,7 @@ struct RecoveryView: View {
             refresh()
             selectedID = selected?.id
         }
-        .onChange(of: selected?.id) { _, id in selectedID = id; copied = false }
+        .onChange(of: selected?.id) { _, id in selectedID = id }
     }
 
     private func notice<Actions: View>(_ message: String, @ViewBuilder actions: () -> Actions) -> some View {
@@ -155,7 +156,7 @@ struct RecoveryView: View {
         model.mailSourceKeys.forEach(model.monitor.check)
     }
     private func copy(_ text: String, from id: UUID) -> Bool {
-        copied = model.copyRecoveryText(text, from: id)
+        let copied = model.copyRecoveryText(text, from: id)
         if !copied { NSSound.beep() }
         return copied
     }
