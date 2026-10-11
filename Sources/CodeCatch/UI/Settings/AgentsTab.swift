@@ -67,14 +67,15 @@ struct AgentsTab: View {
                         NSPasteboard.general.clearContents()
                         NSPasteboard.general.setString(CommandLineTool.instructions, forType: .string)
                         copiedAt = Date()
-                        Task {
-                            try? await Task.sleep(for: .seconds(1.5))
-                            if let at = copiedAt, Date().timeIntervalSince(at) >= 1.4 { copiedAt = nil }
-                        }
                     } label: {
                         Text(copiedAt == nil ? "Copy" : "Copied")
                     }
                     .accessibilityLabel(copiedAt == nil ? "Copy instructions" : "Copied")
+                    // Each click restarts the moment; a cancelled wait leaves it to the newer click.
+                    .task(id: copiedAt) {
+                        guard copiedAt != nil, (try? await Task.sleep(for: .seconds(1.5))) != nil else { return }
+                        copiedAt = nil
+                    }
                 }
                 // What the agent will read, readable here too, and selectable for copying just a part.
                 Text(CommandLineTool.instructions)
