@@ -11,11 +11,6 @@ final class AppModel: ObservableObject {
     #else
     static let shared = AppModel()
     #endif
-    /// Lifetime when the message doesn't state one.
-    nonisolated static let defaultValidity: TimeInterval = 600
-    /// Sign-in links usually live longer than codes.
-    nonisolated static let linkValidity: TimeInterval = 1800
-    nonisolated static let testSourceKey = "test"
     /// How far back codes are listed; re-read from the sources on launch, never stored.
     var history: TimeInterval { Prefs.history(in: defaults) }
 
@@ -232,59 +227,6 @@ final class AppModel: ObservableObject {
 
     private func retainRecoverySources() { recovery.retainSources(Set(mailSourceKeys)) }
 
-    /// Adds the account, or replaces the saved one with the same id.
-    func save(_ account: MailAccount) {
-        let unchanged = accounts.contains(account)
-        if let i = accounts.firstIndex(where: { $0.id == account.id }) { accounts[i] = account } else { accounts.append(account) }
-        // A password or refresh token can change without changing account metadata.
-        if unchanged { monitor.check(account.id.uuidString) }
-    }
-
-    enum AccountSaveError: LocalizedError {
-        case duplicate
-        var errorDescription: String? { "This mail account is already saved. Edit the existing account instead." }
-    }
-
-    /// Persist credentials before publishing metadata; never mutate another account's keys.
-    func saveAccount(_ account: MailAccount, password: String, refreshToken: String?, keychain: AccountKeychain = .login) throws {
-        guard !accounts.contains(where: { $0.id != account.id && $0.secretKey == account.secretKey }) else {
-            throw AccountSaveError.duplicate
-        }
-        var account = account
-        if let refreshToken {
-            try keychain.write(refreshToken, account.refreshTokenKey)
-            account.signedIn = true
-        } else if !account.usesSignIn {
-            if !password.isEmpty { try keychain.write(password, account.secretKey) }
-            try forgetSignIn(account, keychain)
-        }
-        save(account)
-    }
-
-    func remove(_ account: MailAccount, keychain: AccountKeychain = .login) throws {
-        guard let saved = accounts.first(where: { $0.id == account.id }) else { return }
-        if !accounts.contains(where: { $0.id != saved.id && $0.secretKey == saved.secretKey }) {
-            try keychain.remove(saved.secretKey)
-            try forgetSignIn(saved, keychain)
-        }
-        accounts.removeAll { $0.id == saved.id }
-    }
-
-    /// After an identity edit, remove old credentials only when no saved account uses them.
-    func removeUnusedCredentials(for account: MailAccount, keychain: AccountKeychain = .login) throws {
-        guard !accounts.contains(where: { $0.secretKey == account.secretKey }) else { return }
-        try keychain.remove(account.secretKey)
-        try forgetSignIn(account, keychain)
-    }
-
-    /// A sign-in CodeCatch forgets also ends on the provider's side, once it is gone from the Keychain.
-    private func forgetSignIn(_ account: MailAccount, _ keychain: AccountKeychain) throws {
-        let token = keychain.read(account.refreshTokenKey)
-        try keychain.remove(account.refreshTokenKey)
-        OAuth.forgetAccessToken(tokenKey: account.refreshTokenKey)
-        if let token, let provider = account.provider { keychain.revoke(provider, token) }
-    }
-
     // MARK: - Codes
 
     func ingest(_ message: IncomingMessage) {
@@ -457,7 +399,7 @@ final class AppModel: ObservableObject {
     /// Lets the user try the card and copy without waiting for a real code.
     func showTestCode() {
         ingest(IncomingMessage(text: "Your CodeCatch code is \(Int.random(in: 100_000...999_999)).", senderName: "", senderID: "",
-                               sourceKey: Self.testSourceKey, sourceLabel: "Test", date: Date(), isMail: false))
+                               sourceKey: CodeItem.testSourceKey, sourceLabel: "Test", date: Date(), isMail: false))
     }
 
     /// Where "Show in …" goes: the exact email where macOS allows (its page in Gmail or Outlook, or

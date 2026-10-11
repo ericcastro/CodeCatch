@@ -4,6 +4,11 @@ import Foundation
 
 struct CodeItem: Identifiable, Equatable {
     enum Origin { case messages, mail, test, vault }
+    /// Lifetime when the message doesn't state one.
+    static let defaultValidity: TimeInterval = 600
+    /// Sign-in links usually live longer than codes.
+    static let linkValidity: TimeInterval = 1800
+    static let testSourceKey = "test"
 
     var id = UUID()
     let origin: Origin
@@ -20,7 +25,7 @@ struct CodeItem: Identifiable, Equatable {
     let preview: String
     let snippet: String
     let received: Date
-    /// From the message's own "expires in 10 minutes", else `AppModel.defaultValidity`.
+    /// From the message's own "expires in 10 minutes", else `defaultValidity`.
     let expires: Date
     /// Registrable domain for the logo: the mail sender's, an origin-bound SMS's, or a known service's.
     let domain: String?
@@ -72,13 +77,13 @@ extension CodeItem {
     init(_ message: IncomingMessage, code: String?, link: URL?, resetsPassword: Bool = false) {
         let body = message.text.split(whereSeparator: \.isWhitespace).joined(separator: " ")
         let service = message.service
-        self.init(origin: message.sourceKey == AppModel.testSourceKey ? .test : message.isMail ? .mail : .messages,
+        self.init(origin: message.sourceKey == Self.testSourceKey ? .test : message.isMail ? .mail : .messages,
                   code: code ?? "", link: link, service: service, sourceLabel: message.sourceLabel,
                   sourceKey: message.sourceKey, accountLabel: message.sourceLabel, sender: message.senderID,
                   preview: String((message.subject.flatMap { $0.isEmpty ? nil : $0 } ?? body).prefix(160)),
                   snippet: String(((message.subject.map { $0 + " — " } ?? "") + body).prefix(280)), received: message.date,
                   expires: message.date.addingTimeInterval(CodeExtractor.validity(in: message.fullText)
-                      ?? (code == nil ? AppModel.linkValidity : AppModel.defaultValidity)),
+                      ?? (code == nil ? Self.linkValidity : Self.defaultValidity)),
                   // A spoofed sender gets neither its logo nor a pass on the link check.
                   domain: message.senderVerified == false ? nil
                       : ServiceIdentity.domain(senderAddress: message.senderID, isMail: message.isMail, text: message.fullText, service: service),
