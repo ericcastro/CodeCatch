@@ -101,7 +101,7 @@ extension CodeItem {
 }
 
 extension CodeItem {
-    /// "Messages · 22000" / "Work" — where it came from, not when. Shown through `AppModel.origination`.
+    /// "Messages · 22000" / "Work": where it came from, not when. Shown through `AppModel.origination`.
     var origination: String {
         // A phone number or short code tells SMS senders apart; for mail the account says enough.
         let from = sender.isEmpty || sender == service || sender.contains("@") ? nil : sender

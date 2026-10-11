@@ -1,7 +1,7 @@
 import Foundation
 
 /// Finds the one action link in a sign-in, verification or password-reset mail
-/// ("Confirm your sign-in", "Verify your email", magic links, "Reset password") —
+/// ("Confirm your sign-in", "Verify your email", magic links, "Reset password"),
 /// not unsubscribe, help, social or tracking-pixel links. The subject decides the kind.
 public enum SignInLink {
     public enum Kind: Sendable { case signIn, passwordReset }

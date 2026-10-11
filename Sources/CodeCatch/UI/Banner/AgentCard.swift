@@ -34,8 +34,8 @@ enum AgentPanel {
     }
 }
 
-/// "iTerm2 wants your github.com code". Every line comes from CodeCatch's own data — the verified
-/// app, the message's sender, the times — never from text the agent sent. The code itself isn't shown.
+/// "iTerm2 wants your github.com code". Every line comes from CodeCatch's own data (the verified
+/// app, the message's sender, the times), never from text the agent sent. The code itself isn't shown.
 struct AgentRequestCard: View {
     @ObservedObject private var access = AppModel.shared.agents
     @ObservedObject private var model = AppModel.shared

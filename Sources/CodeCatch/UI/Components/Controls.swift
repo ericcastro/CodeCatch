@@ -147,42 +147,8 @@ struct VaultUnlockButton: View {
     }
 }
 
-/// System Settings–style coloured icon tile.
-/// What CodeCatch catches, drawn the same in Settings → What to Catch and on the cards.
-enum CatchKind {
-    case code, signIn, passwordReset
-
-    var title: String { switch self { case .code: "Code"; case .signIn: "Sign-in link"; case .passwordReset: "Password reset" } }
-    var symbol: String { switch self { case .code: "number"; case .signIn: "link"; case .passwordReset: "lock.rotation" } }
-    var color: Color { switch self { case .code: .blue; case .signIn: .teal; case .passwordReset: .orange } }
-}
-
-extension CodeItem {
-    var kind: CatchKind { !isLink ? .code : resetsPassword ? .passwordReset : .signIn }
-}
-
-/// Where codes come from, drawn the same in Welcome and Settings → Sources.
-enum SourceKind {
-    case messages, appleMail, mail
-
-    var symbol: String { switch self { case .messages: "message.fill"; case .appleMail: "tray.fill"; case .mail: "envelope.fill" } }
-    var color: Color { switch self { case .messages: .green; case .appleMail: .cyan; case .mail: .blue } }
-}
-
-struct IconTile: View {
-    let symbol: String
-    let color: Color
-
-    var body: some View {
-        RoundedRectangle(cornerRadius: 6, style: .continuous)
-            .fill(color.gradient)
-            .frame(width: 22, height: 22)
-            .overlay(Image(systemName: symbol).font(.system(size: 12, weight: .semibold)).foregroundStyle(.white))
-    }
-}
-
 extension View {
-    /// The strip along the bottom of the Settings, Welcome and Find a Code windows.
+    /// The strip along the bottom of the Settings, Welcome and Recent Emails windows.
     func bottomBar() -> some View {
         padding(.horizontal, 20).padding(.vertical, 10).background(.background).overlay(alignment: .top) { Divider() }
     }
@@ -191,80 +157,5 @@ extension View {
     func well(cornerRadius: CGFloat = 12) -> some View {
         background(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous).fill(.primary.opacity(0.04)))
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-    }
-}
-
-/// Asks before something that can't be undone. An alert rather than a SwiftUI dialog,
-/// so it works the same from the menu-bar popover as from Settings. `safeDefault` makes
-/// Return cancel, for when going ahead is the risk. `details` sits under the message in small,
-/// selectable text; `also` adds a third button that runs instead of the action.
-@MainActor
-func confirmed(_ title: String, _ message: String, action: String, safeDefault: Bool = false,
-               details: String? = nil, also: (title: String, run: () -> Void)? = nil) -> Bool {
-    let alert = NSAlert()
-    alert.messageText = title
-    alert.informativeText = message
-    alert.alertStyle = .warning
-    // A safe default comes first, as Apple orders them; the risky action last.
-    let go: NSButton
-    var alsoButton: NSButton?
-    if safeDefault {
-        alert.addButton(withTitle: "Cancel")
-        alsoButton = also.map { alert.addButton(withTitle: $0.title) }
-        go = alert.addButton(withTitle: action)
-    } else {
-        go = alert.addButton(withTitle: action)
-        alsoButton = also.map { alert.addButton(withTitle: $0.title) }
-        alert.addButton(withTitle: "Cancel")
-    }
-    go.hasDestructiveAction = true
-    if let details {
-        let text = NSTextField(wrappingLabelWithString: details)
-        text.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
-        text.textColor = .secondaryLabelColor
-        text.preferredMaxLayoutWidth = 220
-        text.frame.size = text.fittingSize
-        alert.accessoryView = text
-    }
-    NSApp.activate()
-    let tapped = alert.buttons[alert.runModal().rawValue - NSApplication.ModalResponse.alertFirstButtonReturn.rawValue]
-    if tapped == alsoButton { also?.run() }
-    return tapped == go
-}
-
-/// Settings and the menu's Clear History: a clear outlasts restarts, so it asks first.
-@MainActor
-func confirmClearHistory(_ model: AppModel) {
-    guard confirmed("Clear history?", "Codes and links you have received are removed and don't come back after a restart. Bitwarden codes are kept.",
-                    action: "Clear") else { return }
-    model.clearHistory()
-}
-
-extension NSApplication {
-    /// Activates the app and puts its open windows in front. A menu-bar app is rarely the
-    /// active one, and `activate()` alone only asks the app in front to yield: a window
-    /// shown at launch, or after macOS's own password prompt, then stays behind it.
-    func comeForward() {
-        activate(ignoringOtherApps: true)
-        for window in orderedWindows.reversed() where window.isVisible && window.styleMask.contains(.titled) && !(window is NSPanel) {
-            window.orderFrontRegardless()
-        }
-    }
-}
-
-extension View {
-    /// Applies Hide from Screen Capture to this view's window as soon as it has one, before
-    /// a code is drawn; `AppModel.tick` keeps every window current when the setting changes.
-    func hiddenFromCapture() -> some View { background(CaptureGuard()) }
-}
-
-private struct CaptureGuard: NSViewRepresentable {
-    func makeNSView(context: Context) -> Probe { Probe() }
-    func updateNSView(_ view: Probe, context: Context) {}
-    final class Probe: NSView {
-        override func viewDidMoveToWindow() {
-            super.viewDidMoveToWindow()
-            window?.sharingType = Prefs[Prefs.hideFromCapture] ? .none : .readOnly
-        }
     }
 }

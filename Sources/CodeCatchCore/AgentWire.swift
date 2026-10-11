@@ -1,7 +1,7 @@
 import Foundation
 
 /// What `codecatch` and the app say over the local socket: one JSON line from the CLI, then JSON
-/// lines back — progress notes, and last a single item, status or error. Fields are only ever
+/// lines back: progress notes, and last a single item, status or error. Fields are only ever
 /// added; renaming or retyping one bumps `version`.
 public enum AgentWire {
     public static let version = 1
