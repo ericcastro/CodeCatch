@@ -214,6 +214,7 @@ func confirmed(_ title: String, _ message: String, action: String, safeDefault: 
         go = alert.addButton(withTitle: action)
     } else {
         go = alert.addButton(withTitle: action)
+        alsoButton = also.map { alert.addButton(withTitle: $0.title) }
         alert.addButton(withTitle: "Cancel")
     }
     go.hasDestructiveAction = true
