@@ -292,7 +292,7 @@ struct MenuContent: View {
             Label(!model.receiving && model.vault.isEmpty ? "Catching Paused" : model.vault.isEmpty ? "No Codes Yet" : "Find a Saved Login", systemImage: "key.viewfinder")
         } description: {
             Text(!model.receiving && model.vault.isEmpty
-                 ? (hasLogins ? "Unlock to search your saved Bitwarden logins." : "Choose what to catch in Settings → Sources.")
+                 ? (hasLogins ? "Unlock to search your Bitwarden logins." : "Choose what to catch in Settings → Sources.")
                  : model.vault.isEmpty
                  ? "New codes and links show up here as they arrive."
                  : "Search by service or account. Pin a login to keep it here.")

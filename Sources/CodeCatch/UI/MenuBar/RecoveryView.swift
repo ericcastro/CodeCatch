@@ -16,7 +16,7 @@ struct RecoveryView: View {
     private var monitoringSummary: String {
         guard model.monitoring(Prefs.receivedCodes) else { return "Paused" }
         let count = enabledAccounts.count
-        let accounts = "\(count) email \(count == 1 ? "account" : "accounts")"
+        let accounts = "\(count) mail \(count == 1 ? "account" : "accounts")"
         if model.monitoring(Prefs.appleMail) {
             return count == 0 ? "Watching Apple Mail" : "Watching \(accounts) + Apple Mail"
         }
@@ -66,7 +66,7 @@ struct RecoveryView: View {
                         VaultUnlockButton(isBusy: model.vaultSession.isBusy) { model.unlocked {} }
                     }
                 } else if model.mailSourceKeys.isEmpty {
-                    notice("No email accounts enabled.") {
+                    notice("No mail accounts enabled.") {
                         Button("Open Sources") { openSettings(at: .sources) }
                     }
                 } else if model.recovery.entries.isEmpty {

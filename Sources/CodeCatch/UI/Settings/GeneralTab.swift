@@ -54,7 +54,7 @@ struct GeneralTab: View {
                         }
                     }
                     Spacer(minLength: 12)
-                    Button("Check Now…") { updater?.checkForUpdates() }
+                    Button("Check for Updates…") { updater?.checkForUpdates() }
                         .disabled(updater?.canCheckForUpdates != true)
                 }
                 SettingRow(symbol: "arrow.down.circle.fill", color: .blue, title: "Update Automatically", info: "Checks once a day and installs new versions.", isOn: $autoUpdate)
