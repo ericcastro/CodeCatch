@@ -25,7 +25,12 @@ struct PopoverButton: View {
         self.action = action
     }
 
-    var body: some View { Button(title, role: role) { dismiss(); action() } }
+    var body: some View {
+        Button(title, role: role) {
+            dismiss()
+            action()
+        }
+    }
 }
 
 /// The popover body every settings explanation and details panel uses.
@@ -56,7 +61,10 @@ private struct HoverInfo: ViewModifier {
         content
             .onHover { inside in
                 pending?.cancel()
-                guard inside, text != nil else { shown = false; return }
+                guard inside, text != nil else {
+                    shown = false
+                    return
+                }
                 pending = Task {
                     try? await Task.sleep(for: .milliseconds(400))
                     if !Task.isCancelled { shown = true }

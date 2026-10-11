@@ -30,8 +30,9 @@ extension IMAPConnection {
         return try await command("UID FETCH \(set) (UID INTERNALDATE BODY.PEEK[]<0.\(IncomingMessage.mailReadLimit)>)", timeout: 90).compactMap { r in
             guard let raw = r.literals.first, let q = r.text.range(of: "INTERNALDATE \"") else { return nil }
             let dateText = r.text[q.upperBound...].prefix(while: { $0 != "\"" }).trimmingCharacters(in: .whitespaces)
-            return IncomingMessage(mail: raw, account: account, date: internalDate.date(from: dateText),
-                                   messageID: r.number(after: "UID ").map { "\(uidValidity ?? 0):\($0)" })
+            return IncomingMessage(
+                mail: raw, account: account, date: internalDate.date(from: dateText),
+                messageID: r.number(after: "UID ").map { "\(uidValidity ?? 0):\($0)" })
         }
     }
 }

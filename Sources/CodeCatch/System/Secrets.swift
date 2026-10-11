@@ -15,8 +15,8 @@ enum Secrets {
 
     private static let service = "com.uros.codecatch"
     #if DEBUG
-    /// Snapshots run unsigned, where a read would stop at a Keychain prompt.
-    static var offline = false
+        /// Snapshots run unsigned, where a read would stop at a Keychain prompt.
+        static var offline = false
     #endif
 
     private static func query(_ account: String) -> [String: Any] {
@@ -29,7 +29,7 @@ enum Secrets {
 
     static func read(_ account: String) throws -> String? {
         #if DEBUG
-        if offline { return nil }
+            if offline { return nil }
         #endif
         var q = query(account)
         q[kSecReturnData as String] = true
@@ -41,9 +41,11 @@ enum Secrets {
         return value
     }
 
-    static func set(_ value: String, for account: String,
-                    update: (CFDictionary, CFDictionary) -> OSStatus = SecItemUpdate,
-                    add: (CFDictionary, UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus = SecItemAdd) throws {
+    static func set(
+        _ value: String, for account: String,
+        update: (CFDictionary, CFDictionary) -> OSStatus = SecItemUpdate,
+        add: (CFDictionary, UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus = SecItemAdd
+    ) throws {
         let data = Data(value.utf8)
         let status = update(query(account) as CFDictionary, [kSecValueData as String: data] as CFDictionary)
         if status == errSecSuccess { return }

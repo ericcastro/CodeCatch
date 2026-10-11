@@ -5,7 +5,9 @@ import Sparkle
 /// with the EdDSA key behind SUPublicEDKey. scripts/install.sh --release writes the appcast.
 @MainActor enum Updater {
     /// Nil in an unbundled build (swift run, tests): there is no feed to check.
-    static let controller: SPUStandardUpdaterController? = Bundle.main.object(forInfoDictionaryKey: "SUFeedURL") == nil ? nil
+    static let controller: SPUStandardUpdaterController? =
+        Bundle.main.object(forInfoDictionaryKey: "SUFeedURL") == nil
+        ? nil
         : SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: feed, userDriverDelegate: nil)
     private static let feed = FeedParameters()
 }

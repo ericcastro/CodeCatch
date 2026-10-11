@@ -10,8 +10,10 @@ final class UnlockPolicy {
     private let cancel: () -> Void
     private var generation = 0
 
-    init(load: @escaping () throws -> Bool, save: @escaping (Bool) throws -> Void,
-         authenticate: @escaping () async throws -> Void, cancel: @escaping () -> Void = {}) {
+    init(
+        load: @escaping () throws -> Bool, save: @escaping (Bool) throws -> Void,
+        authenticate: @escaping () async throws -> Void, cancel: @escaping () -> Void = {}
+    ) {
         self.load = load
         self.save = save
         self.authenticateOwner = authenticate

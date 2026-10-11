@@ -17,16 +17,21 @@ struct AgentRulesSheet: View {
             .onDeleteCommand { remove(selection) }
             .overlay {
                 if rules.isEmpty {
-                    ContentUnavailableView("Nothing Allowed", systemImage: "checkmark.shield",
-                                           description: Text("Every code asks for \(DeviceAuthentication.unlockMethods)."))
+                    ContentUnavailableView(
+                        "Nothing Allowed", systemImage: "checkmark.shield",
+                        description: Text("Every code asks for \(DeviceAuthentication.unlockMethods)."))
                 }
             }
         } bar: {
             HStack(spacing: 0) {
-                Button { remove(selection) } label: { Image(systemName: "minus").frame(width: 24, height: 22) }
-                    .help("Stop allowing the selected")
-                    .accessibilityLabel("Stop allowing")
-                    .disabled(selection.isEmpty)
+                Button {
+                    remove(selection)
+                } label: {
+                    Image(systemName: "minus").frame(width: 24, height: 22)
+                }
+                .help("Stop allowing the selected")
+                .accessibilityLabel("Stop allowing")
+                .disabled(selection.isEmpty)
                 Spacer()
             }
             .padding(4)
@@ -81,8 +86,9 @@ struct AgentHistorySheet: View {
             }
             .overlay {
                 if access.log.isEmpty {
-                    ContentUnavailableView("No Requests", systemImage: "terminal",
-                                           description: Text("Requests show here once an agent asks for a code."))
+                    ContentUnavailableView(
+                        "No Requests", systemImage: "terminal",
+                        description: Text("Requests show here once an agent asks for a code."))
                 }
             }
         } bar: {

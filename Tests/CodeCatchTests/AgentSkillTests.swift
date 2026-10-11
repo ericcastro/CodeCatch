@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 
 /// The `codecatch` skill file in coding agents' own folders: CodeCatch writes into another app's
@@ -37,8 +38,9 @@ import Testing
     /// The skill lands somewhere the agent doesn't look.
     @Test(arguments: [(AgentSkill.claudeCode, ".claude"), (.codex, ".codex"), (.cursor, ".cursor")])
     func fileLivesInTheAgentsSkillsFolder(agent: AgentSkill, folder: String) {
-        #expect(agent.file(home: home).standardizedFileURL
-            == home.appendingPathComponent("\(folder)/skills/codecatch/SKILL.md").standardizedFileURL)
+        #expect(
+            agent.file(home: home).standardizedFileURL
+                == home.appendingPathComponent("\(folder)/skills/codecatch/SKILL.md").standardizedFileURL)
     }
 
     /// The agent ignores a skill without front matter, a name and a description, or never sees the guidance.
@@ -131,9 +133,10 @@ import Testing
         var state: AgentSkill.State?
         #expect(clock.measure { state = agent.state(home: home) } < limit)
         #expect(state == .taken)
-        #expect(clock.measure {
-            #expect(throws: AgentSkill.Failure.self) { try agent.connect(home: home, guidance: "g") }
-        } < limit)
+        #expect(
+            clock.measure {
+                #expect(throws: AgentSkill.Failure.self) { try agent.connect(home: home, guidance: "g") }
+            } < limit)
         #expect(isFIFO())
         #expect(clock.measure { try? agent.disconnect(home: home) } < limit)
         #expect(isFIFO())

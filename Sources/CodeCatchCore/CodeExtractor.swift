@@ -15,7 +15,8 @@ public enum CodeExtractor {
         // An origin-bound SMS ("@example.com #482913") names its code for machines: trust it.
         // Read before cleaning, which drops "@www.example.com" with the other addresses.
         if let m = origin.firstMatch(in: text, range: NSRange(location: 0, length: (text as NSString).length)),
-           m.range(at: 2).location != NSNotFound {
+            m.range(at: 2).location != NSNotFound
+        {
             return (text as NSString).substring(with: m.range(at: 2))
         }
         let text = clean(text)
@@ -39,7 +40,10 @@ public enum CodeExtractor {
                 // In a message mostly in capitals, a letters-only word set straight after "KODE" and
                 // running on is just a word ("KODE RAHASIA utk"); "YOUR CODE IS SZBPM" is introduced.
                 if !isNumeric, shouting, !raw.contains(where: \.isNumber), !matches(introducer, String(before)),
-                   after.prefix(while: { $0 != "\n" }).first(where: { !$0.isWhitespace })?.isLetter == true { continue }
+                    after.prefix(while: { $0 != "\n" }).first(where: { !$0.isWhitespace })?.isLetter == true
+                {
+                    continue
+                }
                 // A PIN beside a booking's confirmation number ("Confirmation: 5984715426 / PIN: 0260")
                 // manages that booking; it isn't one-time.
                 if matches(pinLabel, String(before)), matches(bookingNumber, text) { continue }
@@ -55,19 +59,25 @@ public enum CodeExtractor {
                 // Marketing on the code's line or the one above ("Up to 80% off … Code: BULKE"): a coupon.
                 let above = previousLineStart(line.location, in: ns)
                 let nearby = ns.substring(with: NSRange(location: above, length: line.upperBound - above))
-                if !isNumeric, !(explicit || introduced && raw.contains(where: \.isNumber)) || matches(promo, nearby)
-                    || matches(referenceLabel, String(before)) { continue }
+                if !isNumeric,
+                    !(explicit || introduced && raw.contains(where: \.isNumber)) || matches(promo, nearby)
+                        || matches(referenceLabel, String(before))
+                {
+                    continue
+                }
 
                 // Context is the code's own line, plus the line above when the code stands alone, and
                 // the line below when that one names a code ("729565" over "Enter this verification
                 // code…", not "…Your verification is complete"): "Account Login" two lines up, or
                 // "confirm" under a subject naming a case number, says nothing.
                 let below = alone ? nextLineEnd(line.upperBound, in: ns) : line.upperBound
-                let end = matches(codeNoun, ns.substring(with: NSRange(location: line.upperBound, length: below - line.upperBound)))
+                let end =
+                    matches(codeNoun, ns.substring(with: NSRange(location: line.upperBound, length: below - line.upperBound)))
                     ? below : line.upperBound
                 let context = NSRange(location: leadStart, length: end - leadStart)
                 let near = keywords.filter { NSIntersectionRange($0, context).length > 0 }.map { k in
-                    k.upperBound <= range.location ? range.location - k.upperBound
+                    k.upperBound <= range.location
+                        ? range.location - k.upperBound
                         : k.location >= range.upperBound ? k.location - range.upperBound : 0
                 }
                 guard let distance = near.min() ?? (explicit ? 90 : nil) else { continue }
@@ -90,7 +100,8 @@ public enum CodeExtractor {
     public static func validity(in text: String) -> TimeInterval? {
         let ns = text as NSString
         guard let m = lifetime.firstMatch(in: text, range: NSRange(location: 0, length: ns.length)),
-              let n = Double(ns.substring(with: m.range(at: 1))) else { return nil }
+            let n = Double(ns.substring(with: m.range(at: 1)))
+        else { return nil }
         let unit = ns.substring(with: m.range(at: 2)).lowercased()
         let seconds = n * (unit.hasPrefix("s") ? 1 : unit.hasPrefix("h") || unit.hasPrefix("u") ? 3600 : 60)
         return (30...86400).contains(seconds) ? seconds : nil
@@ -132,7 +143,8 @@ public enum CodeExtractor {
     }
 
     /// "code" (also German compounds: Sicherheitscode, Bestätigungscode), but not a postal, promo, area… code.
-    private static let codeWord = #"(?<!(?:postal|zip|post|promo|discount|coupon|country|area|tax|source|referral|gift|voucher|swift|sort|qr|bar|dress) )(?:sicherheits|verifizierungs|bestätigungs|zugangs|anmelde|einmal|login|bestaetigungs|online)?codes?"#
+    private static let codeWord =
+        #"(?<!(?:postal|zip|post|promo|discount|coupon|country|area|tax|source|referral|gift|voucher|swift|sort|qr|bar|dress) )(?:sicherheits|verifizierungs|bestätigungs|zugangs|anmelde|einmal|login|bestaetigungs|online)?codes?"#
 
     /// Words that say a text is about a code, grouped by the languages they serve. Stems are shared
     /// ("kod" alone is Slovenian, Polish, Czech, Turkish, Indonesian…), so a group is a label, not a
@@ -198,7 +210,8 @@ public enum CodeExtractor {
     private static let introducer = rx(#"(?:[:=]|\b(?:is|je|ist|lautet|glasi|est|es|è|é))\s*$"#, .caseInsensitive)
 
     /// Marketing words: a letter "code" near them is a coupon.
-    private static let promo = rx(#"\d\s*%|\b(?:off|discount|coupon|promo\w*|voucher|sale|save\s+up\s*to|upto|cashback|popust\w*|akcij\w*|rabatt?)\b"#, .caseInsensitive)
+    private static let promo = rx(
+        #"\d\s*%|\b(?:off|discount|coupon|promo\w*|voucher|sale|save\s+up\s*to|upto|cashback|popust\w*|akcij\w*|rabatt?)\b"#, .caseInsensitive)
 
     private static let explicitBefore = rx(
         "(?:" + codeWord + #"|kod[aoe]?|passcode|pin|otp|geslo|token|código|codice)\s*(?:is|je|ist|es|est|lautet)?\s*[:=\-–]?\s*$"#,
@@ -220,7 +233,8 @@ public enum CodeExtractor {
     private static let urlsAndEmails = rx(#"https?://\S+|www\.\S+|\S+@\S+\.\w+"#, .caseInsensitive)
 
     private static let name = #"([A-Z][\w&.'’-]*(?:\s+[A-Z][\w&.'’-]*)?)"#
-    private static let codeKind = #"\s+(?i:(?:verification|security|login|sign[- ]in|authentication|confirmation|one[- ]time|access)\s+)?(?i:code|passcode|pin|otp)"#
+    private static let codeKind =
+        #"\s+(?i:(?:verification|security|login|sign[- ]in|authentication|confirmation|one[- ]time|access)\s+)?(?i:code|passcode|pin|otp)"#
     private static let servicePatterns = [
         rx(#"^\s*(?:<#>\s*)?[\[【]([^\]】\n]{2,30})[\]】]"#),
         rx(#"^\s*(?:<#>\s*)?([A-Z][\w&.'’ -]{1,24}?)\s*:\s"#),

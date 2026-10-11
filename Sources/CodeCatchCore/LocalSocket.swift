@@ -17,7 +17,8 @@ public enum LocalSocket {
         var token = audit_token_t()
         len = socklen_t(MemoryLayout<audit_token_t>.size)
         guard getsockopt(fd, SOL_LOCAL, LOCAL_PEERTOKEN, &token, &len) == 0 else { return nil }
-        var uid: uid_t = 0, gid: gid_t = 0
+        var uid: uid_t = 0
+        var gid: gid_t = 0
         guard getpeereid(fd, &uid, &gid) == 0 else { return nil }
         return Peer(pid: pid, uid: uid, auditToken: withUnsafeBytes(of: &token) { Data($0) })
     }
@@ -43,9 +44,19 @@ public enum LocalSocket {
 
     /// A connected socket, or nil with `errno` set (ENOENT or ECONNREFUSED: nothing is listening).
     public static func connect(_ path: String) -> Int32? {
-        guard var addr = address(path), let fd = socket() else { errno = ENAMETOOLONG; return nil }
-        let result = withUnsafePointer(to: &addr) { $0.withMemoryRebound(to: sockaddr.self, capacity: 1) { Darwin.connect(fd, $0, socklen_t(MemoryLayout<sockaddr_un>.size)) } }
-        guard result == 0 else { let e = errno; close(fd); errno = e; return nil }
+        guard var addr = address(path), let fd = socket() else {
+            errno = ENAMETOOLONG
+            return nil
+        }
+        let result = withUnsafePointer(to: &addr) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) { Darwin.connect(fd, $0, socklen_t(MemoryLayout<sockaddr_un>.size)) }
+        }
+        guard result == 0 else {
+            let e = errno
+            close(fd)
+            errno = e
+            return nil
+        }
         return fd
     }
 
@@ -66,11 +77,19 @@ public enum LocalSocket {
         }
         // Kept open on purpose while listening: closing it, or exiting, gives the lock up.
         unlink(path)
-        guard var addr = address(path) else { close(lock); throw Failure(errorDescription: "The socket path is too long: \(path)") }
-        guard let fd = socket() else { close(lock); throw Failure(errorDescription: String(cString: strerror(errno))) }
+        guard var addr = address(path) else {
+            close(lock)
+            throw Failure(errorDescription: "The socket path is too long: \(path)")
+        }
+        guard let fd = socket() else {
+            close(lock)
+            throw Failure(errorDescription: String(cString: strerror(errno)))
+        }
         // Created 0600 from the start: no moment where another user could connect.
         let mask = umask(0o177)
-        let bound = withUnsafePointer(to: &addr) { $0.withMemoryRebound(to: sockaddr.self, capacity: 1) { bind(fd, $0, socklen_t(MemoryLayout<sockaddr_un>.size)) } }
+        let bound = withUnsafePointer(to: &addr) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) { bind(fd, $0, socklen_t(MemoryLayout<sockaddr_un>.size)) }
+        }
         umask(mask)
         guard bound == 0, Darwin.listen(fd, 8) == 0 else {
             let message = String(cString: strerror(errno))
@@ -98,7 +117,10 @@ public enum LocalSocket {
                 let left = clock.now.duration(to: deadline)
                 guard left > .zero else { return false }
                 let n = Darwin.write(fd, raw.baseAddress! + offset, raw.count - offset)
-                if n > 0 { offset += n; continue }
+                if n > 0 {
+                    offset += n
+                    continue
+                }
                 guard n < 0, errno == EINTR || errno == EAGAIN else { return false }
                 var ready = pollfd(fd: fd, events: Int16(POLLOUT), revents: 0)
                 let ms = left.components.seconds * 1000 + left.components.attoseconds / 1_000_000_000_000_000 + 1
@@ -110,8 +132,10 @@ public enum LocalSocket {
 
     /// Reads one line, without the newline. Nil at end of stream, past `limit` bytes, or after `within` seconds,
     /// which a client sending a byte at a time would otherwise never reach.
-    public static func readLine(from fd: Int32, buffer: inout Data, limit: Int = AgentWire.maxRequest,
-                                within: TimeInterval? = nil) -> Data? {
+    public static func readLine(
+        from fd: Int32, buffer: inout Data, limit: Int = AgentWire.maxRequest,
+        within: TimeInterval? = nil
+    ) -> Data? {
         let clock = ContinuousClock()
         let deadline = within.map { clock.now + .seconds($0) }
         var chunk = [UInt8](repeating: 0, count: 1024)

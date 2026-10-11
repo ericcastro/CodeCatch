@@ -27,17 +27,26 @@ struct AccountEditor: View {
                 if let provider = account.provider {
                     LabeledContent {
                         if signIn.isBusy {
-                            HStack { ProgressView().controlSize(.small); Text("Finish in the \(provider.name) window…").foregroundStyle(.secondary) }
+                            HStack {
+                                ProgressView().controlSize(.small)
+                                Text("Finish in the \(provider.name) window…").foregroundStyle(.secondary)
+                            }
                         } else if signInExpired {
                             HStack {
                                 Label("Expired", systemImage: "exclamationmark.triangle.fill").foregroundStyle(.orange)
                                 Button("Sign In Again…", action: startSignIn)
-                                Button("Sign Out") { account.signedIn = nil; signIn.cancel() }
+                                Button("Sign Out") {
+                                    account.signedIn = nil
+                                    signIn.cancel()
+                                }
                             }
                         } else if usesSignIn {
                             HStack {
                                 Label("Signed in", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
-                                Button("Sign Out") { account.signedIn = nil; signIn.cancel() }
+                                Button("Sign Out") {
+                                    account.signedIn = nil
+                                    signIn.cancel()
+                                }
                             }
                         } else {
                             Button("Sign in with \(provider.name)…", action: startSignIn)
@@ -51,8 +60,10 @@ struct AccountEditor: View {
                     }
                     // Google and Microsoft require this notice right before their consent screen.
                     if !usesSignIn {
-                        Text("CodeCatch reads your inbox on this Mac to find codes and sign-in links. It can't send, change or delete mail, and your mail is never sent to us.")
-                            .font(.caption).foregroundStyle(.secondary)
+                        Text(
+                            "CodeCatch reads your inbox on this Mac to find codes and sign-in links. It can't send, change or delete mail, and your mail is never sent to us."
+                        )
+                        .font(.caption).foregroundStyle(.secondary)
                     }
                 }
                 if usesSignIn {
@@ -66,8 +77,9 @@ struct AccountEditor: View {
                 }
                 // Outlook and Microsoft 365 turned off IMAP passwords; signing in is the only way.
                 if !usesSignIn && !account.isOutlook {
-                    SecureField("App password", text: $password,
-                                prompt: Text(!hasPassword ? "Required" : "Saved (leave empty to keep it)"))
+                    SecureField(
+                        "App password", text: $password,
+                        prompt: Text(!hasPassword ? "Required" : "Saved (leave empty to keep it)"))
                     if account.isGmail {
                         Link("How to create a Google app password", destination: MailAccount.appPasswordHelp)
                             .font(.caption)
@@ -82,18 +94,24 @@ struct AccountEditor: View {
                 if !isNew {
                     Button("Remove Account…", role: .destructive) {
                         // Name the saved account, which is what gets removed, not unsaved edits.
-                        guard let saved = original, confirmed("Remove \(saved.label)?",
-                            "CodeCatch stops watching \(saved.user) and forgets how to sign in to it. Your mail doesn't change.", action: "Remove") else { return }
-                        do { try model.remove(account); dismiss() }
-                        catch { self.error = error.localizedDescription }
+                        guard let saved = original,
+                            confirmed(
+                                "Remove \(saved.label)?",
+                                "CodeCatch stops watching \(saved.user) and forgets how to sign in to it. Your mail doesn't change.", action: "Remove")
+                        else { return }
+                        do {
+                            try model.remove(account)
+                            dismiss()
+                        } catch { self.error = error.localizedDescription }
                     }
                 }
                 Spacer()
                 Button("Cancel", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
                 Button("Save", action: save)
                     .keyboardShortcut(.defaultAction)
-                    .disabled(account.user.isEmpty || account.host.isEmpty || !(1...65535).contains(account.port) || signIn.isBusy
-                              || (!usesSignIn && !hasPassword && password.isEmpty))
+                    .disabled(
+                        account.user.isEmpty || account.host.isEmpty || !(1...65535).contains(account.port) || signIn.isBusy
+                            || (!usesSignIn && !hasPassword && password.isEmpty))
             }
             .padding([.horizontal, .bottom], 20)
         }
@@ -108,15 +126,16 @@ struct AccountEditor: View {
             signIn.cancel()
             account.signedIn = account.secretKey == original?.secretKey ? original?.signedIn : nil
         }
-        .onDisappear { signIn.cancel(); password = "" }
+        .onDisappear {
+            signIn.cancel()
+            password = ""
+        }
     }
 
     private func startSignIn() {
         error = nil
         Task {
-            do { account.user = try await signIn.signIn(for: account) }
-            catch is CancellationError { return }
-            catch { self.error = error.localizedDescription }
+            do { account.user = try await signIn.signIn(for: account) } catch is CancellationError { return } catch { self.error = error.localizedDescription }
             NSApp.activate(ignoringOtherApps: true)
         }
     }

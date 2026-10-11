@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
@@ -22,19 +23,21 @@ import Testing
     func makeModel() -> AppModel {
         let session = VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {})
         let monitor = SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults)
-        return AppModel(vaultSession: session, monitor: monitor, search: CodeSearch(defaults: defaults),
-                        defaults: defaults,
-                        copyToClipboard: { [weak self] value, _ in self?.copied.append(value) },
-                        typeCode: { [weak self] value in self?.typed.append(value) })
+        return AppModel(
+            vaultSession: session, monitor: monitor, search: CodeSearch(defaults: defaults),
+            defaults: defaults,
+            copyToClipboard: { [weak self] value, _ in self?.copied.append(value) },
+            typeCode: { [weak self] value in self?.typed.append(value) })
     }
 
     func cleanUp() { defaults.removePersistentDomain(forName: suite) }
 }
 
 private func preferenceMessage(age: TimeInterval) -> IncomingMessage {
-    IncomingMessage(text: "Your verification code is 482913.", senderName: "Example",
-                    senderID: "support@example.com", sourceKey: "preference-test-mail", sourceLabel: "Test",
-                    date: Date().addingTimeInterval(-age), isMail: true)
+    IncomingMessage(
+        text: "Your verification code is 482913.", senderName: "Example",
+        senderID: "support@example.com", sourceKey: "preference-test-mail", sourceLabel: "Test",
+        date: Date().addingTimeInterval(-age), isMail: true)
 }
 
 @MainActor @Suite struct PreferenceIsolationTests {

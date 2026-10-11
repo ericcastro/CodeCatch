@@ -5,8 +5,10 @@ import AppKit
 /// Return cancel, for when going ahead is the risk. `details` sits under the message in small,
 /// selectable text; `also` adds a third button that runs instead of the action.
 @MainActor
-func confirmed(_ title: String, _ message: String, action: String, safeDefault: Bool = false,
-               details: String? = nil, also: (title: String, run: () -> Void)? = nil) -> Bool {
+func confirmed(
+    _ title: String, _ message: String, action: String, safeDefault: Bool = false,
+    details: String? = nil, also: (title: String, run: () -> Void)? = nil
+) -> Bool {
     let alert = NSAlert()
     alert.messageText = title
     alert.informativeText = message
@@ -41,7 +43,10 @@ func confirmed(_ title: String, _ message: String, action: String, safeDefault: 
 /// Settings and the menu's Clear History: a clear outlasts restarts, so it asks first.
 @MainActor
 func confirmClearHistory(_ model: AppModel) {
-    guard confirmed("Clear history?", "Codes and links you have received are removed and don't come back after a restart. Bitwarden codes are kept.",
-                    action: "Clear") else { return }
+    guard
+        confirmed(
+            "Clear history?", "Codes and links you have received are removed and don't come back after a restart. Bitwarden codes are kept.",
+            action: "Clear")
+    else { return }
     model.clearHistory()
 }

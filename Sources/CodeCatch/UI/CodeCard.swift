@@ -73,7 +73,8 @@ struct CodeCard: View {
             }
             Spacer(minLength: 8)
             if !item.isLink, item.link != nil {
-                GlyphButton(symbol: "link", help: "Open the \(item.resetsPassword ? "password reset" : "sign-in") link (\(item.destination?.host ?? ""))", action: open)
+                GlyphButton(
+                    symbol: "link", help: "Open the \(item.resetsPassword ? "password reset" : "sign-in") link (\(item.destination?.host ?? ""))", action: open)
             }
             if style == .banner, hoveringCard {
                 GlyphButton(symbol: "xmark", help: "Dismiss") { Banner.shared.hide() }
@@ -131,7 +132,10 @@ struct CodeCard: View {
 
     /// Locked, a click only unlocks: the full link shows before anything opens.
     private func open() {
-        guard !locked else { model.unlocked {}; return }
+        guard !locked else {
+            model.unlocked {}
+            return
+        }
         model.open(item, leavingMenu: style == .menu)
         if style == .banner { Banner.shared.hide(after: 0.3) }
     }

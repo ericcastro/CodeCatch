@@ -27,13 +27,19 @@ public struct VaultCode: Codable, Equatable, Identifiable, Sendable {
             let name: String
             let login: Login?
         }
-        var codes: [VaultCode] = [], unreadable: [String] = []
+        var codes: [VaultCode] = []
+        var unreadable: [String] = []
         for item in try JSONDecoder().decode([Item].self, from: json) {
             guard let login = item.login, let secret = login.totp, !secret.isEmpty else { continue }
-            guard TOTP(secret) != nil else { unreadable.append(item.name); continue }
+            guard TOTP(secret) != nil else {
+                unreadable.append(item.name)
+                continue
+            }
             let host = login.uris?.lazy.compactMap(\.uri).compactMap(webHost).first
-            codes.append(VaultCode(id: item.id, name: item.name, username: login.username.flatMap { $0.isEmpty ? nil : $0 },
-                                   domain: host.map(ServiceIdentity.registrable), secret: secret))
+            codes.append(
+                VaultCode(
+                    id: item.id, name: item.name, username: login.username.flatMap { $0.isEmpty ? nil : $0 },
+                    domain: host.map(ServiceIdentity.registrable), secret: secret))
         }
         return (codes.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }, unreadable)
     }

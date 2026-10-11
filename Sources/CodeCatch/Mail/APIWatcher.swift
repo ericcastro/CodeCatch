@@ -12,7 +12,8 @@ protocol MailAPI: Sendable {
 }
 
 enum MailAPIError: LocalizedError {
-    case cursorExpired, gone, http(Int, String)
+    case cursorExpired, gone
+    case http(Int, String)
     var errorDescription: String? {
         switch self {
         case .cursorExpired: "The mailbox's change history expired"
@@ -30,14 +31,16 @@ enum APIWatcher {
 
     /// Watches the inbox of a signed-in account until cancelled: backfills recent mail, then checks
     /// for new mail every `poll` seconds (neither Gmail nor Outlook can push to a Mac app).
-    static func watch(_ account: MailAccount,
-                      status: @escaping @MainActor (SourceStatus) -> Void,
-                      deliver: @escaping @MainActor (IncomingMessage) -> Void,
-                      event: @escaping @MainActor (SourceEvent) -> Void = { _ in },
-                      lookback: TimeInterval = 7 * 86400,
-                      mailbox: (any MailAPI)? = nil,
-                      poll: TimeInterval = 10,
-                      retryDelay: TimeInterval = 5) async {
+    static func watch(
+        _ account: MailAccount,
+        status: @escaping @MainActor (SourceStatus) -> Void,
+        deliver: @escaping @MainActor (IncomingMessage) -> Void,
+        event: @escaping @MainActor (SourceEvent) -> Void = { _ in },
+        lookback: TimeInterval = 7 * 86400,
+        mailbox: (any MailAPI)? = nil,
+        poll: TimeInterval = 10,
+        retryDelay: TimeInterval = 5
+    ) async {
         let mailbox = mailbox ?? api(for: account)
         var cursor: String?
         var seen = Set<String>()  // a message can show up twice: at the backfill's edge, or at the cursor's
@@ -83,8 +86,9 @@ enum APIWatcher {
             } catch {
                 if Task.isCancelled { break }
                 let signInFailed = error is OAuth.Failure
-                await MailWatcher.wait(after: signInFailed ? SourceStatus.signInExpired : error.localizedDescription,
-                                       signIn: signInFailed, backoff: &backoff, status: status, event: event)
+                await MailWatcher.wait(
+                    after: signInFailed ? SourceStatus.signInExpired : error.localizedDescription,
+                    signIn: signInFailed, backoff: &backoff, status: status, event: event)
             }
         }
     }

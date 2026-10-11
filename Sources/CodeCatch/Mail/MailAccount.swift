@@ -13,7 +13,10 @@ struct MailAccount: Codable, Identifiable, Hashable {
     var signedIn: Bool?
 
     /// `signedIn` is saved under its first name, from when only Google had sign-in.
-    private enum CodingKeys: String, CodingKey { case id, label, host, port, user, enabled, signedIn = "googleSignIn" }
+    private enum CodingKeys: String, CodingKey {
+        case id, label, host, port, user, enabled
+        case signedIn = "googleSignIn"
+    }
 
     var secretKey: String { "\(user.lowercased())@\(host.lowercased())" }
     var password: String? { Secrets.get(secretKey) }
@@ -36,14 +39,16 @@ struct MailAccount: Codable, Identifiable, Hashable {
         let domain = user.split(separator: "@").last.map(String.init)?.lowercased() ?? ""
         let gmail = ["gmail.com", "googlemail.com"].contains(domain)
         let outlook = ["outlook.com", "hotmail.com", "live.com", "msn.com"].contains(domain)
-        return MailAccount(label: gmail ? "Gmail" : outlook ? "Outlook" : (domain.split(separator: ".").first.map { $0.capitalized } ?? domain),
-                           host: gmail ? gmailHost : outlook ? outlookHost : "imap.\(domain)", user: user)
+        return MailAccount(
+            label: gmail ? "Gmail" : outlook ? "Outlook" : (domain.split(separator: ".").first.map { $0.capitalized } ?? domain),
+            host: gmail ? gmailHost : outlook ? outlookHost : "imap.\(domain)", user: user)
     }
 
     private static let storeKey = "mailAccounts"
     static func load(from defaults: UserDefaults = .standard) -> [MailAccount] {
         guard let data = defaults.data(forKey: storeKey),
-              let accounts = try? JSONDecoder().decode([MailAccount].self, from: data) else { return [] }
+            let accounts = try? JSONDecoder().decode([MailAccount].self, from: data)
+        else { return [] }
         return accounts
     }
 

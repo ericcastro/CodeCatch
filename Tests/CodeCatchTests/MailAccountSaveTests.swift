@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
@@ -14,8 +15,10 @@ private enum SaveMode: CaseIterable {
 
 extension AccountKeychain {
     /// Records writes and removals; never reads the login Keychain or revokes a sign-in.
-    static func stub(write: @escaping (String, String) throws -> Void = { _, _ in },
-                     remove: @escaping (String) throws -> Void) -> AccountKeychain {
+    static func stub(
+        write: @escaping (String, String) throws -> Void = { _, _ in },
+        remove: @escaping (String) throws -> Void
+    ) -> AccountKeychain {
         AccountKeychain(read: { _ in nil }, write: write, remove: remove, revoke: { _, _ in })
     }
 }
@@ -37,8 +40,9 @@ private enum SecretOperation: Equatable {
     func makeModel() -> AppModel {
         let session = VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {})
         let monitor = SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults)
-        return AppModel(vaultSession: session, monitor: monitor, defaults: defaults,
-                        copyToClipboard: { _, _ in })
+        return AppModel(
+            vaultSession: session, monitor: monitor, defaults: defaults,
+            copyToClipboard: { _, _ in })
     }
 
     func cleanUp() { defaults.removePersistentDomain(forName: suite) }
@@ -60,9 +64,11 @@ private enum SecretOperation: Equatable {
         var rejected = false
 
         do {
-            try model.saveAccount(duplicate, password: mode.password, refreshToken: mode.refreshToken,
-                                  keychain: .stub(write: { operations.append(.write($0, $1)) },
-                                                  remove: { operations.append(.remove($0)) }))
+            try model.saveAccount(
+                duplicate, password: mode.password, refreshToken: mode.refreshToken,
+                keychain: .stub(
+                    write: { operations.append(.write($0, $1)) },
+                    remove: { operations.append(.remove($0)) }))
         } catch {
             rejected = true
         }
@@ -88,16 +94,19 @@ private enum SecretOperation: Equatable {
         edited.signedIn = mode == .google
         var operations: [SecretOperation] = []
 
-        try model.saveAccount(edited, password: mode.password, refreshToken: mode.refreshToken,
-                              keychain: .stub(write: { value, key in
-            #expect(model.accounts.map(\.label) == [saved.label])
-            #expect(fixture.makeModel().accounts.map(\.label) == [saved.label])
-            operations.append(.write(value, key))
-        }, remove: { key in
-            #expect(model.accounts.map(\.label) == [saved.label])
-            #expect(fixture.makeModel().accounts.map(\.label) == [saved.label])
-            operations.append(.remove(key))
-        }))
+        try model.saveAccount(
+            edited, password: mode.password, refreshToken: mode.refreshToken,
+            keychain: .stub(
+                write: { value, key in
+                    #expect(model.accounts.map(\.label) == [saved.label])
+                    #expect(fixture.makeModel().accounts.map(\.label) == [saved.label])
+                    operations.append(.write(value, key))
+                },
+                remove: { key in
+                    #expect(model.accounts.map(\.label) == [saved.label])
+                    #expect(fixture.makeModel().accounts.map(\.label) == [saved.label])
+                    operations.append(.remove(key))
+                }))
 
         switch mode {
         case .stagedToken:
@@ -134,9 +143,11 @@ private enum SecretOperation: Equatable {
         }
 
         do {
-            try model.saveAccount(edited, password: mode.password, refreshToken: mode.refreshToken,
-                                  keychain: .stub(write: { _, _ in try attempt() },
-                                                  remove: { _ in try attempt() }))
+            try model.saveAccount(
+                edited, password: mode.password, refreshToken: mode.refreshToken,
+                keychain: .stub(
+                    write: { _, _ in try attempt() },
+                    remove: { _ in try attempt() }))
             Issue.record("Credential failure must propagate")
         } catch AccountSaveFailure.denied {
         }

@@ -7,7 +7,9 @@ import CryptoKit
 /// which is what both providers prescribe for desktop apps.
 struct OAuth: Sendable {
     enum Failure: LocalizedError {
-        case denied(String), noMailAccess(String), token(String)
+        case denied(String)
+        case noMailAccess(String)
+        case token(String)
         var errorDescription: String? {
             switch self {
             case .denied(let why): "Sign-in was not completed (\(why))."
@@ -61,19 +63,22 @@ struct OAuth: Sendable {
         let verifier = Self.randomString(64)
         let state = Self.randomString(24)
         var url = URLComponents(string: authorizeURL)!
-        url.queryItems = [
-            .init(name: "client_id", value: clientID), .init(name: "redirect_uri", value: redirect),
-            .init(name: "response_type", value: "code"), .init(name: "scope", value: scope),
-            .init(name: "state", value: state),
-            .init(name: "code_challenge", value: Data(SHA256.hash(data: Data(verifier.utf8))).base64URL),
-            .init(name: "code_challenge_method", value: "S256"),
-        ] + (email.isEmpty ? [] : [.init(name: "login_hint", value: email)])
+        url.queryItems =
+            [
+                .init(name: "client_id", value: clientID), .init(name: "redirect_uri", value: redirect),
+                .init(name: "response_type", value: "code"), .init(name: "scope", value: scope),
+                .init(name: "state", value: state),
+                .init(name: "code_challenge", value: Data(SHA256.hash(data: Data(verifier.utf8))).base64URL),
+                .init(name: "code_challenge_method", value: "S256"),
+            ] + (email.isEmpty ? [] : [.init(name: "login_hint", value: email)])
         let callback = try await authorize(url.url!)
         guard let code = try authorizationCode(in: callback.absoluteString, state: state) else {
             throw Failure.denied("no sign-in code came back")
         }
-        let tokens = try await tokenRequest(["code": code, "client_id": clientID, "redirect_uri": redirect,
-                                             "grant_type": "authorization_code", "code_verifier": verifier])
+        let tokens = try await tokenRequest([
+            "code": code, "client_id": clientID, "redirect_uri": redirect,
+            "grant_type": "authorization_code", "code_verifier": verifier,
+        ])
         guard let refresh = tokens["refresh_token"] as? String, let access = tokens["access_token"] as? String else {
             throw Failure.token("no refresh token")
         }
@@ -141,9 +146,10 @@ struct OAuth: Sendable {
     /// Ignore unrelated or ambiguous callbacks; only authenticated provider errors end sign-in.
     func authorizationCode(in callback: String, state: String) throws -> String? {
         guard callback.hasPrefix(redirect + "?"),
-              !callback.unicodeScalars.contains(where: CharacterSet.whitespacesAndNewlines.contains),
-              callback.range(of: "%(?![0-9a-fA-F]{2})", options: .regularExpression) == nil,
-              let url = URLComponents(string: callback), url.fragment == nil else { return nil }
+            !callback.unicodeScalars.contains(where: CharacterSet.whitespacesAndNewlines.contains),
+            callback.range(of: "%(?![0-9a-fA-F]{2})", options: .regularExpression) == nil,
+            let url = URLComponents(string: callback), url.fragment == nil
+        else { return nil }
         let items = (url.queryItems ?? []).filter { ["state", "code", "error"].contains($0.name) }
         guard Set(items.map(\.name)).count == items.count else { return nil }
         let values = Dictionary(uniqueKeysWithValues: items.map { ($0.name, $0.value ?? "") })
@@ -162,9 +168,13 @@ struct OAuth: Sendable {
                 let once = Once()
                 let session = ASWebAuthenticationSession(url: url, callback: .customScheme(scheme)) { url, error in
                     once.run {
-                        if let url { cont.resume(returning: url) }
-                        else if (error as? ASWebAuthenticationSessionError)?.code == .canceledLogin { cont.resume(throwing: CancellationError()) }
-                        else { cont.resume(throwing: error ?? Failure.denied("no response")) }
+                        if let url {
+                            cont.resume(returning: url)
+                        } else if (error as? ASWebAuthenticationSessionError)?.code == .canceledLogin {
+                            cont.resume(throwing: CancellationError())
+                        } else {
+                            cont.resume(throwing: error ?? Failure.denied("no response"))
+                        }
                     }
                 }
                 session.presentationContextProvider = flow
@@ -184,7 +194,8 @@ struct OAuth: Sendable {
 
 /// Where a mail API call's access token comes from: a saved sign-in, or one just issued at sign-in.
 enum APIAuth: Sendable {
-    case saved(OAuth, tokenKey: String), issued(String)
+    case saved(OAuth, tokenKey: String)
+    case issued(String)
 
     func accessToken() async throws -> String {
         switch self {
@@ -231,8 +242,8 @@ private final class SignInSheet: NSObject, ASWebAuthenticationPresentationContex
     }
 }
 
-private extension Data {
-    var base64URL: String {
+extension Data {
+    fileprivate var base64URL: String {
         base64EncodedString().replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
     }

@@ -5,11 +5,14 @@ import SwiftUI
 enum Entry {
     static func main() {
         #if DEBUG
-        DebugCommand.runIfAsked()
+            DebugCommand.runIfAsked()
         #endif
         // One menu bar icon: a second copy (the DMG's, or another install) bows out.
         if let id = Bundle.main.bundleIdentifier,
-           NSRunningApplication.runningApplications(withBundleIdentifier: id).contains(where: { $0 != .current }) { exit(0) }
+            NSRunningApplication.runningApplications(withBundleIdentifier: id).contains(where: { $0 != .current })
+        {
+            exit(0)
+        }
         CodeCatchApp.main()
     }
 }
@@ -65,8 +68,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// codecatch:// links. SwiftUI keeps `application(_:open:)` for its own scenes, so take the event directly.
     func applicationWillFinishLaunching(_ notification: Notification) {
-        NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(openURL(_:reply:)),
-                                                     forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
+        NSAppleEventManager.shared().setEventHandler(
+            self, andSelector: #selector(openURL(_:reply:)),
+            forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
     }
 
     @objc private func openURL(_ event: NSAppleEventDescriptor, reply: NSAppleEventDescriptor) {

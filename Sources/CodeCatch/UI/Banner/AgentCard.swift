@@ -49,10 +49,13 @@ struct AgentRequestCard: View {
                 HStack(alignment: .top, spacing: 10) {
                     appIcon(request.caller)
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(request.unnamed ? "\(request.caller.name) asked for a \(request.query.label) code"
-                             : "\(request.caller.name) wants \(item.isLink ? "a \(site) sign-in link" : "your \(site) code")")
-                            .font(.headline)
-                            .fixedSize(horizontal: false, vertical: true)
+                        Text(
+                            request.unnamed
+                                ? "\(request.caller.name) asked for a \(request.query.label) code"
+                                : "\(request.caller.name) wants \(item.isLink ? "a \(site) sign-in link" : "your \(site) code")"
+                        )
+                        .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
                         if request.caller.app != nil {
                             Label("Verified app", systemImage: "checkmark.seal.fill").foregroundStyle(.green)
                         } else {
@@ -62,9 +65,11 @@ struct AgentRequestCard: View {
                     .font(.caption)
                 }
                 Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 4) {
-                    row("From", "\(item.service) · \(item.origin == .mail ? "Mail" : "Messages")"
-                        + (item.sender.isEmpty || item.sender.contains("@") ? "" : " · \(item.sender)")
-                        + (item.senderVerified == true ? " · verified sender" : ""))
+                    row(
+                        "From",
+                        "\(item.service) · \(item.origin == .mail ? "Mail" : "Messages")"
+                            + (item.sender.isEmpty || item.sender.contains("@") ? "" : " · \(item.sender)")
+                            + (item.senderVerified == true ? " · verified sender" : ""))
                     row("Timing", "Asked \(ago(request.asked)), arrived \(ago(item.received))")
                     if !request.caller.process.isEmpty { row("Program", "\(request.caller.process) (name not verified)") }
                 }
@@ -83,7 +88,8 @@ struct AgentRequestCard: View {
                 .font(.callout)
                 HStack {
                     if request.caller.app != nil, !request.unnamed, !item.isLink,
-                       item.origin != .mail || item.senderVerified == true {
+                        item.origin != .mail || item.senderVerified == true
+                    {
                         Menu("Always Allow") {
                             if let domain = item.domain {
                                 Button("\(domain) Codes from \(request.caller.name)") { Task { await access.allow(.site) } }

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
@@ -12,18 +13,23 @@ private let unverified = AgentCaller(app: nil, appPath: nil, process: "unknown")
 private let secretCode = "482913"
 private let secretToken = "SIGNINTOKEN77"
 
-private func item(code: String = secretCode, link: URL? = nil, service: String = "GitHub", domain: String? = "github.com",
-                  origin: CodeItem.Origin = .mail, age: TimeInterval = 1, expiresIn: TimeInterval = 600,
-                  used: Bool = false, resetsPassword: Bool = false, senderVerified: Bool? = true, sender: String? = nil) -> CodeItem {
+private func item(
+    code: String = secretCode, link: URL? = nil, service: String = "GitHub", domain: String? = "github.com",
+    origin: CodeItem.Origin = .mail, age: TimeInterval = 1, expiresIn: TimeInterval = 600,
+    used: Bool = false, resetsPassword: Bool = false, senderVerified: Bool? = true, sender: String? = nil
+) -> CodeItem {
     let now = Date()
-    return CodeItem(origin: origin, code: code, link: link, service: service, sourceLabel: "Work", sourceKey: "work",
-                    accountLabel: "Work", sender: sender ?? "noreply@\(domain ?? "unknown")", preview: "Your code", snippet: "Your code",
-                    received: now.addingTimeInterval(-age), expires: now.addingTimeInterval(expiresIn), domain: domain,
-                    dismissKey: UUID().uuidString, used: used, resetsPassword: resetsPassword, senderVerified: senderVerified)
+    return CodeItem(
+        origin: origin, code: code, link: link, service: service, sourceLabel: "Work", sourceKey: "work",
+        accountLabel: "Work", sender: sender ?? "noreply@\(domain ?? "unknown")", preview: "Your code", snippet: "Your code",
+        received: now.addingTimeInterval(-age), expires: now.addingTimeInterval(expiresIn), domain: domain,
+        dismissKey: UUID().uuidString, used: used, resetsPassword: resetsPassword, senderVerified: senderVerified)
 }
 
-private func linkItem(_ url: String = "https://github.com/login/device?token=\(secretToken)", domain: String? = "github.com",
-                      resetsPassword: Bool = false, senderVerified: Bool? = true, code: String = "") -> CodeItem {
+private func linkItem(
+    _ url: String = "https://github.com/login/device?token=\(secretToken)", domain: String? = "github.com",
+    resetsPassword: Bool = false, senderVerified: Bool? = true, code: String = ""
+) -> CodeItem {
     item(code: code, link: URL(string: url), domain: domain, resetsPassword: resetsPassword, senderVerified: senderVerified)
 }
 
@@ -77,7 +83,9 @@ private struct Boom: Error {}
         access.present = { [unowned self] p in
             switch p {
             case .card: self.cards += 1
-            case .notice(_, _, let rule): self.notices += 1; self.noticeRules.append(rule)
+            case .notice(_, _, let rule):
+                self.notices += 1
+                self.noticeRules.append(rule)
             case .hide: self.hides += 1
             }
         }
@@ -91,8 +99,10 @@ private struct Boom: Error {}
         access.itemsChanged()
     }
 
-    func start(_ site: String = "github.com", since: Date? = nil, timeout: TimeInterval = 1,
-               caller: AgentCaller = verified) -> Task<Result<CodeItem, AgentError>, Never> {
+    func start(
+        _ site: String = "github.com", since: Date? = nil, timeout: TimeInterval = 1,
+        caller: AgentCaller = verified
+    ) -> Task<Result<CodeItem, AgentError>, Never> {
         finished = false
         return Task {
             let result = await access.get(site: site, since: since, timeout: timeout, caller: caller, progress: { _ in })
@@ -115,8 +125,10 @@ private struct Boom: Error {}
     }
 
     /// Whether the request offers a code on the card; denies it if so.
-    func offered(_ site: String = "github.com", since: Date? = nil, timeout: TimeInterval = 0.2,
-                 caller: AgentCaller = verified) async -> Bool {
+    func offered(
+        _ site: String = "github.com", since: Date? = nil, timeout: TimeInterval = 0.2,
+        caller: AgentCaller = verified
+    ) async -> Bool {
         let task = start(site, since: since, timeout: timeout, caller: caller)
         _ = await until { access.request?.item != nil || finished }
         let shown = access.request?.item != nil
@@ -126,8 +138,10 @@ private struct Boom: Error {}
     }
 
     /// One request that shows the card, then the given decision.
-    func decide(_ new: CodeItem, caller: AgentCaller = verified,
-                _ decision: (AgentAccess) async -> Void) async throws -> Result<CodeItem, AgentError> {
+    func decide(
+        _ new: CodeItem, caller: AgentCaller = verified,
+        _ decision: (AgentAccess) async -> Void
+    ) async throws -> Result<CodeItem, AgentError> {
         add(new)
         let task = start(new.domain ?? "github.com", caller: caller)
         try await waitForCard()
@@ -136,12 +150,12 @@ private struct Boom: Error {}
     }
 }
 
-private extension Result where Success == CodeItem, Failure == AgentError {
-    var code: AgentError.Code? {
+extension Result where Success == CodeItem, Failure == AgentError {
+    fileprivate var code: AgentError.Code? {
         if case .failure(let e) = self { return e.code }
         return nil
     }
-    var item: CodeItem? {
+    fileprivate var item: CodeItem? {
         if case .success(let item) = self { return item }
         return nil
     }
@@ -207,7 +221,8 @@ private extension Result where Success == CodeItem, Failure == AgentError {
 
     @Test func allowAuthenticatesEveryTimeWithNoSessionReuse() async throws {
         let h = Harness()
-        let first = item(), second = item()
+        let first = item()
+        let second = item()
         let r1 = try await h.decide(first) { await $0.allow() }
         #expect(r1.item?.id == first.id)
         #expect(h.authCalls == 1)
@@ -352,12 +367,23 @@ private extension Result where Success == CodeItem, Failure == AgentError {
         var links = false
         switch hit {
         case .sameSite: break
-        case .allSites: rule.site = nil; code = item(service: "GitLab", domain: "gitlab.com"); site = "gitlab.com"
-        case .linkWithLinksOn: links = true; code = linkItem()
+        case .allSites:
+            rule.site = nil
+            code = item(service: "GitLab", domain: "gitlab.com")
+            site = "gitlab.com"
+        case .linkWithLinksOn:
+            links = true
+            code = linkItem()
         case .appRenamed: rule.app = AgentApp(id: agentApp.id, team: agentApp.team, name: "Old name")
         case .allowAllCode: allowAll = true
-        case .allowAllUnverifiedCaller: allowAll = true; caller = unverified
-        case .allowAllLink: allowAll = true; links = true; caller = unverified; code = linkItem()
+        case .allowAllUnverifiedCaller:
+            allowAll = true
+            caller = unverified
+        case .allowAllLink:
+            allowAll = true
+            links = true
+            caller = unverified
+            code = linkItem()
         case .allowAllAndRule: allowAll = true
         }
         let withRule = !allowAll || hit == .allowAllAndRule
@@ -392,12 +418,26 @@ private extension Result where Success == CodeItem, Failure == AgentError {
         case .otherApp: caller.app = AgentApp(id: "com.example.other", team: "TEAM1", name: "Agent")
         case .sameIdOtherTeam: caller.app = AgentApp(id: agentApp.id, team: "EVIL", name: "Agent")
         case .sameIdNoTeam: caller.app = AgentApp(id: agentApp.id, team: nil, name: "Agent")
-        case .unverifiedCaller: caller = unverified; rule.site = nil
+        case .unverifiedCaller:
+            caller = unverified
+            rule.site = nil
         case .otherSite: rule.site = "gitlab.com"
-        case .unnamedSMS: rule.site = nil; code = strangerSMS()
-        case .unnamedSMSUnderAllowAll: rule.site = nil; code = strangerSMS(); allowAll = true
-        case .selfNamedSMSAllSitesRule: rule.site = nil; code = selfNamedSMS(); site = "12345"
-        case .selfNamedSMSUnderAllowAll: rule.site = nil; code = selfNamedSMS(); site = "12345"; allowAll = true
+        case .unnamedSMS:
+            rule.site = nil
+            code = strangerSMS()
+        case .unnamedSMSUnderAllowAll:
+            rule.site = nil
+            code = strangerSMS()
+            allowAll = true
+        case .selfNamedSMSAllSitesRule:
+            rule.site = nil
+            code = selfNamedSMS()
+            site = "12345"
+        case .selfNamedSMSUnderAllowAll:
+            rule.site = nil
+            code = selfNamedSMS()
+            site = "12345"
+            allowAll = true
         }
         let h = Harness(AgentConfig(enabled: true, rules: [rule], allowAll: allowAll))
         h.add(code)
@@ -415,8 +455,10 @@ private extension Result where Success == CodeItem, Failure == AgentError {
 
     @Test(arguments: [false, true], [Optional<Bool>.none, .some(false)])
     func unverifiedMailSenderCannotUseAutomaticApproval(_ allowAll: Bool, _ senderVerified: Bool?) async throws {
-        let h = Harness(AgentConfig(enabled: true, rules: [AgentRule(app: agentApp, site: "github.com")],
-                                    allowAll: allowAll))
+        let h = Harness(
+            AgentConfig(
+                enabled: true, rules: [AgentRule(app: agentApp, site: "github.com")],
+                allowAll: allowAll))
         h.add(item(senderVerified: senderVerified))
         let task = h.start()
         try await h.waitForCard()
@@ -433,17 +475,21 @@ private extension Result where Success == CodeItem, Failure == AgentError {
         _ trust: MailIngressTrust, _ allowAll: Bool
     ) async throws {
         let issuer = trust == .forgedIssuer ? "attacker.invalid" : "mx.google.com"
-        let raw = "Authentication-Results: \(issuer); dmarc=pass header.from=github.com\r\n"
+        let raw =
+            "Authentication-Results: \(issuer); dmarc=pass header.from=github.com\r\n"
             + "Received: from mail.github.com\r\nFrom: GitHub <no-reply@github.com>\r\n"
             + "Subject: Your GitHub verification code\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n"
             + "Your GitHub verification code is 482913."
         let parsed = MIME.parse(Data(raw.utf8), receiver: trust == .missingReceiver ? nil : .gmail)
-        var message = IncomingMessage(text: parsed.text, subject: parsed.subject, senderName: parsed.fromName,
-                                      senderID: parsed.fromAddress, sourceKey: "test-mail", sourceLabel: "Test",
-                                      date: Date().addingTimeInterval(-1), isMail: true, links: parsed.links)
+        var message = IncomingMessage(
+            text: parsed.text, subject: parsed.subject, senderName: parsed.fromName,
+            senderID: parsed.fromAddress, sourceKey: "test-mail", sourceLabel: "Test",
+            date: Date().addingTimeInterval(-1), isMail: true, links: parsed.links)
         message.senderVerified = parsed.senderVerified
-        let h = Harness(AgentConfig(enabled: true, rules: [AgentRule(app: agentApp, site: "github.com")],
-                                    allowAll: allowAll))
+        let h = Harness(
+            AgentConfig(
+                enabled: true, rules: [AgentRule(app: agentApp, site: "github.com")],
+                allowAll: allowAll))
         for key in ["autoCopy", "showHUD", "sound", "autoType"] { h.defaults.set(false, forKey: key) }
         Prefs.register(in: h.defaults)
         let model = AppModel(
@@ -472,8 +518,10 @@ private extension Result where Success == CodeItem, Failure == AgentError {
 
     @Test(arguments: [false, true])
     func restartKeepsThePersistedAutomaticReleaseLimit(_ allowAll: Bool) async throws {
-        let h = Harness(AgentConfig(enabled: true, rules: [AgentRule(app: agentApp, site: nil)],
-                                    allowAll: allowAll))
+        let h = Harness(
+            AgentConfig(
+                enabled: true, rules: [AgentRule(app: agentApp, site: nil)],
+                allowAll: allowAll))
         for _ in 0..<20 {
             h.add(item())
             try #require(await h.start().value.item != nil)
@@ -493,8 +541,10 @@ private extension Result where Success == CodeItem, Failure == AgentError {
 
     @Test(arguments: [false, true])
     func failedReleaseHistorySaveCannotReleaseAutomatically(_ allowAll: Bool) async {
-        let h = Harness(AgentConfig(enabled: true, rules: [AgentRule(app: agentApp, site: nil)],
-                                    allowAll: allowAll))
+        let h = Harness(
+            AgentConfig(
+                enabled: true, rules: [AgentRule(app: agentApp, site: nil)],
+                allowAll: allowAll))
         h.saveFails = true
         h.add(item())
         let task = h.start(timeout: 0.2)
@@ -515,8 +565,10 @@ private extension Result where Success == CodeItem, Failure == AgentError {
     /// Allow All must count against the same hourly cap as rules, not get a fresh one.
     @Test(arguments: CapSource.allCases)
     func pastHourlyRuleLimitTheUserIsAskedAgain(_ source: CapSource) async throws {
-        let h = Harness(AgentConfig(enabled: true, rules: source == .allowAll ? [] : [AgentRule(app: agentApp, site: nil)],
-                                    allowAll: source == .allowAll))
+        let h = Harness(
+            AgentConfig(
+                enabled: true, rules: source == .allowAll ? [] : [AgentRule(app: agentApp, site: nil)],
+                allowAll: source == .allowAll))
         var caller = source == .allowAll ? unverified : verified
         for i in 0..<AgentAccess.ruleLimit {
             if source == .ruleThenAllowAll, i == AgentAccess.ruleLimit / 2 {
@@ -555,11 +607,14 @@ private extension Result where Success == CodeItem, Failure == AgentError {
         let renamed = AgentApp(id: agentApp.id, team: agentApp.team, name: "Old name")
         let otherApp = AgentApp(id: "com.example.other", team: "TEAM1", name: "Other")
         let otherRule = AgentRule(app: otherApp, site: "github.com")
-        let h = Harness(AgentConfig(enabled: true, rules: [
-            AgentRule(app: agentApp, site: "gitlab.com"),
-            AgentRule(app: renamed, site: "example.org"),
-            otherRule,
-        ]))
+        let h = Harness(
+            AgentConfig(
+                enabled: true,
+                rules: [
+                    AgentRule(app: agentApp, site: "gitlab.com"),
+                    AgentRule(app: renamed, site: "example.org"),
+                    otherRule,
+                ]))
         _ = try await h.decide(item()) { await $0.allow(.allSites) }
         let mine = h.access.config.rules.filter { $0.app.same(as: agentApp) }
         #expect(mine.count == 1)
@@ -620,11 +675,11 @@ private extension Result where Success == CodeItem, Failure == AgentError {
 
     @Test(arguments: [
         Window(age: 10, sinceAgo: nil, offered: true),
-        Window(age: 45, sinceAgo: nil, offered: false),     // older than lookback
+        Window(age: 45, sinceAgo: nil, offered: false),  // older than lookback
         Window(age: 100, sinceAgo: 120, offered: true),
-        Window(age: 100, sinceAgo: 60, offered: false),     // before since
+        Window(age: 100, sinceAgo: 60, offered: false),  // before since
         Window(age: 200, sinceAgo: 600, offered: true),
-        Window(age: 400, sinceAgo: 600, offered: false),    // since capped at maxLookback
+        Window(age: 400, sinceAgo: 600, offered: false),  // since capped at maxLookback
     ])
     func oldCodesAreNotOffered(_ w: Window) async {
         let h = Harness()
@@ -697,7 +752,8 @@ private extension Result where Success == CodeItem, Failure == AgentError {
     @Test(arguments: [false, true])
     func newestMatchingCodeWins(_ newestFirst: Bool) async throws {
         let h = Harness()
-        let older = item(age: 10), newer = item(age: 2)
+        let older = item(age: 10)
+        let newer = item(age: 2)
         h.items = newestFirst ? [newer, older] : [older, newer]
         let task = h.start()
         try await h.waitForCard()
@@ -719,16 +775,19 @@ private extension Result where Success == CodeItem, Failure == AgentError {
     @Test(arguments: [
         LinkCase(name: "verified sender, own site", item: linkItem(), site: "github.com", releases: true),
         LinkCase(name: "subdomain of the site", item: linkItem("https://auth.github.com/x?t=1"), site: "github.com", releases: true),
-        LinkCase(name: "alias claude.ai from anthropic.com",
-                 item: linkItem("https://claude.ai/magic-link#t=1", domain: "anthropic.com"), site: "claude.ai", releases: true),
+        LinkCase(
+            name: "alias claude.ai from anthropic.com",
+            item: linkItem("https://claude.ai/magic-link#t=1", domain: "anthropic.com"), site: "claude.ai", releases: true),
         LinkCase(name: "password reset", item: linkItem(resetsPassword: true), site: "github.com", releases: false),
         LinkCase(name: "sender unverified (nil)", item: linkItem(senderVerified: nil), site: "github.com", releases: false),
         LinkCase(name: "sender failed DMARC", item: linkItem(senderVerified: false), site: "github.com", releases: false),
         LinkCase(name: "lookalike warning", item: linkItem(domain: nil), site: "github.com", releases: false),
-        LinkCase(name: "verified sender linking elsewhere",
-                 item: linkItem("https://evil.com/login", domain: "github.com"), site: "github.com", releases: false),
-        LinkCase(name: "destination is another site than asked",
-                 item: linkItem("https://claude.ai/magic-link", domain: "anthropic.com"), site: "github.com", releases: false),
+        LinkCase(
+            name: "verified sender linking elsewhere",
+            item: linkItem("https://evil.com/login", domain: "github.com"), site: "github.com", releases: false),
+        LinkCase(
+            name: "destination is another site than asked",
+            item: linkItem("https://claude.ai/magic-link", domain: "anthropic.com"), site: "github.com", releases: false),
     ])
     func linkIsReleasedOnlyWhenSafe(_ c: LinkCase) throws {
         let query = try #require(SiteQuery(c.site))
@@ -738,8 +797,10 @@ private extension Result where Success == CodeItem, Failure == AgentError {
     /// Even with Sign-In Links on, neither a rule nor Allow All may release a reset link or a link `releasesLink` rejects.
     @Test(arguments: [false, true])
     func unsafeLinkOnlyItemIsNeverOffered(_ allowAll: Bool) async {
-        let h = Harness(allowAll ? AgentConfig(enabled: true, allowAll: true, links: true)
-                                 : AgentConfig(enabled: true, rules: [AgentRule(app: agentApp, site: nil)], links: true))
+        let h = Harness(
+            allowAll
+                ? AgentConfig(enabled: true, allowAll: true, links: true)
+                : AgentConfig(enabled: true, rules: [AgentRule(app: agentApp, site: nil)], links: true))
         h.add(linkItem(resetsPassword: true))
         h.add(linkItem("https://evil.com/login"))
         h.add(linkItem(senderVerified: false))
@@ -754,8 +815,10 @@ private extension Result where Success == CodeItem, Failure == AgentError {
     /// with it on, each path must work as it does for a code.
     @Test(arguments: LinkPath.allCases, [false, true])
     func signInLinksSwitchGatesLinkOnlyItemsOnEveryPath(_ path: LinkPath, _ links: Bool) async throws {
-        let h = Harness(AgentConfig(enabled: true, rules: path == .rule ? [AgentRule(app: agentApp, site: "github.com")] : [],
-                                    allowAll: path == .allowAll, links: links))
+        let h = Harness(
+            AgentConfig(
+                enabled: true, rules: path == .rule ? [AgentRule(app: agentApp, site: "github.com")] : [],
+                allowAll: path == .allowAll, links: links))
         let link = linkItem()
         h.add(link)
         let task = h.start(timeout: 0.3, caller: path == .allowAll ? unverified : verified)
@@ -931,8 +994,10 @@ private extension Result where Success == CodeItem, Failure == AgentError {
         let h = Harness(AgentConfig(enabled: true, rules: [AgentRule(app: agentApp, site: "gitlab.com")], links: true))
         _ = try await h.decide(item()) { await $0.allow() }
         _ = try await h.decide(item(code: "771122")) { $0.deny() }
-        h.add(item(code: "", link: URL(string: "https://gitlab.com/users/sign_in?token=\(secretToken)"),
-                   service: "GitLab", domain: "gitlab.com"))
+        h.add(
+            item(
+                code: "", link: URL(string: "https://gitlab.com/users/sign_in?token=\(secretToken)"),
+                service: "GitLab", domain: "gitlab.com"))
         #expect(await h.start("gitlab.com").value.item != nil)
         _ = await h.start("example.com", timeout: 0.2).value
         #expect(h.access.log.count >= 4)

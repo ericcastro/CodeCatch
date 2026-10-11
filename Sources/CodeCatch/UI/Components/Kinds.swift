@@ -4,9 +4,27 @@ import SwiftUI
 enum CatchKind {
     case code, signIn, passwordReset
 
-    var title: String { switch self { case .code: "Code"; case .signIn: "Sign-in link"; case .passwordReset: "Password reset" } }
-    var symbol: String { switch self { case .code: "number"; case .signIn: "link"; case .passwordReset: "lock.rotation" } }
-    var color: Color { switch self { case .code: .blue; case .signIn: .teal; case .passwordReset: .orange } }
+    var title: String {
+        switch self {
+        case .code: "Code"
+        case .signIn: "Sign-in link"
+        case .passwordReset: "Password reset"
+        }
+    }
+    var symbol: String {
+        switch self {
+        case .code: "number"
+        case .signIn: "link"
+        case .passwordReset: "lock.rotation"
+        }
+    }
+    var color: Color {
+        switch self {
+        case .code: .blue
+        case .signIn: .teal
+        case .passwordReset: .orange
+        }
+    }
 }
 
 extension CodeItem {
@@ -17,8 +35,20 @@ extension CodeItem {
 enum SourceKind {
     case messages, appleMail, mail
 
-    var symbol: String { switch self { case .messages: "message.fill"; case .appleMail: "tray.fill"; case .mail: "envelope.fill" } }
-    var color: Color { switch self { case .messages: .green; case .appleMail: .cyan; case .mail: .blue } }
+    var symbol: String {
+        switch self {
+        case .messages: "message.fill"
+        case .appleMail: "tray.fill"
+        case .mail: "envelope.fill"
+        }
+    }
+    var color: Color {
+        switch self {
+        case .messages: .green
+        case .appleMail: .cyan
+        case .mail: .blue
+        }
+    }
 }
 
 /// A System Settings style coloured icon tile.

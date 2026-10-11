@@ -1,17 +1,21 @@
-@testable import CodeCatchCore
 import Foundation
 import Testing
+
 @testable import CodeCatch
+@testable import CodeCatchCore
 
 private let searchNow = Date(timeIntervalSince1970: 1_700_000_000)
 
-private func searchItem(_ key: String, service: String, origin: CodeItem.Origin = .mail,
-                        account: String = "Work", domain: String? = nil, preview: String = "",
-                        expired: Bool = false) -> CodeItem {
-    CodeItem(origin: origin, code: "593821", link: nil, service: service, sourceLabel: "Test",
-             sourceKey: key, accountLabel: account, sender: "", preview: preview, snippet: preview,
-             received: searchNow.addingTimeInterval(-10), expires: searchNow.addingTimeInterval(expired ? -1 : 30),
-             domain: domain, dismissKey: key)
+private func searchItem(
+    _ key: String, service: String, origin: CodeItem.Origin = .mail,
+    account: String = "Work", domain: String? = nil, preview: String = "",
+    expired: Bool = false
+) -> CodeItem {
+    CodeItem(
+        origin: origin, code: "593821", link: nil, service: service, sourceLabel: "Test",
+        sourceKey: key, accountLabel: account, sender: "", preview: preview, snippet: preview,
+        received: searchNow.addingTimeInterval(-10), expires: searchNow.addingTimeInterval(expired ? -1 : 30),
+        domain: domain, dismissKey: key)
 }
 
 @MainActor private func withSearch(_ body: (CodeSearch, UserDefaults, String) throws -> Void) throws {
@@ -29,7 +33,8 @@ private func searchItem(_ key: String, service: String, origin: CodeItem.Origin 
         let unrelated = searchItem("unrelated", service: "Other")
         search.togglePin(prefix)
         search.recordUse(prefix)
-        #expect(search.ranked([substring, prefix, unrelated, exact], query: "  aCmE  ", now: searchNow).map(\.sourceKey)
+        #expect(
+            search.ranked([substring, prefix, unrelated, exact], query: "  aCmE  ", now: searchNow).map(\.sourceKey)
                 == ["exact", "prefix", "substring"])
     }
 }
@@ -85,8 +90,9 @@ private func searchItem(_ key: String, service: String, origin: CodeItem.Origin 
 }
 
 @Test func vaultRowIdentityAndAccountSurviveCodeRotation() throws {
-    let vault = VaultCode(id: "non-uuid-login", name: "Example", username: "work@example.com", domain: "example.com",
-                          secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
+    let vault = VaultCode(
+        id: "non-uuid-login", name: "Example", username: "work@example.com", domain: "example.com",
+        secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
     let previous = try #require(CodeItem(vault, at: Date(timeIntervalSince1970: 59)))
     let current = try #require(CodeItem(vault, at: Date(timeIntervalSince1970: 60)))
     #expect(previous.id == current.id)
@@ -96,8 +102,11 @@ private func searchItem(_ key: String, service: String, origin: CodeItem.Origin 
 }
 
 @Test @MainActor func unlockedVaultSuppliesLoginsToUnifiedSearchAndLockRemovesThem() async throws {
-    let codes = [VaultCode(id: "login", name: "Example", username: "work@example.com", domain: "example.com",
-                           secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")]
+    let codes = [
+        VaultCode(
+            id: "login", name: "Example", username: "work@example.com", domain: "example.com",
+            secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
+    ]
     let session = VaultSession(authenticate: {}, read: { codes }, write: { _ in }, remove: {})
     let suite = "CodeSearchTests.\(UUID())"
     let defaults = try #require(UserDefaults(suiteName: suite))

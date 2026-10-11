@@ -1,10 +1,13 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
-private func copyVault(_ id: String = "saved-login",
-                       secret: String = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ") -> VaultCode {
+private func copyVault(
+    _ id: String = "saved-login",
+    secret: String = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"
+) -> VaultCode {
     VaultCode(id: id, name: "Example", username: nil, domain: nil, secret: secret)
 }
 
@@ -43,9 +46,11 @@ private func copyVault(_ id: String = "saved-login",
         let session = VaultSession(authenticate: { duringAuthentication?() }, read: { [] }, write: { _ in }, remove: {})
         let sink = CopySink()
         let model = AppModel(vaultSession: session, search: CodeSearch(defaults: defaults), defaults: defaults, copyToClipboard: sink.copy)
-        model.ingest(IncomingMessage(text: "Your verification code is 482913", senderName: "Example",
-                                     senderID: "support@example.com", sourceKey: "test-mail", sourceLabel: "Test",
-                                     date: Date().addingTimeInterval(-300), isMail: true))
+        model.ingest(
+            IncomingMessage(
+                text: "Your verification code is 482913", senderName: "Example",
+                senderID: "support@example.com", sourceKey: "test-mail", sourceLabel: "Test",
+                date: Date().addingTimeInterval(-300), isMail: true))
         let retained = try #require(model.items.first)
         duringAuthentication = { model.ignore("support@example.com") }
         await model.unlocked { model.copy(retained) }?.value
@@ -119,8 +124,9 @@ private func copyVault(_ id: String = "saved-login",
 
     /// A locked app must not hand out a received code, and a refused authentication must not run the action.
     @Test func receivedCodeCopiesOnlyAfterAuthentication() async throws {
-        let message = IncomingMessage(text: "Your code is 482913", senderName: "", senderID: "Example", sourceKey: "s",
-                                      sourceLabel: "Messages", date: Date().addingTimeInterval(-300), isMail: false)
+        let message = IncomingMessage(
+            text: "Your code is 482913", senderName: "", senderID: "Example", sourceKey: "s",
+            sourceLabel: "Messages", date: Date().addingTimeInterval(-300), isMail: false)
         var allowed = false
         let session = VaultSession(authenticate: { if !allowed { throw CancellationError() } }, read: { [] }, write: { _ in }, remove: {})
         let suite = "AppModelCopyTests.\(UUID())"

@@ -45,8 +45,10 @@ final class CodeSearch: ObservableObject {
         let query = normalized(query.trimmingCharacters(in: .whitespacesAndNewlines))
         return items.compactMap { item in score(item, query: query, secrets: secrets).map { (item: item, score: $0) } }
             .sorted { lhs, rhs in
-                let a = lhs.item, b = rhs.item
-                let aLive = now < a.expires, bLive = now < b.expires
+                let a = lhs.item
+                let b = rhs.item
+                let aLive = now < a.expires
+                let bLive = now < b.expires
                 if aLive != bLive { return aLive }
                 if lhs.score != rhs.score { return lhs.score < rhs.score }
                 if isPinned(a) != isPinned(b) { return isPinned(a) }

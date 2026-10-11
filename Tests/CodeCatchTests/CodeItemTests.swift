@@ -1,11 +1,13 @@
 import AppKit
-@testable import CodeCatchCore
 import Testing
+
 @testable import CodeCatch
+@testable import CodeCatchCore
 
 private func message(_ text: String, at date: Date) -> IncomingMessage {
-    IncomingMessage(text: text, senderName: "Example", senderID: "sender@example.com",
-                    sourceKey: "account", sourceLabel: "Test", date: date, isMail: true)
+    IncomingMessage(
+        text: text, senderName: "Example", senderID: "sender@example.com",
+        sourceKey: "account", sourceLabel: "Test", date: date, isMail: true)
 }
 
 @Test func dismissalsDistinguishMessagesEvenFromTheSameSenderAndSecond() {
@@ -33,8 +35,10 @@ func expiredCodesDoNotTriggerAutomaticCopyWhileClockSkewStillWorks(age: TimeInte
 }
 
 /// A link valid for 24 hours must not hold the popover's top card all day; an expired code must not take it either.
-@Test(arguments: [("This link will expire in 24 hours.", 540.0, true), ("This link will expire in 24 hours.", 660.0, false),
-                  ("Valid for 5 minutes.", 240.0, true), ("Valid for 5 minutes.", 360.0, false)])
+@Test(arguments: [
+    ("This link will expire in 24 hours.", 540.0, true), ("This link will expire in 24 hours.", 660.0, false),
+    ("Valid for 5 minutes.", 240.0, true), ("Valid for 5 minutes.", 360.0, false),
+])
 func topCardShowsOnlyARecentLiveItem(text: String, age: TimeInterval, expected: Bool) {
     let now = Date(timeIntervalSince1970: 1_700_000_000)
     let item = CodeItem(message(text, at: now.addingTimeInterval(-age)), code: nil, link: URL(string: "https://example.com/reset")!)
@@ -43,8 +47,9 @@ func topCardShowsOnlyARecentLiveItem(text: String, age: TimeInterval, expected: 
 
 @Suite(.serialized) struct ClipboardTests {
     @Test @MainActor func rotatedTOTPDoesNotClaimThePreviousCodeIsCopied() throws {
-        let vault = VaultCode(id: UUID().uuidString, name: "Example", username: nil, domain: nil,
-                              secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
+        let vault = VaultCode(
+            id: UUID().uuidString, name: "Example", username: nil, domain: nil,
+            secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
         let previous = try #require(CodeItem(vault, at: Date(timeIntervalSince1970: 59)))
         let current = try #require(CodeItem(vault, at: Date(timeIntervalSince1970: 60)))
         #expect(previous.code != current.code)
@@ -74,8 +79,9 @@ func topCardShowsOnlyARecentLiveItem(text: String, age: TimeInterval, expected: 
     ("team@notion.so", "https://notion-static.com/login", true, false), ("team@notion.so", "https://sites.notion.so/evil-login", false, true),
 ])
 func linkNotice(sender: String, link: String, verified: Bool?, warns: Bool?) {
-    var mail = IncomingMessage(text: "Sign in", senderName: "Notion", senderID: sender, sourceKey: "account", sourceLabel: "Test",
-                               date: Date(timeIntervalSince1970: 1_700_000_000), isMail: true)
+    var mail = IncomingMessage(
+        text: "Sign in", senderName: "Notion", senderID: sender, sourceKey: "account", sourceLabel: "Test",
+        date: Date(timeIntervalSince1970: 1_700_000_000), isMail: true)
     mail.senderVerified = verified
     #expect(CodeItem(mail, code: nil, link: URL(string: link)!).linkNotice?.warns == warns)
 }
@@ -89,14 +95,17 @@ func linkNotice(sender: String, link: String, verified: Bool?, warns: Bool?) {
     let second = MailAccount(label: "Gmail", host: "imap.gmail.com", user: "second@gmail.com")
     let work = MailAccount(label: "Work", host: "imap.example.com", user: "me@example.com")
     func model(_ accounts: [MailAccount]) -> AppModel {
-        AppModel(vaultSession: VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {}),
-                 monitor: SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults),
-                 defaults: defaults, accounts: accounts, copyToClipboard: { _, _ in })
+        AppModel(
+            vaultSession: VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {}),
+            monitor: SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults),
+            defaults: defaults, accounts: accounts, copyToClipboard: { _, _ in })
     }
     func item(_ account: MailAccount) -> CodeItem {
-        CodeItem(IncomingMessage(text: "Your code is 482913", senderName: "Example", senderID: "sender@example.com",
-                                 sourceKey: account.id.uuidString, sourceLabel: account.label, date: Date(), isMail: true),
-                 code: "482913", link: nil)
+        CodeItem(
+            IncomingMessage(
+                text: "Your code is 482913", senderName: "Example", senderID: "sender@example.com",
+                sourceKey: account.id.uuidString, sourceLabel: account.label, date: Date(), isMail: true),
+            code: "482913", link: nil)
     }
     #expect(model([first]).origination(item(first)) == "")
     let several = model([first, second, work])
@@ -114,20 +123,23 @@ func linkNotice(sender: String, link: String, verified: Bool?, warns: Bool?) {
     let suite = "Source.\(UUID())"
     let defaults = try #require(UserDefaults(suiteName: suite))
     defer { defaults.removePersistentDomain(forName: suite) }
-    let model = AppModel(vaultSession: VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {}),
-                         monitor: SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults),
-                         defaults: defaults, accounts: [], copyToClipboard: { _, _ in })
+    let model = AppModel(
+        vaultSession: VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {}),
+        monitor: SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults),
+        defaults: defaults, accounts: [], copyToClipboard: { _, _ in })
     let gmail = MailAccount(label: "Gmail", host: "imap.gmail.com", user: "second@gmail.com")
-    var mail = IncomingMessage(text: "Your code is 482913", senderName: "Example", senderID: "sender@example.com",
-                               sourceKey: gmail.id.uuidString, sourceLabel: "Gmail", date: Date(), isMail: true)
+    var mail = IncomingMessage(
+        text: "Your code is 482913", senderName: "Example", senderID: "sender@example.com",
+        sourceKey: gmail.id.uuidString, sourceLabel: "Gmail", date: Date(), isMail: true)
     mail.webURL = GmailAPI.webURL("18c2f", account: gmail)
     // Even with a Message-ID and Mail as the mail app: an API account's email may not be in Mail at all.
     mail.internetMessageID = "a1b2.c3@mail.example.com"
     let fromGmail = try #require(model.source(of: CodeItem(mail, code: "482913", link: nil)))
     // Gmail answers 404 to /mail/u/<address>/; ?authuser= picks the account (or asks to sign in to it).
     #expect(fromGmail.url.absoluteString == "https://mail.google.com/mail/?authuser=second@gmail.com#all/18c2f")
-    let text = IncomingMessage(text: "Your code is 482913", senderName: "", senderID: "22000",
-                               sourceKey: MessagesStore.sourceKey, sourceLabel: "Messages", date: Date(), isMail: false)
+    let text = IncomingMessage(
+        text: "Your code is 482913", senderName: "", senderID: "22000",
+        sourceKey: MessagesStore.sourceKey, sourceLabel: "Messages", date: Date(), isMail: false)
     #expect(model.source(of: CodeItem(text, code: "482913", link: nil))?.url.absoluteString == "sms:22000")
     // A named sender ("Revolut") has no address: sms:Revolut would start a message to nobody.
     var named = text
@@ -144,7 +156,8 @@ func linkNotice(sender: String, link: String, verified: Bool?, warns: Bool?) {
 @MainActor @Test func suspectLinkOpensOnlyOnExplicitConsent() async throws {
     enum Choice { case cancel, showEmail, open, lockThenOpen }
     func run(sender: String, _ choice: Choice, lockedFirst: Bool = false) async throws
-        -> (item: CodeItem, link: URL, opened: [URL], asked: Int, used: Bool, email: URL?) {
+        -> (item: CodeItem, link: URL, opened: [URL], asked: Int, used: Bool, email: URL?)
+    {
         let suite = "LinkConsent.\(UUID())"
         let defaults = try #require(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
@@ -153,29 +166,37 @@ func linkNotice(sender: String, link: String, verified: Bool?, warns: Bool?) {
         let session = VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {})
         let recorder = LinkRecorder()
         let gmail = MailAccount(label: "Gmail", host: "imap.gmail.com", user: "me@gmail.com")
-        let model = AppModel(vaultSession: session,
-                             monitor: SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults),
-                             defaults: defaults, accounts: [gmail], copyToClipboard: { _, _ in },
-                             confirmLink: { _, _, _, email in
-                                 recorder.asked += 1
-                                 switch choice {
-                                 case .cancel: return false
-                                 case .showEmail: email?.run(); return false
-                                 case .open: return true
-                                 case .lockThenOpen: session.lock(); return true
-                                 }
-                             },
-                             openURL: { recorder.opened.append($0) })
+        let model = AppModel(
+            vaultSession: session,
+            monitor: SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults),
+            defaults: defaults, accounts: [gmail], copyToClipboard: { _, _ in },
+            confirmLink: { _, _, _, email in
+                recorder.asked += 1
+                switch choice {
+                case .cancel: return false
+                case .showEmail:
+                    email?.run()
+                    return false
+                case .open: return true
+                case .lockThenOpen:
+                    session.lock()
+                    return true
+                }
+            },
+            openURL: { recorder.opened.append($0) })
         try await session.unlock()
-        var mail = IncomingMessage(text: "Confirm it was you.", subject: "Verify your sign-in", senderName: "Acme", senderID: sender,
-                                   sourceKey: gmail.id.uuidString, sourceLabel: "Gmail", date: Date().addingTimeInterval(-30), isMail: true,
-                                   links: [MailLink(url: "https://acme-secure-login.net/verify?t=1", label: "Verify sign-in")])
+        var mail = IncomingMessage(
+            text: "Confirm it was you.", subject: "Verify your sign-in", senderName: "Acme", senderID: sender,
+            sourceKey: gmail.id.uuidString, sourceLabel: "Gmail", date: Date().addingTimeInterval(-30), isMail: true,
+            links: [MailLink(url: "https://acme-secure-login.net/verify?t=1", label: "Verify sign-in")])
         mail.webURL = GmailAPI.webURL("18c2f", account: gmail)
         model.ingest(mail)
         let item = try #require(model.items.first { $0.isLink })
         if lockedFirst { session.lock() }
         model.open(item)
-        return (item, try #require(item.link), recorder.opened, recorder.asked, model.items.first { $0.id == item.id }?.used ?? false, model.source(of: item)?.url)
+        return (
+            item, try #require(item.link), recorder.opened, recorder.asked, model.items.first { $0.id == item.id }?.used ?? false, model.source(of: item)?.url
+        )
     }
     let phish = "security@acme.com"
 

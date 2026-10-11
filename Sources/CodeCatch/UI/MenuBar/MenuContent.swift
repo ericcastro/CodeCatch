@@ -69,7 +69,10 @@ struct MenuContent: View {
                                 .id(latest.id)
                                 .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(.primary.opacity(0.04)))
                                 .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(.primary.opacity(0.06), lineWidth: 0.5))
-                                .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color.accentColor.opacity(selectionID == latest.id ? 0.7 : 0), lineWidth: 2))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(
+                                        Color.accentColor.opacity(selectionID == latest.id ? 0.7 : 0), lineWidth: 2)
+                                )
                                 .padding(.horizontal, 10)
                                 .contextMenu { CodeMenu(item: latest) }
                         }
@@ -121,7 +124,11 @@ struct MenuContent: View {
             footer
         }
         .frame(width: 420)
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
+        .onGeometryChange(for: CGFloat.self) {
+            $0.size.height
+        } action: {
+            contentHeight = $0
+        }
         .background(TopAnchor(height: contentHeight))
         .hiddenFromCapture()
         .onChange(of: query) { selectedID = nil }
@@ -179,8 +186,12 @@ struct MenuContent: View {
                     return moveSelection(key.key == .downArrow ? 1 : -1)
                 }
             if !query.isEmpty {
-                Button { query = "" } label: { Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary) }
-                    .buttonStyle(.plain)
+                Button {
+                    query = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary)
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, 10)
@@ -234,8 +245,10 @@ struct MenuContent: View {
     /// Beside the name: one padlock that swaps in place, so nothing moves when the state changes.
     private var lockControl: some View {
         let unlocked = model.vaultSession.isUnlocked
-        return GlyphButton(symbol: unlocked ? "lock.open" : "lock.fill",
-                           help: unlocked ? "Lock: hide codes until you unlock again" : "Codes are hidden. Click to unlock") {
+        return GlyphButton(
+            symbol: unlocked ? "lock.open" : "lock.fill",
+            help: unlocked ? "Lock: hide codes until you unlock again" : "Codes are hidden. Click to unlock"
+        ) {
             // Unlocking here also copies the newest code, as a fresh one would be.
             if unlocked { model.vaultSession.lock() } else { Task { try? await model.unlock() } }
         }
@@ -287,13 +300,16 @@ struct MenuContent: View {
 
     private var emptyNotice: some View {
         ContentUnavailableView {
-            Label(!model.receiving && model.vault.isEmpty ? "Catching Paused" : model.vault.isEmpty ? "No Codes Yet" : "Find a Saved Login", systemImage: "key.viewfinder")
+            Label(
+                !model.receiving && model.vault.isEmpty ? "Catching Paused" : model.vault.isEmpty ? "No Codes Yet" : "Find a Saved Login",
+                systemImage: "key.viewfinder")
         } description: {
-            Text(!model.receiving && model.vault.isEmpty
-                 ? (hasLogins ? "Unlock to search your Bitwarden logins." : "Choose what to catch in Settings → Sources.")
-                 : model.vault.isEmpty
-                 ? "New codes and links show up here as they arrive."
-                 : "Search by service or account. Pin a login to keep it here.")
+            Text(
+                !model.receiving && model.vault.isEmpty
+                    ? (hasLogins ? "Unlock to search your Bitwarden logins." : "Choose what to catch in Settings → Sources.")
+                    : model.vault.isEmpty
+                        ? "New codes and links show up here as they arrive."
+                        : "Search by service or account. Pin a login to keep it here.")
         }
         .padding(.bottom, 8)
     }
@@ -313,7 +329,9 @@ struct MenuContent: View {
             VStack(alignment: .leading, spacing: 4) {
                 if let error = model.unlockError { WarningText(message: error, compact: true).font(.caption) }
                 if count > 0 {
-                    Button { leave { openWindow(id: RecoveryView.windowID) } } label: {
+                    Button {
+                        leave { openWindow(id: RecoveryView.windowID) }
+                    } label: {
                         HStack(spacing: 3) {
                             Text("\(count) \(count == 1 ? "email" : "emails") may have your code")
                             Image(systemName: "chevron.right").imageScale(.small).fontWeight(.semibold)

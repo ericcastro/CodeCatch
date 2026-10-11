@@ -1,6 +1,7 @@
 import Foundation
 import LocalAuthentication
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
@@ -18,8 +19,11 @@ import Testing
     var authenticationAllowed = true
     var ownerConfirms = true
     private(set) var ownerChecks = 0
-    let stored = [VaultCode(id: "saved-login", name: "Example", username: nil, domain: nil,
-                            secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")]
+    let stored = [
+        VaultCode(
+            id: "saved-login", name: "Example", username: nil, domain: nil,
+            secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
+    ]
     var model: AppModel!
 
     init() throws {
@@ -37,38 +41,45 @@ import Testing
 
     func makeModel(session: VaultSession? = nil) -> AppModel {
         let monitor = SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults)
-        let policy = UnlockPolicy(load: { false }, save: { _ in }, authenticate: { [self] in
-            ownerChecks += 1
-            if !ownerConfirms { throw CancellationError() }
-        })
-        return AppModel(vaultSession: session ?? self.session, monitor: monitor, search: search,
-                        defaults: defaults, copyToClipboard: { [weak self] value, _ in self?.copied.append(value) },
-                        typeCode: { [weak self] code in self?.typed.append(code) },
-                        unlockPolicy: policy,
-                        confirmLink: { [self] _, _, _, _ in onConfirmLink?() ?? true },
-                        openURL: { [weak self] in self?.opened.append($0) })
+        let policy = UnlockPolicy(
+            load: { false }, save: { _ in },
+            authenticate: { [self] in
+                ownerChecks += 1
+                if !ownerConfirms { throw CancellationError() }
+            })
+        return AppModel(
+            vaultSession: session ?? self.session, monitor: monitor, search: search,
+            defaults: defaults, copyToClipboard: { [weak self] value, _ in self?.copied.append(value) },
+            typeCode: { [weak self] code in self?.typed.append(code) },
+            unlockPolicy: policy,
+            confirmLink: { [self] _, _, _, _ in onConfirmLink?() ?? true },
+            openURL: { [weak self] in self?.opened.append($0) })
     }
 
     func storedSession() -> VaultSession {
-        VaultSession(authenticate: { [self] in
-            if !authenticationAllowed { throw CancellationError() }
-        }, read: { [self] in stored }, write: { [self] _ in writes += 1 }, remove: { [self] in removals += 1 })
+        VaultSession(
+            authenticate: { [self] in
+                if !authenticationAllowed { throw CancellationError() }
+            }, read: { [self] in stored }, write: { [self] _ in writes += 1 }, remove: { [self] in removals += 1 })
     }
 
     func cleanUp() { defaults.removePersistentDomain(forName: suite) }
 }
 
 private func monitoringMessage() -> IncomingMessage {
-    IncomingMessage(text: "Your verification code is 482913. Confirm your sign-in.",
-                    subject: "Confirm your sign-in", senderName: "Example", senderID: "support@example.com",
-                    sourceKey: "test-mail", sourceLabel: "Test", date: Date().addingTimeInterval(-300), isMail: true,
-                    links: [MailLink(url: "https://example.com/verify?token=example", label: "Confirm sign-in")])
+    IncomingMessage(
+        text: "Your verification code is 482913. Confirm your sign-in.",
+        subject: "Confirm your sign-in", senderName: "Example", senderID: "support@example.com",
+        sourceKey: "test-mail", sourceLabel: "Test", date: Date().addingTimeInterval(-300), isMail: true,
+        links: [MailLink(url: "https://example.com/verify?token=example", label: "Confirm sign-in")])
 }
 
 @MainActor @Suite struct MonitoringTests {
     /// Prevents someone at the Mac, locked or already unlocked, from removing the Touch ID lock without the owner.
-    @Test(arguments: [(unlocked: false, confirms: false), (unlocked: true, confirms: false),
-                      (unlocked: false, confirms: true), (unlocked: true, confirms: true)])
+    @Test(arguments: [
+        (unlocked: false, confirms: false), (unlocked: true, confirms: false),
+        (unlocked: false, confirms: true), (unlocked: true, confirms: true),
+    ])
     func turningOnUnlockWithMacAlwaysAsksTheOwner(scenario: (unlocked: Bool, confirms: Bool)) async throws {
         let fixture = try MonitoringFixture()
         defer { fixture.cleanUp() }
@@ -203,9 +214,10 @@ private func monitoringMessage() -> IncomingMessage {
         fixture.model.set(Prefs.signInLinks, on: signIn)
         fixture.model.set(Prefs.resetLinks, on: reset)
         let mail = { (subject: String, label: String) in
-            IncomingMessage(text: label, subject: subject, senderName: "Example", senderID: "support@example.com",
-                            sourceKey: "test-mail", sourceLabel: "Test", date: Date().addingTimeInterval(-300), isMail: true,
-                            links: [MailLink(url: "https://example.com/\(label.count)?token=t", label: label)])
+            IncomingMessage(
+                text: label, subject: subject, senderName: "Example", senderID: "support@example.com",
+                sourceKey: "test-mail", sourceLabel: "Test", date: Date().addingTimeInterval(-300), isMail: true,
+                links: [MailLink(url: "https://example.com/\(label.count)?token=t", label: label)])
         }
         fixture.model.ingest(mail("Reset your password", "Reset password"))
         fixture.model.ingest(mail("Confirm your sign-in", "Confirm sign-in"))
@@ -414,12 +426,13 @@ private func monitoringMessage() -> IncomingMessage {
         var stopped = stops.stream.makeAsyncIterator()
         var startCount = 0
         var delivered = 0
-        let monitor = SourceMonitor(watchMail: { _, callback in
-            startCount += 1
-            starts.continuation.yield(callback)
-            defer { stops.continuation.yield(()) }
-            try? await Task.sleep(nanoseconds: 60_000_000_000)
-        }, hasCredential: { _ in true }, defaults: fixture.defaults)
+        let monitor = SourceMonitor(
+            watchMail: { _, callback in
+                startCount += 1
+                starts.continuation.yield(callback)
+                defer { stops.continuation.yield(()) }
+                try? await Task.sleep(nanoseconds: 60_000_000_000)
+            }, hasCredential: { _ in true }, defaults: fixture.defaults)
         monitor.deliver = { _ in delivered += 1 }
         monitor.restartMail([account])
         let original = try #require(await started.next())
@@ -468,7 +481,8 @@ private func monitoringMessage() -> IncomingMessage {
             var pressed: String { lock.withLock { text } }
         }
         let recorder = Recorder()
-        var revoked = true, granted = false
+        var revoked = true
+        var granted = false
         let type = { (text: String, allowed: @escaping @MainActor () -> Bool, held: Bool) in
             KeyTyper.type(text, allowed: allowed, modifiersHeld: { held }, press: recorder.press)
         }

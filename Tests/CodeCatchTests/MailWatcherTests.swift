@@ -1,6 +1,7 @@
 import Foundation
 import SQLite3
 import Testing
+
 @testable import CodeCatch
 
 private actor InterruptedInbox: MailConnection {
@@ -12,8 +13,10 @@ private actor InterruptedInbox: MailConnection {
     private var pendingFetch: CheckedContinuation<Void, Never>?
     var attempts = 0
     var requested: [[Int]] = []
-    init(failFirstFetch: Bool = true, resetUIDs: Bool = false, emptyInbox: Bool = false,
-         fetchStarted: AsyncStream<Void>.Continuation? = nil) {
+    init(
+        failFirstFetch: Bool = true, resetUIDs: Bool = false, emptyInbox: Bool = false,
+        fetchStarted: AsyncStream<Void>.Continuation? = nil
+    ) {
         self.failFirstFetch = failFirstFetch
         self.resetUIDs = resetUIDs
         self.emptyInbox = emptyInbox
@@ -21,8 +24,10 @@ private actor InterruptedInbox: MailConnection {
     }
     func openInbox(_ account: MailAccount) -> [IMAPConnection.Response] {
         attempts += 1
-        return [.init(text: "* OK [UIDNEXT \(resetUIDs && attempts > 1 ? 3 : 42)]", literals: []),
-                .init(text: "* OK [UIDVALIDITY \(resetUIDs && attempts > 1 ? 2 : 1)]", literals: [])]
+        return [
+            .init(text: "* OK [UIDNEXT \(resetUIDs && attempts > 1 ? 3 : 42)]", literals: []),
+            .init(text: "* OK [UIDVALIDITY \(resetUIDs && attempts > 1 ? 2 : 1)]", literals: []),
+        ]
     }
     func search(_ criteria: String) -> [Int] {
         criteria.hasPrefix("SINCE") && !emptyInbox ? [resetUIDs && attempts > 1 ? 2 : 41] : []
@@ -32,17 +37,26 @@ private actor InterruptedInbox: MailConnection {
         requested.append(uids)
         if attempts == 1 && failFirstFetch { throw IMAPError.timeout }
         if let fetchStarted {
-            await withCheckedContinuation { pendingFetch = $0; fetchStarted.yield() }
+            await withCheckedContinuation {
+                pendingFetch = $0
+                fetchStarted.yield()
+            }
         }
-        return [IncomingMessage(text: "Your code is 482913", senderName: "Example", senderID: "example.com",
-                                sourceKey: account.id.uuidString, sourceLabel: "Test", date: Date(), isMail: true)]
+        return [
+            IncomingMessage(
+                text: "Your code is 482913", senderName: "Example", senderID: "example.com",
+                sourceKey: account.id.uuidString, sourceLabel: "Test", date: Date(), isMail: true)
+        ]
     }
     func idle(renewAfter: TimeInterval) async throws {
         if resetUIDs && attempts == 1 { throw IMAPError.timeout }
         try await Task.sleep(for: .seconds(60))
     }
     func command(_ cmd: String, timeout: TimeInterval) -> [IMAPConnection.Response] { [] }
-    func close() { pendingFetch?.resume(); pendingFetch = nil }
+    func close() {
+        pendingFetch?.resume()
+        pendingFetch = nil
+    }
 }
 
 @Test @MainActor func mailboxUIDResetBackfillsCodesInTheNewNamespace() async {
@@ -50,9 +64,10 @@ private actor InterruptedInbox: MailConnection {
     let statuses = AsyncStream<SourceStatus>.makeStream()
     var delivered = [IncomingMessage]()
     let watcher = Task {
-        await MailWatcher.watch(MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
-                                status: { statuses.continuation.yield($0) }, deliver: { delivered.append($0) },
-                                connection: { inbox }, retryDelay: 0)
+        await MailWatcher.watch(
+            MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
+            status: { statuses.continuation.yield($0) }, deliver: { delivered.append($0) },
+            connection: { inbox }, retryDelay: 0)
     }
     var liveCount = 0
     for await status in statuses.stream where status == .live {
@@ -71,10 +86,11 @@ private actor InterruptedInbox: MailConnection {
     var delivered = [IncomingMessage]()
     var events = [SourceEvent]()
     let watcher = Task {
-        await MailWatcher.watch(MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
-                                status: { statuses.continuation.yield($0) }, deliver: { delivered.append($0) },
-                                event: { events.append($0) },
-                                connection: { inbox }, retryDelay: 0)
+        await MailWatcher.watch(
+            MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
+            status: { statuses.continuation.yield($0) }, deliver: { delivered.append($0) },
+            event: { events.append($0) },
+            connection: { inbox }, retryDelay: 0)
     }
     for await status in statuses.stream where status == .live { break }
     watcher.cancel()
@@ -92,9 +108,10 @@ private actor InterruptedInbox: MailConnection {
     let statuses = AsyncStream<SourceStatus>.makeStream()
     var events = [SourceEvent]()
     let watcher = Task {
-        await MailWatcher.watch(MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
-                                status: { statuses.continuation.yield($0) }, deliver: { _ in },
-                                event: { events.append($0) }, connection: { inbox })
+        await MailWatcher.watch(
+            MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
+            status: { statuses.continuation.yield($0) }, deliver: { _ in },
+            event: { events.append($0) }, connection: { inbox })
     }
     for await status in statuses.stream where status == .live { break }
     watcher.cancel()
@@ -110,9 +127,10 @@ private actor InterruptedInbox: MailConnection {
     var delivered = 0
     var statuses = [SourceStatus]()
     let watcher = Task {
-        await MailWatcher.watch(MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
-                                status: { statuses.append($0) }, deliver: { _ in delivered += 1 },
-                                connection: { inbox })
+        await MailWatcher.watch(
+            MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
+            status: { statuses.append($0) }, deliver: { _ in delivered += 1 },
+            connection: { inbox })
     }
     _ = await iterator.next()
     watcher.cancel()
@@ -135,7 +153,10 @@ private actor FakeGmail: MailAPI {
         if signInRevoked { throw OAuth.Failure.token("invalid_grant") }
         return "100"
     }
-    func inbox(since date: Date, limit: Int) -> [String] { backfills += 1; return ["backfilled"] }
+    func inbox(since date: Date, limit: Int) -> [String] {
+        backfills += 1
+        return ["backfilled"]
+    }
     func added(since cursor: String) throws -> (ids: [String], cursor: String) {
         historyChecks += 1
         if expireHistoryOnce && historyChecks == 1 { throw MailAPIError.cursorExpired }
@@ -144,8 +165,9 @@ private actor FakeGmail: MailAPI {
     }
     func message(_ id: String, account: MailAccount) -> IncomingMessage? {
         fetched.append(id)
-        return IncomingMessage(text: "Your code is 482913", senderName: "Example", senderID: "example.com",
-                               sourceKey: account.id.uuidString, sourceLabel: "Gmail", date: Date(), isMail: true, messageID: "gmail:\(id)")
+        return IncomingMessage(
+            text: "Your code is 482913", senderName: "Example", senderID: "example.com",
+            sourceKey: account.id.uuidString, sourceLabel: "Gmail", date: Date(), isMail: true, messageID: "gmail:\(id)")
     }
 }
 
@@ -153,9 +175,10 @@ private actor FakeGmail: MailAPI {
 @MainActor private func gmailFetches(_ gmail: FakeGmail) async -> [String] {
     let delivered = AsyncStream<String?>.makeStream()
     let watcher = Task {
-        await APIWatcher.watch(MailAccount(label: "Gmail", host: MailAccount.gmailHost, user: "test@gmail.com"),
-                                 status: { _ in }, deliver: { delivered.continuation.yield($0.messageID) },
-                                 mailbox: gmail, poll: 0.01, retryDelay: 0)
+        await APIWatcher.watch(
+            MailAccount(label: "Gmail", host: MailAccount.gmailHost, user: "test@gmail.com"),
+            status: { _ in }, deliver: { delivered.continuation.yield($0.messageID) },
+            mailbox: gmail, poll: 0.01, retryDelay: 0)
     }
     for await id in delivered.stream where id == "gmail:new" { break }
     watcher.cancel()
@@ -176,12 +199,16 @@ private actor FakeGmail: MailAPI {
 @Test @MainActor func revokedGoogleSignInIsReportedAsExpired() async {
     let statuses = AsyncStream<SourceStatus>.makeStream()
     let watcher = Task {
-        await APIWatcher.watch(MailAccount(label: "Gmail", host: MailAccount.gmailHost, user: "test@gmail.com"),
-                                 status: { statuses.continuation.yield($0) }, deliver: { _ in },
-                                 mailbox: FakeGmail(signInRevoked: true))
+        await APIWatcher.watch(
+            MailAccount(label: "Gmail", host: MailAccount.gmailHost, user: "test@gmail.com"),
+            status: { statuses.continuation.yield($0) }, deliver: { _ in },
+            mailbox: FakeGmail(signInRevoked: true))
     }
     var reported: SourceStatus?
-    for await status in statuses.stream where status != .connecting { reported = status; break }
+    for await status in statuses.stream where status != .connecting {
+        reported = status
+        break
+    }
     watcher.cancel()
     await watcher.value
     #expect(reported == .failed(SourceStatus.signInExpired))
@@ -200,20 +227,23 @@ private actor FakeGmail: MailAPI {
     let now = Int(Date().timeIntervalSince1970)
     var db: OpaquePointer?
     #expect(sqlite3_open(version.appendingPathComponent("MailData/Envelope Index").path, &db) == SQLITE_OK)
-    #expect(sqlite3_exec(db, """
-        CREATE TABLE mailboxes (ROWID INTEGER PRIMARY KEY, url TEXT);
-        CREATE TABLE addresses (ROWID INTEGER PRIMARY KEY, address TEXT, comment TEXT);
-        CREATE TABLE subjects (ROWID INTEGER PRIMARY KEY, subject TEXT);
-        CREATE TABLE summaries (ROWID INTEGER PRIMARY KEY, summary TEXT);
-        CREATE TABLE messages (ROWID INTEGER PRIMARY KEY, sender INTEGER, subject_prefix TEXT, subject INTEGER, summary INTEGER,
-                               date_received INTEGER, mailbox INTEGER, deleted INTEGER);
-        INSERT INTO mailboxes VALUES (1, 'imap://ACCOUNT/INBOX'), (2, 'imap://ACCOUNT/Archive');
-        INSERT INTO addresses VALUES (1, 'no-reply@example.com', 'Example');
-        INSERT INTO subjects VALUES (1, 'Your code is 482913');
-        INSERT INTO messages VALUES (1001, 1, '', 1, NULL, \(now - 20), 1, 0), (5, 1, '', 1, NULL, \(now - 10), 1, 0),
-                                    (6, 1, '', 1, NULL, \(now - 10), 2, 0), (7, 1, '', 1, NULL, \(now - 10), 1, 1),
-                                    (8, 1, '', 1, NULL, \(now - 3 * 86400), 1, 0);
-        """, nil, nil, nil) == SQLITE_OK)
+    #expect(
+        sqlite3_exec(
+            db,
+            """
+            CREATE TABLE mailboxes (ROWID INTEGER PRIMARY KEY, url TEXT);
+            CREATE TABLE addresses (ROWID INTEGER PRIMARY KEY, address TEXT, comment TEXT);
+            CREATE TABLE subjects (ROWID INTEGER PRIMARY KEY, subject TEXT);
+            CREATE TABLE summaries (ROWID INTEGER PRIMARY KEY, summary TEXT);
+            CREATE TABLE messages (ROWID INTEGER PRIMARY KEY, sender INTEGER, subject_prefix TEXT, subject INTEGER, summary INTEGER,
+                                   date_received INTEGER, mailbox INTEGER, deleted INTEGER);
+            INSERT INTO mailboxes VALUES (1, 'imap://ACCOUNT/INBOX'), (2, 'imap://ACCOUNT/Archive');
+            INSERT INTO addresses VALUES (1, 'no-reply@example.com', 'Example');
+            INSERT INTO subjects VALUES (1, 'Your code is 482913');
+            INSERT INTO messages VALUES (1001, 1, '', 1, NULL, \(now - 20), 1, 0), (5, 1, '', 1, NULL, \(now - 10), 1, 0),
+                                        (6, 1, '', 1, NULL, \(now - 10), 2, 0), (7, 1, '', 1, NULL, \(now - 10), 1, 1),
+                                        (8, 1, '', 1, NULL, \(now - 3 * 86400), 1, 0);
+            """, nil, nil, nil) == SQLITE_OK)
     sqlite3_close(db)
     func save(_ id: Int, shard: String, body: String) throws {
         let folder = version.appendingPathComponent("ACCOUNT/INBOX.mbox/STORE/Data\(shard)/Messages")
@@ -259,11 +289,17 @@ private actor BurstyAPIInbox: MailAPI {
     func inbox(since date: Date, limit: Int) -> [String] { [] }
     func added(since cursor: String) throws -> (ids: [String], cursor: String) {
         cursors.append(cursor)
-        if cursor == "end" { completed.yield(cursor); throw CancellationError() }
+        if cursor == "end" {
+            completed.yield(cursor)
+            throw CancellationError()
+        }
         return ((1...count).map(String.init), "end")
     }
     func message(_ id: String, account: MailAccount) throws -> IncomingMessage? {
-        if id == String(count > 50 ? 58 : 8), failOnce { failOnce = false; throw IMAPError.timeout }
+        if id == String(count > 50 ? 58 : 8), failOnce {
+            failOnce = false
+            throw IMAPError.timeout
+        }
         return burstMessage(id, account: account)
     }
 }
@@ -284,14 +320,20 @@ private actor BurstyIMAPInbox: MailConnection {
     }
     func search(_ criteria: String) throws -> [Int] {
         if criteria.hasPrefix("SINCE") { return [] }
-        if criteria == "UID \(count + 1):*" { completed.yield(criteria); throw CancellationError() }
+        if criteria == "UID \(count + 1):*" {
+            completed.yield(criteria)
+            throw CancellationError()
+        }
         let first = Int(criteria.dropFirst(4).prefix(while: { $0 != ":" }))!
         return Array(first...count)
     }
     func fetch(_ uids: [Int], account: MailAccount) throws -> [IncomingMessage] {
         guard !uids.isEmpty else { return [] }
         fetches.append(uids)
-        if failOnce, uids.contains(count > 50 ? 58 : 8) { failOnce = false; throw IMAPError.timeout }
+        if failOnce, uids.contains(count > 50 ? 58 : 8) {
+            failOnce = false
+            throw IMAPError.timeout
+        }
         return uids.map { burstMessage(String($0), account: account) }
     }
     func idle(renewAfter: TimeInterval) {}
@@ -300,8 +342,9 @@ private actor BurstyIMAPInbox: MailConnection {
 }
 
 private func burstMessage(_ id: String, account: MailAccount) -> IncomingMessage {
-    IncomingMessage(text: "Your code is 482913", senderName: "Example", senderID: "example.com",
-                    sourceKey: account.id.uuidString, sourceLabel: "Test", date: Date(), isMail: true, messageID: id)
+    IncomingMessage(
+        text: "Your code is 482913", senderName: "Example", senderID: "example.com",
+        sourceKey: account.id.uuidString, sourceLabel: "Test", date: Date(), isMail: true, messageID: id)
 }
 
 @Test(arguments: [false, true], [16, 76]) @MainActor
@@ -310,13 +353,20 @@ func apiCursorCannotSkipFreshMailAfterBurstOrFailedFetch(failOnce: Bool, count: 
     let inbox = BurstyAPIInbox(failOnce: failOnce, count: count, completed: completed.continuation)
     var delivered: [String] = []
     let watcher = Task {
-        await APIWatcher.watch(MailAccount(label: "Test", host: MailAccount.gmailHost, user: "test@example.invalid"),
-                               status: { _ in }, deliver: { if let id = $0.messageID { delivered.append(id) } },
-                               mailbox: inbox, poll: 0.001, retryDelay: 0)
+        await APIWatcher.watch(
+            MailAccount(label: "Test", host: MailAccount.gmailHost, user: "test@example.invalid"),
+            status: { _ in }, deliver: { if let id = $0.messageID { delivered.append(id) } },
+            mailbox: inbox, poll: 0.001, retryDelay: 0)
     }
-    let deadline = Task { try? await Task.sleep(for: .seconds(2)); completed.continuation.finish() }
+    let deadline = Task {
+        try? await Task.sleep(for: .seconds(2))
+        completed.continuation.finish()
+    }
     var result: String?
-    for await value in completed.stream { result = value; break }
+    for await value in completed.stream {
+        result = value
+        break
+    }
     watcher.cancel()
     deadline.cancel()
     await watcher.value
@@ -331,13 +381,20 @@ func imapCursorCannotSkipFreshMailAfterBurstOrFailedFetch(failOnce: Bool, count:
     let inbox = BurstyIMAPInbox(failOnce: failOnce, count: count, completed: completed.continuation)
     var delivered: [String] = []
     let watcher = Task {
-        await MailWatcher.watch(MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
-                                status: { _ in }, deliver: { if let id = $0.messageID { delivered.append(id) } },
-                                connection: { inbox }, retryDelay: 0)
+        await MailWatcher.watch(
+            MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid"),
+            status: { _ in }, deliver: { if let id = $0.messageID { delivered.append(id) } },
+            connection: { inbox }, retryDelay: 0)
     }
-    let deadline = Task { try? await Task.sleep(for: .seconds(2)); completed.continuation.finish() }
+    let deadline = Task {
+        try? await Task.sleep(for: .seconds(2))
+        completed.continuation.finish()
+    }
     var result: String?
-    for await value in completed.stream { result = value; break }
+    for await value in completed.stream {
+        result = value
+        break
+    }
     watcher.cancel()
     deadline.cancel()
     await watcher.value
@@ -384,16 +441,24 @@ func outlookTimestampTiesCannotHideMailOnLaterPages(endpoint: String) async thro
     "https://graph.microsoft.com/v1.0/me/messages?$skip=50#fragment",
 ])
 func outlookUnsafeNextLinkCannotReceiveAnAuthenticatedRequest(nextLink: String) async throws {
-    let pages = try GraphPages([["value": [["id": "1", "receivedDateTime": "2026-10-10T12:00:00Z"]],
-                                 "@odata.nextLink": nextLink]])
+    let pages = try GraphPages([
+        [
+            "value": [["id": "1", "receivedDateTime": "2026-10-10T12:00:00Z"]],
+            "@odata.nextLink": nextLink,
+        ]
+    ])
     let api = OutlookAPI(auth: .issued("fixture-unused"), send: { try await pages.send($0) })
     await #expect(throws: (any Error).self) { try await api.added(since: "2026-10-10T11:00:00Z") }
     #expect(await pages.requests.count == 1)
 }
 
 @Test func outlookIncompletePageCannotAdvanceTheCursor() async throws {
-    let pages = try GraphPages([["value": [["id": "1", "receivedDateTime": "2026-10-10T12:00:00Z"]],
-                                 "@odata.nextLink": graphInbox + "?$skip=50"]])
+    let pages = try GraphPages([
+        [
+            "value": [["id": "1", "receivedDateTime": "2026-10-10T12:00:00Z"]],
+            "@odata.nextLink": graphInbox + "?$skip=50",
+        ]
+    ])
     let api = OutlookAPI(auth: .issued("fixture-unused"), send: { try await pages.send($0) })
     await #expect(throws: (any Error).self) { try await api.added(since: "2026-10-10T11:00:00Z") }
     #expect(await pages.requests.count == 2)
@@ -408,11 +473,12 @@ func outlookUnsafeNextLinkCannotReceiveAnAuthenticatedRequest(nextLink: String) 
 }
 
 @Test func outlookLargeBacklogCannotStallAtAnArbitraryPageLimit() async throws {
-    let pages = try GraphPages((1...101).map {
-        var page: [String: Any] = ["value": [["id": String($0), "receivedDateTime": "2026-10-10T12:00:00Z"]]]
-        if $0 < 101 { page["@odata.nextLink"] = graphInbox + "?$skip=\($0)" }
-        return page
-    })
+    let pages = try GraphPages(
+        (1...101).map {
+            var page: [String: Any] = ["value": [["id": String($0), "receivedDateTime": "2026-10-10T12:00:00Z"]]]
+            if $0 < 101 { page["@odata.nextLink"] = graphInbox + "?$skip=\($0)" }
+            return page
+        })
     let api = OutlookAPI(auth: .issued("fixture-unused"), send: { try await pages.send($0) })
     let result = try await api.added(since: "2026-10-10T11:00:00Z")
     #expect(result.ids == (1...101).map(String.init))

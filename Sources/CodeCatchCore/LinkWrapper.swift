@@ -7,7 +7,10 @@ import Foundation
 public enum LinkWrapper {
     public static func destination(_ url: URL) -> URL {
         var url = url
-        for _ in 0..<3 { guard let inner = unwrap(url) else { break }; url = inner }  // Safe Links around a Google redirect
+        for _ in 0..<3 {
+            guard let inner = unwrap(url) else { break }
+            url = inner
+        }  // Safe Links around a Google redirect
         return url
     }
 
@@ -26,19 +29,22 @@ public enum LinkWrapper {
         } else if host == "urldefense.com", let r = url.absoluteString.range(of: #"(?<=/v3/__).+?(?=__;)"#, options: .regularExpression) {
             inner = String(url.absoluteString[r])
         } else if ["awstrack.me", "resend-clicks-a.com"].contains(ServiceIdentity.registrable(host)),
-                  let r = url.absoluteString.range(of: #"(?<=/C?L0/)[^/]+"#, options: .regularExpression) {
+            let r = url.absoluteString.range(of: #"(?<=/C?L0/)[^/]+"#, options: .regularExpression)
+        {
             // SES signs the path, so ".../L0/https:%2F%2Fa.com%2Fx/1/…" can't be edited to go elsewhere.
             inner = String(url.absoluteString[r]).removingPercentEncoding
         } else if host == "mandrillapp.com", url.path.hasPrefix("/track/click/"),
-                  let data = param("p").flatMap({ Data(base64Encoded: $0.padding(toLength: ($0.count + 3) / 4 * 4, withPad: "=", startingAt: 0)) }),
-                  let outer = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let payload = (outer["p"] as? String).flatMap({ try? JSONSerialization.jsonObject(with: Data($0.utf8)) as? [String: Any] }) {
+            let data = param("p").flatMap({ Data(base64Encoded: $0.padding(toLength: ($0.count + 3) / 4 * 4, withPad: "=", startingAt: 0)) }),
+            let outer = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let payload = (outer["p"] as? String).flatMap({ try? JSONSerialization.jsonObject(with: Data($0.utf8)) as? [String: Any] })
+        {
             inner = payload["url"] as? String
         } else {
             return nil
         }
         guard let inner, let target = URL(string: inner), ["http", "https"].contains(target.scheme?.lowercased()),
-              target.host?.isEmpty == false else { return nil }
+            target.host?.isEmpty == false
+        else { return nil }
         return target
     }
 }

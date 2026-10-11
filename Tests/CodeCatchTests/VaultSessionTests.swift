@@ -1,14 +1,16 @@
 import Foundation
 import LocalAuthentication
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
 private enum VaultTestFailure: Error { case unavailable }
 
 @MainActor private func vaultCode(_ id: String) -> VaultCode {
-    VaultCode(id: id, name: id, username: nil, domain: nil,
-              secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
+    VaultCode(
+        id: id, name: id, username: nil, domain: nil,
+        secret: "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
 }
 
 @MainActor private final class VaultStorage {
@@ -21,19 +23,23 @@ private enum VaultTestFailure: Error { case unavailable }
     var failsRemoval = false
 
     func session(authenticate: @escaping () async throws -> Void = {}) -> VaultSession {
-        VaultSession(authenticate: authenticate, read: {
-            self.reads += 1
-            if self.failsRead { throw VaultTestFailure.unavailable }
-            return self.codes
-        }, write: { codes in
-            self.writes += 1
-            if self.failsWrite { throw VaultTestFailure.unavailable }
-            self.codes = codes
-        }, remove: {
-            self.removals += 1
-            if self.failsRemoval { throw VaultTestFailure.unavailable }
-            self.codes = []
-        })
+        VaultSession(
+            authenticate: authenticate,
+            read: {
+                self.reads += 1
+                if self.failsRead { throw VaultTestFailure.unavailable }
+                return self.codes
+            },
+            write: { codes in
+                self.writes += 1
+                if self.failsWrite { throw VaultTestFailure.unavailable }
+                self.codes = codes
+            },
+            remove: {
+                self.removals += 1
+                if self.failsRemoval { throw VaultTestFailure.unavailable }
+                self.codes = []
+            })
     }
 }
 
@@ -196,12 +202,14 @@ private enum VaultTestFailure: Error { case unavailable }
         var session: VaultSession!
         var failsWrite = true
         var writes = 0
-        session = VaultSession(authenticate: {}, read: { [original] }, write: { codes in
-            writes += 1
-            #expect(session.codes.map(\.id) == ["original"])
-            #expect(codes.map(\.id) == ["replacement"])
-            if failsWrite { throw VaultTestFailure.unavailable }
-        }, remove: {})
+        session = VaultSession(
+            authenticate: {}, read: { [original] },
+            write: { codes in
+                writes += 1
+                #expect(session.codes.map(\.id) == ["original"])
+                #expect(codes.map(\.id) == ["replacement"])
+                if failsWrite { throw VaultTestFailure.unavailable }
+            }, remove: {})
         try await session.unlock()
 
         #expect(throws: (any Error).self) { try session.replace([replacement]) }
@@ -236,7 +244,6 @@ private enum VaultTestFailure: Error { case unavailable }
         #expect(!session.isBusy)
     }
 }
-
 
 private final class BiometricContext: LAContext {
     var available = false

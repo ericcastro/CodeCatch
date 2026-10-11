@@ -33,7 +33,8 @@ struct CodeRow: View {
         let origination = model.origination(item)
         guard var host = item.destination?.host else { return origination.isEmpty ? nil : Text(origination) }
         if host.hasPrefix("www.") { host.removeFirst(4) }  // shown only; the link keeps it
-        let site = live && item.linkNotice?.warns == true
+        let site =
+            live && item.linkNotice?.warns == true
             ? Text("\(Image(systemName: "exclamationmark.triangle.fill")) \(host)").foregroundStyle(.orange) : Text(host)
         return origination.isEmpty ? site : Text(origination + " · ") + site
     }
@@ -71,11 +72,11 @@ struct CodeRow: View {
                         // Faded once expired, like an expired code: still clickable, since the link may still work.
                         .foregroundStyle(active ? AnyShapeStyle(.white) : AnyShapeStyle(live ? .primary : .tertiary))
                 }
-                    // Blue marks what a click or Return does, as Open Link does on the card.
-                    .buttonStyle(ActionButtonStyle(prominent: active, compact: true))
-                    .animation(nil, value: active)  // the row's highlight eases in; the button just switches
-                    .accessibilityLabel(locked ? "Unlock" : "Open \(item.kind.title.lowercased())")
-                    .help(concealed ? item.destination?.host ?? "" : item.link?.absoluteString ?? "")
+                // Blue marks what a click or Return does, as Open Link does on the card.
+                .buttonStyle(ActionButtonStyle(prominent: active, compact: true))
+                .animation(nil, value: active)  // the row's highlight eases in; the button just switches
+                .accessibilityLabel(locked ? "Unlock" : "Open \(item.kind.title.lowercased())")
+                .help(concealed ? item.destination?.host ?? "" : item.link?.absoluteString ?? "")
             }
             if !item.isLink {
                 HStack(spacing: 8) {
@@ -102,12 +103,13 @@ struct CodeRow: View {
                                     .transition(.opacity)
                             }
                         }
-                        .foregroundStyle(active ? AnyShapeStyle(.white) : copied ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(live ? .primary : .tertiary))
+                        .foregroundStyle(
+                            active ? AnyShapeStyle(.white) : copied ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(live ? .primary : .tertiary))
                     }
-                        .buttonStyle(ActionButtonStyle(prominent: active, compact: true))
-                        .animation(nil, value: active)
-                        .help(copied ? "On the clipboard" : "")
-                        .accessibilityLabel(copied ? "Copied" : "Copy code")
+                    .buttonStyle(ActionButtonStyle(prominent: active, compact: true))
+                    .animation(nil, value: active)
+                    .help(copied ? "On the clipboard" : "")
+                    .accessibilityLabel(copied ? "Copied" : "Copy code")
                 }
                 // Each click restarts the moment; a cancelled wait leaves it to the newer click.
                 .task(id: clickedAt) {
@@ -140,7 +142,10 @@ struct CodeRow: View {
 
     /// A click does what the card's well does: open a link, copy a code. Locked, a link only unlocks.
     private func activate() {
-        if item.isLink, locked { model.unlocked {}; return }
+        if item.isLink, locked {
+            model.unlocked {}
+            return
+        }
         model.unlocked {
             if item.isLink { return model.open(item, leavingMenu: true) }
             withAnimation(.snappy(duration: 0.25, extraBounce: 0.15)) {
@@ -151,9 +156,9 @@ struct CodeRow: View {
     }
 }
 
-private extension View {
+extension View {
     /// The mark draws itself in; before macOS 26 it pops in.
-    @ViewBuilder func drawnIn() -> some View {
+    @ViewBuilder fileprivate func drawnIn() -> some View {
         if #available(macOS 26, *) {
             transition(.symbolEffect(.drawOn))
         } else {

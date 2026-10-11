@@ -11,10 +11,12 @@ enum KeyTyper {
     @MainActor static var canType: Bool { Accessibility.isTrusted && !NSApp.isActive }
 
     /// Types `text` once no modifier key is held, if `allowed` still holds at that moment.
-    static func type(_ text: String, allowed: @escaping @MainActor () -> Bool,
-                     modifiersHeld: @escaping () -> Bool = {
-                         !CGEventSource.flagsState(.combinedSessionState).intersection([.maskCommand, .maskControl, .maskAlternate, .maskShift]).isEmpty
-                     }, press: @escaping (Character) -> Void = press) {
+    static func type(
+        _ text: String, allowed: @escaping @MainActor () -> Bool,
+        modifiersHeld: @escaping () -> Bool = {
+            !CGEventSource.flagsState(.combinedSessionState).intersection([.maskCommand, .maskControl, .maskAlternate, .maskShift]).isEmpty
+        }, press: @escaping (Character) -> Void = press
+    ) {
         queue.async {
             // A shortcut in progress would turn the digits into ⌘1…: wait up to a second for it to end.
             for _ in 0..<50 where modifiersHeld() { usleep(20_000) }

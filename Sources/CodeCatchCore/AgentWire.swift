@@ -46,7 +46,10 @@ public struct AgentRequest: Codable, Equatable, Sendable {
     public var timeout: TimeInterval?
 
     public init(command: Command, site: String? = nil, since: Date? = nil, timeout: TimeInterval? = nil) {
-        self.command = command; self.site = site; self.since = since; self.timeout = timeout
+        self.command = command
+        self.site = site
+        self.since = since
+        self.timeout = timeout
     }
 }
 
@@ -65,10 +68,20 @@ public struct AgentItem: Codable, Equatable, Sendable {
     public var received: Date
     public var expires: Date
 
-    public init(kind: Kind, value: String, code: String?, link: String?, service: String, domain: String?, source: String,
-                senderVerified: Bool?, received: Date, expires: Date) {
-        self.kind = kind; self.value = value; self.code = code; self.link = link; self.service = service; self.domain = domain
-        self.source = source; self.senderVerified = senderVerified; self.received = received; self.expires = expires
+    public init(
+        kind: Kind, value: String, code: String?, link: String?, service: String, domain: String?, source: String,
+        senderVerified: Bool?, received: Date, expires: Date
+    ) {
+        self.kind = kind
+        self.value = value
+        self.code = code
+        self.link = link
+        self.service = service
+        self.domain = domain
+        self.source = source
+        self.senderVerified = senderVerified
+        self.received = received
+        self.expires = expires
     }
 }
 
@@ -83,19 +96,30 @@ public struct AgentStatus: Codable, Equatable, Sendable {
     public var allowAll: Bool?
 
     public init(appVersion: String?, access: Bool, rules: Int, sourcesWorking: Int, sourcesFailing: Int, allowAll: Bool = false) {
-        self.appVersion = appVersion; self.access = access; self.rules = rules; self.allowAll = allowAll
-        self.sourcesWorking = sourcesWorking; self.sourcesFailing = sourcesFailing
+        self.appVersion = appVersion
+        self.access = access
+        self.rules = rules
+        self.allowAll = allowAll
+        self.sourcesWorking = sourcesWorking
+        self.sourcesFailing = sourcesFailing
     }
 }
 
 public struct AgentError: Error, Codable, Equatable, Sendable {
     public enum Code: String, Codable, Sendable {
-        case denied, noCode = "no_code", approvalTimeout = "approval_timeout", accessOff = "access_off", busy, usage, failed
+        case denied
+        case noCode = "no_code"
+        case approvalTimeout = "approval_timeout"
+        case accessOff = "access_off"
+        case busy, usage, failed
     }
     public var code: Code
     public var message: String
 
-    public init(_ code: Code, _ message: String) { self.code = code; self.message = message }
+    public init(_ code: Code, _ message: String) {
+        self.code = code
+        self.message = message
+    }
 
     /// The agent's next step differs for each: stop, resend the code, ask the user, fix the setup.
     public var exitCode: Int32 {
@@ -118,6 +142,9 @@ public struct AgentReply: Codable, Equatable, Sendable {
     public var error: AgentError?
 
     public init(progress: String? = nil, item: AgentItem? = nil, status: AgentStatus? = nil, error: AgentError? = nil) {
-        self.progress = progress; self.item = item; self.status = status; self.error = error
+        self.progress = progress
+        self.item = item
+        self.status = status
+        self.error = error
     }
 }

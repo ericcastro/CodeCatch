@@ -14,20 +14,24 @@ extension IMAPConnection: MailConnection {}
 
 enum MailWatcher {
     /// Watches one INBOX until cancelled: backfills history, then IDLEs, reconnecting with backoff.
-    static func watch(_ account: MailAccount,
-                      status: @escaping @MainActor (SourceStatus) -> Void,
-                      deliver: @escaping @MainActor (IncomingMessage) -> Void,
-                      event: @escaping @MainActor (SourceEvent) -> Void = { _ in },
-                      lookback: TimeInterval = 7 * 86400,
-                      connection: (@Sendable () -> any MailConnection)? = nil,
-                      retryDelay: TimeInterval = 5) async {
+    static func watch(
+        _ account: MailAccount,
+        status: @escaping @MainActor (SourceStatus) -> Void,
+        deliver: @escaping @MainActor (IncomingMessage) -> Void,
+        event: @escaping @MainActor (SourceEvent) -> Void = { _ in },
+        lookback: TimeInterval = 7 * 86400,
+        connection: (@Sendable () -> any MailConnection)? = nil,
+        retryDelay: TimeInterval = 5
+    ) async {
         var lastUID: Int?
         var uidValidity: Int?
         var backoff = retryDelay
         while !Task.isCancelled {
             let conn: any MailConnection
-            do { conn = try connection?() ?? IMAPConnection(account: account) }
-            catch { await status(.failed(error.localizedDescription)); return }
+            do { conn = try connection?() ?? IMAPConnection(account: account) } catch {
+                await status(.failed(error.localizedDescription))
+                return
+            }
             do {
                 try await withTaskCancellationHandler {
                     try Task.checkCancellation()
@@ -63,7 +67,9 @@ enum MailWatcher {
                             try await receive(batch)
                             lastUID = batch.last
                         }
-                        if canIdle { try await conn.idle(renewAfter: 540) } else {
+                        if canIdle {
+                            try await conn.idle(renewAfter: 540)
+                        } else {
                             try await Task.sleep(for: .seconds(20))
                             _ = try await conn.command("NOOP", timeout: 30)
                         }
@@ -76,15 +82,18 @@ enum MailWatcher {
                 if Task.isCancelled { break }
                 let noPassword = if case IMAPError.noPassword = error { true } else { false }
                 let authFailed = noPassword || "\(error)".contains("AUTHENTICATIONFAILED")
-                await wait(after: authFailed ? "Sign-in failed. Check the app password." : error.localizedDescription,
-                           signIn: authFailed, backoff: &backoff, status: status, event: event)
+                await wait(
+                    after: authFailed ? "Sign-in failed. Check the app password." : error.localizedDescription,
+                    signIn: authFailed, backoff: &backoff, status: status, event: event)
             }
         }
     }
 
     /// Hands a fetched batch to the app: the check time, the newest message's date, then each message.
-    static func hand(_ messages: [IncomingMessage], event: @MainActor (SourceEvent) -> Void,
-                     deliver: @MainActor (IncomingMessage) -> Void) async throws {
+    static func hand(
+        _ messages: [IncomingMessage], event: @MainActor (SourceEvent) -> Void,
+        deliver: @MainActor (IncomingMessage) -> Void
+    ) async throws {
         try Task.checkCancellation()
         await event(.checked(Date()))
         if let newest = messages.map(\.date).max() { await event(.message(newest)) }
@@ -96,8 +105,10 @@ enum MailWatcher {
 
     /// Shows the failure and waits before the next try: 5 minutes after a sign-in problem, which
     /// retrying soon won't fix, else `backoff`, which doubles up to 2 minutes.
-    static func wait(after failure: String, signIn: Bool, backoff: inout TimeInterval,
-                     status: @MainActor (SourceStatus) -> Void, event: @MainActor (SourceEvent) -> Void) async {
+    static func wait(
+        after failure: String, signIn: Bool, backoff: inout TimeInterval,
+        status: @MainActor (SourceStatus) -> Void, event: @MainActor (SourceEvent) -> Void
+    ) async {
         await status(.failed(failure))
         let delay = signIn ? 300 : backoff
         await event(.retry(Date().addingTimeInterval(delay)))

@@ -1,6 +1,7 @@
 import AppKit
 import Foundation
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
@@ -27,10 +28,11 @@ import Testing
 }
 
 private func png(side: Int) -> Data {
-    let bitmap = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: side, pixelsHigh: side,
-                                  bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
-                                  isPlanar: false, colorSpaceName: .deviceRGB,
-                                  bytesPerRow: side * 4, bitsPerPixel: 32)!
+    let bitmap = NSBitmapImageRep(
+        bitmapDataPlanes: nil, pixelsWide: side, pixelsHigh: side,
+        bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true,
+        isPlanar: false, colorSpaceName: .deviceRGB,
+        bytesPerRow: side * 4, bitsPerPixel: 32)!
     bitmap.bitmapData!.initialize(repeating: 255, count: side * side * 4)
     return bitmap.representation(using: .png, properties: [:])!
 }
@@ -39,8 +41,9 @@ private let iconPNG = png(side: 32)
 
 /// A 64 px logo of one black shape on transparency, the way favicons come.
 private func logo(_ shape: (CGRect) -> NSBezierPath) -> Data {
-    let bitmap = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 64, pixelsHigh: 64, bitsPerSample: 8, samplesPerPixel: 4,
-                                  hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 256, bitsPerPixel: 32)!
+    let bitmap = NSBitmapImageRep(
+        bitmapDataPlanes: nil, pixelsWide: 64, pixelsHigh: 64, bitsPerSample: 8, samplesPerPixel: 4,
+        hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 256, bitsPerPixel: 32)!
     NSGraphicsContext.saveGraphicsState()
     NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: bitmap)
     NSColor.black.setFill()
@@ -52,8 +55,10 @@ private func logo(_ shape: (CGRect) -> NSBezierPath) -> Data {
 enum LogoShape: CaseIterable, Sendable { case square, roundedSquareInMargin, circle, glyph }
 
 private func iconResponse(_ url: URL, status: Int) throws -> HTTPURLResponse {
-    try #require(HTTPURLResponse(url: url, statusCode: status, httpVersion: nil,
-                                headerFields: ["Content-Type": "image/png"]))
+    try #require(
+        HTTPURLResponse(
+            url: url, statusCode: status, httpVersion: nil,
+            headerFields: ["Content-Type": "image/png"]))
 }
 
 struct IconProxyURLCase: Sendable {
@@ -71,10 +76,12 @@ struct IconProxyURLCase: Sendable {
         let fixture = try IconPrivacyFixture(enabled: false)
         defer { fixture.cleanUp() }
         var requests: [URL] = []
-        let store = IconStore(defaults: fixture.defaults, folder: fixture.folder, fetch: { url in
-            requests.append(url)
-            return (iconPNG, try iconResponse(url, status: 200))
-        })
+        let store = IconStore(
+            defaults: fixture.defaults, folder: fixture.folder,
+            fetch: { url in
+                requests.append(url)
+                return (iconPNG, try iconResponse(url, status: 200))
+            })
 
         #expect(!fixture.defaults.bool(forKey: Prefs.serviceIcons))
         await store.load("example.com")
@@ -88,10 +95,12 @@ struct IconProxyURLCase: Sendable {
         let fixture = try IconPrivacyFixture()
         defer { fixture.cleanUp() }
         var requests: [URL] = []
-        let store = IconStore(defaults: fixture.defaults, folder: fixture.folder, fetch: { url in
-            requests.append(url)
-            return (iconPNG, try iconResponse(url, status: 200))
-        })
+        let store = IconStore(
+            defaults: fixture.defaults, folder: fixture.folder,
+            fetch: { url in
+                requests.append(url)
+                return (iconPNG, try iconResponse(url, status: 200))
+            })
 
         #expect(fixture.defaults.bool(forKey: Prefs.serviceIcons))
         await store.load("example.com")
@@ -120,14 +129,16 @@ struct IconProxyURLCase: Sendable {
             release.continuation.finish()
         }
         var requests: [URL] = []
-        let store = IconStore(defaults: fixture.defaults, folder: fixture.folder, fetch: { url in
-            requests.append(url)
-            if requests.count == 1 {
-                started.continuation.yield(())
-                for await _ in release.stream { break }
-            }
-            return (status == 200 ? iconPNG : Data(), try iconResponse(url, status: status))
-        })
+        let store = IconStore(
+            defaults: fixture.defaults, folder: fixture.folder,
+            fetch: { url in
+                requests.append(url)
+                if requests.count == 1 {
+                    started.continuation.yield(())
+                    for await _ in release.stream { break }
+                }
+                return (status == 200 ? iconPNG : Data(), try iconResponse(url, status: status))
+            })
 
         let load = Task { await store.load("example.com") }
         for await _ in started.stream { break }
@@ -143,9 +154,11 @@ struct IconProxyURLCase: Sendable {
     @Test func transientNetworkFailureDoesNotPersistAMissingIconMarker() async throws {
         let fixture = try IconPrivacyFixture(enabled: true)
         defer { fixture.cleanUp() }
-        let store = IconStore(defaults: fixture.defaults, folder: fixture.folder, fetch: { _ in
-            throw URLError(.notConnectedToInternet)
-        })
+        let store = IconStore(
+            defaults: fixture.defaults, folder: fixture.folder,
+            fetch: { _ in
+                throw URLError(.notConnectedToInternet)
+            })
 
         await store.load("example.com")
 
@@ -157,10 +170,12 @@ struct IconProxyURLCase: Sendable {
         let fixture = try IconPrivacyFixture(enabled: true)
         defer { fixture.cleanUp() }
         var requests = 0
-        let store = IconStore(defaults: fixture.defaults, folder: fixture.folder, fetch: { url in
-            requests += 1
-            return (Data(), try iconResponse(url, status: status))
-        })
+        let store = IconStore(
+            defaults: fixture.defaults, folder: fixture.folder,
+            fetch: { url in
+                requests += 1
+                return (Data(), try iconResponse(url, status: status))
+            })
 
         await store.load("example.com")
 
@@ -173,9 +188,11 @@ struct IconProxyURLCase: Sendable {
     func smallFaviconsLoadAndUnusableOnesAreRememberedAsMisses(side: Int, loads: Bool) async throws {
         let fixture = try IconPrivacyFixture(enabled: true)
         defer { fixture.cleanUp() }
-        let store = IconStore(defaults: fixture.defaults, folder: fixture.folder, fetch: { url in
-            (png(side: side), try iconResponse(url, status: 200))
-        })
+        let store = IconStore(
+            defaults: fixture.defaults, folder: fixture.folder,
+            fetch: { url in
+                (png(side: side), try iconResponse(url, status: 200))
+            })
 
         await store.load("example.com")
 
@@ -189,12 +206,14 @@ struct IconProxyURLCase: Sendable {
         let fixture = try IconPrivacyFixture(enabled: true)
         defer { fixture.cleanUp() }
         var hosts: [String] = []
-        let store = IconStore(defaults: fixture.defaults, folder: fixture.folder, fetch: { url in
-            hosts.append(url.host ?? "")
-            return url.host == "www.google.com"
-                ? (googleSide > 0 ? png(side: googleSide) : Data(), try iconResponse(url, status: googleStatus))
-                : (png(side: duckSide), try iconResponse(url, status: 200))
-        })
+        let store = IconStore(
+            defaults: fixture.defaults, folder: fixture.folder,
+            fetch: { url in
+                hosts.append(url.host ?? "")
+                return url.host == "www.google.com"
+                    ? (googleSide > 0 ? png(side: googleSide) : Data(), try iconResponse(url, status: googleStatus))
+                    : (png(side: duckSide), try iconResponse(url, status: 200))
+            })
 
         await store.load("example.com")
 
@@ -229,9 +248,11 @@ struct IconProxyURLCase: Sendable {
         let fixture = try IconPrivacyFixture(enabled: true)
         defer { fixture.cleanUp() }
         let unrelatedURL = try #require(URL(string: "https://unrelated.example/icon.png"))
-        let store = IconStore(defaults: fixture.defaults, folder: fixture.folder, fetch: { _ in
-            (iconPNG, try iconResponse(unrelatedURL, status: 200))
-        })
+        let store = IconStore(
+            defaults: fixture.defaults, folder: fixture.folder,
+            fetch: { _ in
+                (iconPNG, try iconResponse(unrelatedURL, status: 200))
+            })
 
         await store.load("example.com")
 
@@ -265,7 +286,7 @@ struct IconProxyURLCase: Sendable {
         IconProxyURLCase("https://icons.duckduckgo.com/ip2/example.com.ico"),
         IconProxyURLCase("https://duckduckgo.com/ip3/example.com.ico"),
         IconProxyURLCase("https://icons.duckduckgo.com.evil.test/ip3/example.com.ico"),
-        IconProxyURLCase(nil)
+        IconProxyURLCase(nil),
     ])
     nonisolated func iconURLsCannotEscapeTheAllowedProxyHostsAndPaths(testCase: IconProxyURLCase) {
         #expect(IconStore.isIconProxyURL(testCase.candidate.flatMap(URL.init(string:))) == testCase.allowed)

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 
 /// The /usr/local/bin link: Install, Repair and Remove must only ever touch CodeCatch's own link,

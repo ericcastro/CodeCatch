@@ -3,34 +3,34 @@ import Darwin
 import Foundation
 
 let help = """
-codecatch: get 2FA codes and sign-in links from CodeCatch, with the user's OK.
+    codecatch: get 2FA codes and sign-in links from CodeCatch, with the user's OK.
 
-Usage:
-  codecatch get <site> [--since T] [--timeout 90] [--json | --raw]
-  codecatch status [--json]
-  codecatch --version
+    Usage:
+      codecatch get <site> [--since T] [--timeout 90] [--json | --raw]
+      codecatch status [--json]
+      codecatch --version
 
-get     Waits for a code for <site>, or a sign-in link if the user allows links, then
-        prints it once the user approves it in the CodeCatch banner (or has allowed this
-        site without asking).
-        <site>: a domain, URL or service name: github.com, https://github.com/login, GitHub.
-        Returns a code that arrived in the last 30 seconds, or after --since; else waits.
-  --since T     Epoch seconds, an ISO 8601 time, or an age such as 2m (at most 5 minutes back).
-                Take T=$(date +%s) before clicking "Send code", then pass --since $T.
-  --timeout N   Seconds to wait for the code to arrive (default 90). Approval may add up to 45.
-                Give your own tool call a longer limit than that.
-  --json        Print {"v":1,"item":{"kind","value","code","link","service","domain",...}}.
-                Errors print {"v":1,"error":{"code","message"}}.
-  --raw         Print only the code or link.
-status  Whether CodeCatch is running and command-line access is on, with a fix for each problem.
+    get     Waits for a code for <site>, or a sign-in link if the user allows links, then
+            prints it once the user approves it in the CodeCatch banner (or has allowed this
+            site without asking).
+            <site>: a domain, URL or service name: github.com, https://github.com/login, GitHub.
+            Returns a code that arrived in the last 30 seconds, or after --since; else waits.
+      --since T     Epoch seconds, an ISO 8601 time, or an age such as 2m (at most 5 minutes back).
+                    Take T=$(date +%s) before clicking "Send code", then pass --since $T.
+      --timeout N   Seconds to wait for the code to arrive (default 90). Approval may add up to 45.
+                    Give your own tool call a longer limit than that.
+      --json        Print {"v":1,"item":{"kind","value","code","link","service","domain",...}}.
+                    Errors print {"v":1,"error":{"code","message"}}.
+      --raw         Print only the code or link.
+    status  Whether CodeCatch is running and command-line access is on, with a fix for each problem.
 
-Progress goes to stderr as lines starting "codecatch:". When one says to approve in the
-banner, tell the user.
+    Progress goes to stderr as lines starting "codecatch:". When one says to approve in the
+    banner, tell the user.
 
-Exit codes: 0 ok, 1 error, 2 denied by the user (stop, don't ask again), 3 no code
-arrived (resend it once), 4 CodeCatch not running or access off (run status),
-5 not approved in time (ask the user to watch for the banner), 64 usage.
-"""
+    Exit codes: 0 ok, 1 error, 2 denied by the user (stop, don't ask again), 3 no code
+    arrived (resend it once), 4 CodeCatch not running or access off (run status),
+    5 not approved in time (ask the user to watch for the banner), 64 usage.
+    """
 
 let stderr = FileHandle.standardError
 func note(_ text: String) { stderr.write(Data("codecatch: \(text)\n".utf8)) }
@@ -66,7 +66,8 @@ let appBundle: URL? = {
 /// "1.0 (170)", as the app's About shows it.
 let version: String = {
     guard let app = appBundle, let info = NSDictionary(contentsOf: app.appendingPathComponent("Contents/Info.plist")),
-          let short = info["CFBundleShortVersionString"] as? String, let build = info["CFBundleVersion"] as? String else { return "dev" }
+        let short = info["CFBundleShortVersionString"] as? String, let build = info["CFBundleVersion"] as? String
+    else { return "dev" }
     return "\(short) (\(build))"
 }()
 
@@ -88,8 +89,14 @@ func option(_ name: String) -> String? {
 
 json = flag("--json")
 let raw = flag("--raw")
-if flag("--help") || flag("-h") || args.first == "help" { print(help); exit(0) }
-if flag("--version") || flag("-v") || args.first == "version" { print("codecatch \(version)"); exit(0) }
+if flag("--help") || flag("-h") || args.first == "help" {
+    print(help)
+    exit(0)
+}
+if flag("--version") || flag("-v") || args.first == "version" {
+    print("codecatch \(version)")
+    exit(0)
+}
 
 /// Epoch seconds, ISO 8601, or an age: 45s, 2m.
 func parseSince(_ text: String) -> Date? {
@@ -113,7 +120,9 @@ case "get":
         guard let seconds = Double(text), seconds > 0 else { usage("--timeout takes a number of seconds.") }
         timeout = seconds
     }
-    guard args.count == 2, !args[1].hasPrefix("-") else { usage(args.count < 2 ? "Name the site, such as github.com." : "Unknown option \(args.dropFirst(2).first ?? args[1]).") }
+    guard args.count == 2, !args[1].hasPrefix("-") else {
+        usage(args.count < 2 ? "Name the site, such as github.com." : "Unknown option \(args.dropFirst(2).first ?? args[1]).")
+    }
     guard SiteQuery(args[1]) != nil else { usage("\"\(args[1])\" isn't a site. Use a domain, URL or service name.") }
     request = AgentRequest(command: .get, site: args[1], since: since, timeout: timeout)
 case "status":
@@ -179,7 +188,9 @@ while let line = LocalSocket.readLine(from: fd, buffer: &buffer, limit: 1 << 16)
             print("CodeCatch \(status.appVersion ?? "") is running. This is codecatch \(version).")
             print("Command-line access: \(status.access ? "on" : "off")")
             if status.access {
-                print("Allowed without asking: \(status.allowAll == true ? "everything" : status.rules == 0 ? "nothing, the user approves each code" : "\(status.rules) rule\(status.rules == 1 ? "" : "s")")")
+                print(
+                    "Allowed without asking: \(status.allowAll == true ? "everything" : status.rules == 0 ? "nothing, the user approves each code" : "\(status.rules) rule\(status.rules == 1 ? "" : "s")")"
+                )
                 print("Sources: \(status.sourcesWorking) working\(status.sourcesFailing > 0 ? ", \(status.sourcesFailing) not working" : "")")
             }
         }

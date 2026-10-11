@@ -57,7 +57,8 @@ struct CodeItem: Identifiable, Equatable {
         guard target != domain else { return nil }
         let check = "Open it only if you trust this site."
         guard let domain else { return ("CodeCatch can't verify who sent this message. \(check)", true) }
-        return senderVerified == true ? ("This message is from \(domain) and links to \(target). The sender is verified.", false)
+        return senderVerified == true
+            ? ("This message is from \(domain) and links to \(target). The sender is verified.", false)
             : ("This message is from \(domain), but the link goes to \(target). \(check)", true)
     }
     /// What Copy puts on the clipboard.
@@ -77,18 +78,21 @@ extension CodeItem {
     init(_ message: IncomingMessage, code: String?, link: URL?, resetsPassword: Bool = false) {
         let body = message.text.split(whereSeparator: \.isWhitespace).joined(separator: " ")
         let service = message.service
-        self.init(origin: message.sourceKey == Self.testSourceKey ? .test : message.isMail ? .mail : .messages,
-                  code: code ?? "", link: link, service: service, sourceLabel: message.sourceLabel,
-                  sourceKey: message.sourceKey, accountLabel: message.sourceLabel, sender: message.senderID,
-                  preview: String((message.subject.flatMap { $0.isEmpty ? nil : $0 } ?? body).prefix(160)),
-                  snippet: String(((message.subject.map { $0 + " — " } ?? "") + body).prefix(280)), received: message.date,
-                  expires: message.date.addingTimeInterval(CodeExtractor.validity(in: message.fullText)
-                      ?? (code == nil ? Self.linkValidity : Self.defaultValidity)),
-                  // A spoofed sender gets neither its logo nor a pass on the link check.
-                  domain: message.senderVerified == false ? nil
-                      : ServiceIdentity.domain(senderAddress: message.senderID, isMail: message.isMail, text: message.fullText, service: service),
-                  dismissKey: message.dismissKey, resetsPassword: resetsPassword, senderVerified: message.senderVerified,
-                  internetMessageID: message.internetMessageID, webURL: message.webURL)
+        self.init(
+            origin: message.sourceKey == Self.testSourceKey ? .test : message.isMail ? .mail : .messages,
+            code: code ?? "", link: link, service: service, sourceLabel: message.sourceLabel,
+            sourceKey: message.sourceKey, accountLabel: message.sourceLabel, sender: message.senderID,
+            preview: String((message.subject.flatMap { $0.isEmpty ? nil : $0 } ?? body).prefix(160)),
+            snippet: String(((message.subject.map { $0 + " — " } ?? "") + body).prefix(280)), received: message.date,
+            expires: message.date.addingTimeInterval(
+                CodeExtractor.validity(in: message.fullText)
+                    ?? (code == nil ? Self.linkValidity : Self.defaultValidity)),
+            // A spoofed sender gets neither its logo nor a pass on the link check.
+            domain: message.senderVerified == false
+                ? nil
+                : ServiceIdentity.domain(senderAddress: message.senderID, isMail: message.isMail, text: message.fullText, service: service),
+            dismissKey: message.dismissKey, resetsPassword: resetsPassword, senderVerified: message.senderVerified,
+            internetMessageID: message.internetMessageID, webURL: message.webURL)
     }
 
     /// A vault login's code as it stands at `date`, under the login's own id for a stable row.
@@ -98,10 +102,11 @@ extension CodeItem {
         let context = vault.username ?? vault.domain ?? ""
         let digest = Array(SHA256.hash(data: Data(vault.id.utf8)).prefix(16))
         let stableID = digest.withUnsafeBytes { UUID(uuid: $0.loadUnaligned(as: uuid_t.self)) }
-        self.init(id: UUID(uuidString: vault.id) ?? stableID, origin: .vault, code: totp.code(at: date), link: nil, service: vault.name,
-                  sourceLabel: "Bitwarden", sourceKey: vault.id, accountLabel: context, sender: "", preview: context,
-                  snippet: [vault.name, context].joined(separator: " — "),
-                  received: start, expires: start.addingTimeInterval(totp.period), domain: vault.domain, dismissKey: "vault:\(vault.id)")
+        self.init(
+            id: UUID(uuidString: vault.id) ?? stableID, origin: .vault, code: totp.code(at: date), link: nil, service: vault.name,
+            sourceLabel: "Bitwarden", sourceKey: vault.id, accountLabel: context, sender: "", preview: context,
+            snippet: [vault.name, context].joined(separator: " — "),
+            received: start, expires: start.addingTimeInterval(totp.period), domain: vault.domain, dismissKey: "vault:\(vault.id)")
     }
 }
 

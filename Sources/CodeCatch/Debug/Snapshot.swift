@@ -1,107 +1,122 @@
 #if DEBUG
-import AppKit
-import CodeCatchCore
-import SwiftUI
+    import AppKit
+    import CodeCatchCore
+    import SwiftUI
 
-/// `CodeCatch --snapshot <dir> -autoCopy NO -showHUD NO`: renders the real views with
-/// sample codes to PNGs, light and dark, for checking layout without screen recording.
-@MainActor
-enum Snapshot {
-    static func run(to dir: String) {
-        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true)
-        _ = NSApplication.shared
-        NSApp.setActivationPolicy(.accessory)
-        Prefs.register()
-        Secrets.offline = true
-        UserDefaults.standard.removeObject(forKey: Prefs.clearedAt)  // the empty-state render below clears history
-        Glass.useMaterial = CommandLine.arguments.contains("-material")
-        // A working setup: one live mail account and an unlocked session, through the same seams the tests use.
-        let account = MailAccount(label: "Work", host: "imap.example.com", user: "you@example.com")
-        let monitor = SourceMonitor(watchMail: { _, callbacks in callbacks.status(.live) }, hasCredential: { _ in true })
-        let session = VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {})
-        AppModel.shared = AppModel(vaultSession: session, monitor: monitor, accounts: [account])
-        monitor.restartMail([account])
-        Task { try? await session.unlock() }
-        let model = AppModel.shared
-        let samples: [(String, String, String, TimeInterval, Bool)] = [
-            ("G-482913 is your Google verification code.", "", "22000", 5, false),
-            ("Your Booking.com verification code is 889687", "Booking.com", "noreply@booking.com", 1200, true),
-            ("307182 is your Instagram code. Don't share it.", "Instagram", "security@mail.instagram.com", 5400, true),
-            ("Revolut: Your code is 771 204. Never share it", "", "Revolut", 11000, false),
-            ("318842 is your Facebook confirmation code", "", "Facebook", 26 * 3600, false),
-            ("[TikTok] 604719 is your verification code, valid for 5 minutes.", "", "TikTok", 28 * 3600, false),
-        ]
-        for (text, name, sender, age, mail) in samples {
-            model.ingest(IncomingMessage(text: text, senderName: name, senderID: sender, sourceKey: mail ? "m" : MessagesStore.sourceKey,
-                                         sourceLabel: mail ? "Work" : "Messages", date: Date().addingTimeInterval(-age), isMail: mail))
+    /// `CodeCatch --snapshot <dir> -autoCopy NO -showHUD NO`: renders the real views with
+    /// sample codes to PNGs, light and dark, for checking layout without screen recording.
+    @MainActor
+    enum Snapshot {
+        static func run(to dir: String) {
+            try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true)
+            _ = NSApplication.shared
+            NSApp.setActivationPolicy(.accessory)
+            Prefs.register()
+            Secrets.offline = true
+            UserDefaults.standard.removeObject(forKey: Prefs.clearedAt)  // the empty-state render below clears history
+            Glass.useMaterial = CommandLine.arguments.contains("-material")
+            // A working setup: one live mail account and an unlocked session, through the same seams the tests use.
+            let account = MailAccount(label: "Work", host: "imap.example.com", user: "you@example.com")
+            let monitor = SourceMonitor(watchMail: { _, callbacks in callbacks.status(.live) }, hasCredential: { _ in true })
+            let session = VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {})
+            AppModel.shared = AppModel(vaultSession: session, monitor: monitor, accounts: [account])
+            monitor.restartMail([account])
+            Task { try? await session.unlock() }
+            let model = AppModel.shared
+            let samples: [(String, String, String, TimeInterval, Bool)] = [
+                ("G-482913 is your Google verification code.", "", "22000", 5, false),
+                ("Your Booking.com verification code is 889687", "Booking.com", "noreply@booking.com", 1200, true),
+                ("307182 is your Instagram code. Don't share it.", "Instagram", "security@mail.instagram.com", 5400, true),
+                ("Revolut: Your code is 771 204. Never share it", "", "Revolut", 11000, false),
+                ("318842 is your Facebook confirmation code", "", "Facebook", 26 * 3600, false),
+                ("[TikTok] 604719 is your verification code, valid for 5 minutes.", "", "TikTok", 28 * 3600, false),
+            ]
+            for (text, name, sender, age, mail) in samples {
+                model.ingest(
+                    IncomingMessage(
+                        text: text, senderName: name, senderID: sender, sourceKey: mail ? "m" : MessagesStore.sourceKey,
+                        sourceLabel: mail ? "Work" : "Messages", date: Date().addingTimeInterval(-age), isMail: mail))
+            }
+            model.ingest(
+                IncomingMessage(
+                    text: "We've detected an unusual sign-in to your Slack account.", subject: "Confirm your sign-in",
+                    senderName: "Slack Support", senderID: "support@slack.com", sourceKey: "m", sourceLabel: "Work",
+                    date: Date().addingTimeInterval(-40), isMail: true,
+                    links: [MailLink(url: "https://app.slack.com/verify-yourself/example-token", label: "Sign in with a verified link")]))
+            model.ingest(
+                IncomingMessage(
+                    text: "Confirm it was you.", subject: "Verify your sign-in", senderName: "Acme", senderID: "security@acme.com",
+                    sourceKey: "m", sourceLabel: "Personal", date: Date().addingTimeInterval(-90), isMail: true,
+                    links: [MailLink(url: "https://acme-secure-login.net/verify?t=1", label: "Verify sign-in")]))
+            model.ingest(
+                IncomingMessage(
+                    text: "Use the link to choose a new password.", subject: "Reset your password", senderName: "Dynadot",
+                    senderID: "support@dynadot.com", sourceKey: "m", sourceLabel: "Personal",
+                    date: Date().addingTimeInterval(-20), isMail: true,
+                    links: [MailLink(url: "https://www.dynadot.com/reset.html?t=1", label: "Reset Password")]))
+            for item in model.items { _ = IconStore.shared.icon(for: item.domain) }
+            RunLoop.main.run(until: Date().addingTimeInterval(10))  // let the logos arrive
+            let id = model.items.first!.id
+            let terminal = AgentApp(id: "com.apple.Terminal", team: nil, name: "Terminal")
+            if let booking = model.items.first(where: { $0.domain == "booking.com" }), let query = SiteQuery("booking.com") {
+                let caller = AgentCaller(app: terminal, appPath: NSWorkspace.shared.urlForApplication(withBundleIdentifier: terminal.id), process: "claude")
+                model.agents.preview(
+                    AgentAccess.Request(caller: caller, query: query, asked: Date().addingTimeInterval(-12), item: booking),
+                    config: AgentConfig(
+                        enabled: true,
+                        rules: [
+                            AgentRule(app: terminal, site: "github.com"), AgentRule(app: terminal, site: "google.com"),
+                            AgentRule(app: AgentApp(id: "com.googlecode.iterm2", team: "H7V7XYVQ7D", name: "iTerm2"), site: nil),
+                        ]),
+                    log: [
+                        AgentLogEntry(date: Date(), caller: "Terminal · claude", site: "github.com", outcome: "Allowed"),
+                        AgentLogEntry(date: Date().addingTimeInterval(-600), caller: "Unverified · python3", site: "google.com", outcome: "Denied"),
+                        AgentLogEntry(date: Date().addingTimeInterval(-90_000), caller: "iTerm2 · codex", site: "slack.com", outcome: "Not approved in time"),
+                    ])
+            }
+            for (scheme, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
+                render(AnyView(BannerCard(id: id).padding(20)), "hud-\(scheme)", appearance, dir)
+                render(AnyView(BannerCard(id: model.items[1].id).padding(20)), "hud-mail-\(scheme)", appearance, dir)
+                render(AnyView(MenuContent()), "menu-\(scheme)", appearance, dir)
+                render(AnyView(SettingsView()), "settings-\(scheme)", appearance, dir)
+                render(AnyView(WelcomeView()), "welcome-\(scheme)", appearance, dir)
+                render(AnyView(SourcesTab().frame(width: 560, height: 600)), "sources-\(scheme)", appearance, dir)
+                render(AnyView(GeneralTab().frame(width: 560, height: 600)), "general-\(scheme)", appearance, dir)
+                render(AnyView(PrivacyTab().frame(width: 560, height: 600)), "privacy-\(scheme)", appearance, dir)
+                render(AnyView(AddAccountSheet { _ in }), "add-account-\(scheme)", appearance, dir)
+                render(AnyView(IgnoredSendersSheet()), "ignored-senders-\(scheme)", appearance, dir)
+                render(AnyView(AddIgnoredSender { _ in }), "ignore-sender-\(scheme)", appearance, dir)
+                render(AnyView(AgentRequestCard().padding(20)), "agent-card-\(scheme)", appearance, dir)
+                render(AnyView(AgentsTab().frame(width: 560, height: 1000)), "agents-\(scheme)", appearance, dir)
+                render(AnyView(AgentHistorySheet()), "agent-history-\(scheme)", appearance, dir)
+                render(AnyView(AgentRulesSheet()), "agent-rules-\(scheme)", appearance, dir)
+                render(AnyView(AccountEditor(account: MailAccount.guess(for: "you@example.com"))), "account-editor-\(scheme)", appearance, dir)
+            }
+            model.agents.preview(nil, config: AgentConfig(), log: [])  // access off: the rest dims
+            render(AnyView(AgentsTab().frame(width: 560, height: 1000)), "agents-off", .aqua, dir)
+            let blurred = ImageRenderer(content: CodeText(code: "482913", size: 36, concealed: true).padding(12).background(Color.white))
+            blurred.scale = 2
+            try? blurred.nsImage?.tiffRepresentation.flatMap { NSBitmapImageRep(data: $0)?.representation(using: .png, properties: [:]) }?
+                .write(to: URL(fileURLWithPath: "\(dir)/code-blurred.png"))
+            let empty = AnyView(MenuContent())
+            model.clearHistory()
+            render(empty, "menu-empty", .aqua, dir)
         }
-        model.ingest(IncomingMessage(text: "We've detected an unusual sign-in to your Slack account.", subject: "Confirm your sign-in",
-                                     senderName: "Slack Support", senderID: "support@slack.com", sourceKey: "m", sourceLabel: "Work",
-                                     date: Date().addingTimeInterval(-40), isMail: true,
-                                     links: [MailLink(url: "https://app.slack.com/verify-yourself/example-token", label: "Sign in with a verified link")]))
-        model.ingest(IncomingMessage(text: "Confirm it was you.", subject: "Verify your sign-in", senderName: "Acme", senderID: "security@acme.com",
-                                     sourceKey: "m", sourceLabel: "Personal", date: Date().addingTimeInterval(-90), isMail: true,
-                                     links: [MailLink(url: "https://acme-secure-login.net/verify?t=1", label: "Verify sign-in")]))
-        model.ingest(IncomingMessage(text: "Use the link to choose a new password.", subject: "Reset your password", senderName: "Dynadot",
-                                     senderID: "support@dynadot.com", sourceKey: "m", sourceLabel: "Personal",
-                                     date: Date().addingTimeInterval(-20), isMail: true,
-                                     links: [MailLink(url: "https://www.dynadot.com/reset.html?t=1", label: "Reset Password")]))
-        for item in model.items { _ = IconStore.shared.icon(for: item.domain) }
-        RunLoop.main.run(until: Date().addingTimeInterval(10))  // let the logos arrive
-        let id = model.items.first!.id
-        let terminal = AgentApp(id: "com.apple.Terminal", team: nil, name: "Terminal")
-        if let booking = model.items.first(where: { $0.domain == "booking.com" }), let query = SiteQuery("booking.com") {
-            let caller = AgentCaller(app: terminal, appPath: NSWorkspace.shared.urlForApplication(withBundleIdentifier: terminal.id), process: "claude")
-            model.agents.preview(AgentAccess.Request(caller: caller, query: query, asked: Date().addingTimeInterval(-12), item: booking),
-                                 config: AgentConfig(enabled: true, rules: [AgentRule(app: terminal, site: "github.com"), AgentRule(app: terminal, site: "google.com"),
-                                                                            AgentRule(app: AgentApp(id: "com.googlecode.iterm2", team: "H7V7XYVQ7D", name: "iTerm2"), site: nil)]),
-                                 log: [AgentLogEntry(date: Date(), caller: "Terminal · claude", site: "github.com", outcome: "Allowed"),
-                                       AgentLogEntry(date: Date().addingTimeInterval(-600), caller: "Unverified · python3", site: "google.com", outcome: "Denied"),
-                                       AgentLogEntry(date: Date().addingTimeInterval(-90_000), caller: "iTerm2 · codex", site: "slack.com", outcome: "Not approved in time")])
-        }
-        for (scheme, appearance) in [("light", NSAppearance.Name.aqua), ("dark", .darkAqua)] {
-            render(AnyView(BannerCard(id: id).padding(20)), "hud-\(scheme)", appearance, dir)
-            render(AnyView(BannerCard(id: model.items[1].id).padding(20)), "hud-mail-\(scheme)", appearance, dir)
-            render(AnyView(MenuContent()), "menu-\(scheme)", appearance, dir)
-            render(AnyView(SettingsView()), "settings-\(scheme)", appearance, dir)
-            render(AnyView(WelcomeView()), "welcome-\(scheme)", appearance, dir)
-            render(AnyView(SourcesTab().frame(width: 560, height: 600)), "sources-\(scheme)", appearance, dir)
-            render(AnyView(GeneralTab().frame(width: 560, height: 600)), "general-\(scheme)", appearance, dir)
-            render(AnyView(PrivacyTab().frame(width: 560, height: 600)), "privacy-\(scheme)", appearance, dir)
-            render(AnyView(AddAccountSheet() { _ in }), "add-account-\(scheme)", appearance, dir)
-            render(AnyView(IgnoredSendersSheet()), "ignored-senders-\(scheme)", appearance, dir)
-            render(AnyView(AddIgnoredSender { _ in }), "ignore-sender-\(scheme)", appearance, dir)
-            render(AnyView(AgentRequestCard().padding(20)), "agent-card-\(scheme)", appearance, dir)
-            render(AnyView(AgentsTab().frame(width: 560, height: 1000)), "agents-\(scheme)", appearance, dir)
-            render(AnyView(AgentHistorySheet()), "agent-history-\(scheme)", appearance, dir)
-            render(AnyView(AgentRulesSheet()), "agent-rules-\(scheme)", appearance, dir)
-            render(AnyView(AccountEditor(account: MailAccount.guess(for: "you@example.com"))), "account-editor-\(scheme)", appearance, dir)
-        }
-        model.agents.preview(nil, config: AgentConfig(), log: [])  // access off: the rest dims
-        render(AnyView(AgentsTab().frame(width: 560, height: 1000)), "agents-off", .aqua, dir)
-        let blurred = ImageRenderer(content: CodeText(code: "482913", size: 36, concealed: true).padding(12).background(Color.white))
-        blurred.scale = 2
-        try? blurred.nsImage?.tiffRepresentation.flatMap { NSBitmapImageRep(data: $0)?.representation(using: .png, properties: [:]) }?
-            .write(to: URL(fileURLWithPath: "\(dir)/code-blurred.png"))
-        let empty = AnyView(MenuContent())
-        model.clearHistory()
-        render(empty, "menu-empty", .aqua, dir)
-    }
 
-    private static func render(_ view: AnyView, _ name: String, _ appearance: NSAppearance.Name, _ dir: String) {
-        let host = NSHostingView(rootView: view.background(Color(nsColor: .windowBackgroundColor)))
-        let window = NSWindow(contentRect: NSRect(x: -4000, y: 0, width: 600, height: 600), styleMask: .borderless, backing: .buffered, defer: false)
-        window.appearance = NSAppearance(named: appearance)
-        window.backgroundColor = appearance == .darkAqua ? NSColor(white: 0.12, alpha: 1) : NSColor(white: 0.93, alpha: 1)
-        window.contentView = host
-        host.frame.size = host.fittingSize
-        window.setContentSize(host.fittingSize)
-        window.orderFrontRegardless()
-        RunLoop.main.run(until: Date().addingTimeInterval(0.4))
-        let rep = host.bitmapImageRepForCachingDisplay(in: host.bounds)!
-        host.cacheDisplay(in: host.bounds, to: rep)
-        try? rep.representation(using: .png, properties: [:])?.write(to: URL(fileURLWithPath: "\(dir)/\(name).png"))
-        window.orderOut(nil)
+        private static func render(_ view: AnyView, _ name: String, _ appearance: NSAppearance.Name, _ dir: String) {
+            let host = NSHostingView(rootView: view.background(Color(nsColor: .windowBackgroundColor)))
+            let window = NSWindow(contentRect: NSRect(x: -4000, y: 0, width: 600, height: 600), styleMask: .borderless, backing: .buffered, defer: false)
+            window.appearance = NSAppearance(named: appearance)
+            window.backgroundColor = appearance == .darkAqua ? NSColor(white: 0.12, alpha: 1) : NSColor(white: 0.93, alpha: 1)
+            window.contentView = host
+            host.frame.size = host.fittingSize
+            window.setContentSize(host.fittingSize)
+            window.orderFrontRegardless()
+            RunLoop.main.run(until: Date().addingTimeInterval(0.4))
+            let rep = host.bitmapImageRepForCachingDisplay(in: host.bounds)!
+            host.cacheDisplay(in: host.bounds, to: rep)
+            try? rep.representation(using: .png, properties: [:])?.write(to: URL(fileURLWithPath: "\(dir)/\(name).png"))
+            window.orderOut(nil)
+        }
     }
-}
 #endif

@@ -20,7 +20,8 @@ final class DeviceAuthentication {
         self.context = context
         // The prompt is macOS's own window: it closes the popover and, when done, hands focus
         // to the app used before. Bring back what was open, unless a lock cancelled the prompt.
-        let wasActive = NSApp.isActive, popoverWasOpen = MenuBarPopover.isOpen
+        let wasActive = NSApp.isActive
+        let popoverWasOpen = MenuBarPopover.isOpen
         Self.watchHandOff()
         defer {
             if self.context === context {
@@ -59,7 +60,8 @@ final class DeviceAuthentication {
     private static func watchHandOff() {
         handOffDeadline = .distantPast  // a new prompt ends the wait for the last one's hand-off
         guard handOff == nil else { return }
-        handOff = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { note in
+        handOff = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) {
+            note in
             let other = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication != .current
             MainActor.assumeIsolated {
                 guard other, Date() < handOffDeadline else { return }

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
@@ -53,12 +54,21 @@ private enum MailAuthenticationFailure: Error { case denied }
 
         #expect(!signIn.isBusy)
         #expect(signIn.token(for: account) == "first-refresh-token")
-        #expect(signIn.token(for: MailAccount(label: "Renamed", host: "imap.example.com",
-                                               user: "first@example.com")) == "first-refresh-token")
-        #expect(signIn.token(for: MailAccount(label: "Work", host: "imap.example.com",
-                                               user: "second@example.com")) == nil)
-        #expect(signIn.token(for: MailAccount(label: "Work", host: "other.example.com",
-                                               user: "first@example.com")) == nil)
+        #expect(
+            signIn.token(
+                for: MailAccount(
+                    label: "Renamed", host: "imap.example.com",
+                    user: "first@example.com")) == "first-refresh-token")
+        #expect(
+            signIn.token(
+                for: MailAccount(
+                    label: "Work", host: "imap.example.com",
+                    user: "second@example.com")) == nil)
+        #expect(
+            signIn.token(
+                for: MailAccount(
+                    label: "Work", host: "other.example.com",
+                    user: "first@example.com")) == nil)
     }
 
     @Test func cancellingCompletedSignInImmediatelyClearsStagedToken() async throws {

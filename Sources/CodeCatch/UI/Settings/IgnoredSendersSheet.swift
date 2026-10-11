@@ -8,7 +8,9 @@ struct IgnoredSendersSheet: View {
     @Local private var adding = false
 
     var body: some View {
-        ListSheet(title: "Ignored Senders", about: "CodeCatch skips codes and links from these senders. To ignore one, right-click its code in the menu, or click +.") {
+        ListSheet(
+            title: "Ignored Senders", about: "CodeCatch skips codes and links from these senders. To ignore one, right-click its code in the menu, or click +."
+        ) {
             List(selection: $selection) {
                 ForEach(entries, id: \.self) { IgnoredSenderRow(entry: $0) }
             }
@@ -18,21 +20,30 @@ struct IgnoredSendersSheet: View {
             .onDeleteCommand { stopIgnoring(selection) }
             .overlay {
                 if entries.isEmpty {
-                    ContentUnavailableView("No Ignored Senders", systemImage: "nosign",
-                                           description: Text("Ignore an email address, a whole domain, or a phone number."))
+                    ContentUnavailableView(
+                        "No Ignored Senders", systemImage: "nosign",
+                        description: Text("Ignore an email address, a whole domain, or a phone number."))
                 }
             }
         } bar: {
             HStack(spacing: 0) {
-                Button { adding = true } label: { Image(systemName: "plus").frame(width: 24, height: 22) }
-                    .help("Ignore a sender")
-                    .accessibilityLabel("Ignore a sender")
-                    .popover(isPresented: $adding, arrowEdge: .bottom) { AddIgnoredSender { selection = [$0] } }
+                Button {
+                    adding = true
+                } label: {
+                    Image(systemName: "plus").frame(width: 24, height: 22)
+                }
+                .help("Ignore a sender")
+                .accessibilityLabel("Ignore a sender")
+                .popover(isPresented: $adding, arrowEdge: .bottom) { AddIgnoredSender { selection = [$0] } }
                 Divider().frame(height: 14)
-                Button { stopIgnoring(selection) } label: { Image(systemName: "minus").frame(width: 24, height: 22) }
-                    .help("Stop ignoring the selected senders")
-                    .accessibilityLabel("Stop ignoring")
-                    .disabled(selection.isEmpty)
+                Button {
+                    stopIgnoring(selection)
+                } label: {
+                    Image(systemName: "minus").frame(width: 24, height: 22)
+                }
+                .help("Stop ignoring the selected senders")
+                .accessibilityLabel("Stop ignoring")
+                .disabled(selection.isEmpty)
                 Spacer()
             }
             .padding(4)
@@ -110,12 +121,17 @@ struct AddIgnoredSender: View {
             if alreadyIgnored {
                 WarningText(message: "Already ignored.", calm: true)
             } else if tried, entry == nil {
-                WarningText(message: text.contains("*") ? "A wildcard works only for a whole domain, like *@acme.com."
-                                                        : "Enter an email address, a domain or a phone number.")
+                WarningText(
+                    message: text.contains("*")
+                        ? "A wildcard works only for a whole domain, like *@acme.com."
+                        : "Enter an email address, a domain or a phone number.")
             } else {
                 // Verbatim, so the examples don't turn into links.
-                Text(verbatim: "For example security@acme.com, or acme.com for every address there. For texts, a number like +1 555 0100 or a sender name like Google.")
-                    .foregroundStyle(.secondary)
+                Text(
+                    verbatim:
+                        "For example security@acme.com, or acme.com for every address there. For texts, a number like +1 555 0100 or a sender name like Google."
+                )
+                .foregroundStyle(.secondary)
             }
             HStack {
                 Spacer()

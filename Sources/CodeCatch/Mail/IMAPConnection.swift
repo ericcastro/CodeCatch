@@ -2,7 +2,8 @@ import Foundation
 import Network
 
 enum IMAPError: LocalizedError {
-    case closed, timeout, invalidPort, invalidCredentials, invalidResponse, noPassword, rejected(String)
+    case closed, timeout, invalidPort, invalidCredentials, invalidResponse, noPassword
+    case rejected(String)
     var errorDescription: String? {
         switch self {
         case .closed: "The mail server closed the connection"
@@ -25,7 +26,8 @@ actor IMAPConnection {
         static func literalSize(in line: String) throws -> Int? {
             guard line.hasSuffix("}"), let open = line.lastIndex(of: "{") else { return nil }
             guard let count = Int(line[line.index(after: open)..<line.index(before: line.endIndex)]),
-                  (0...IncomingMessage.mailReadLimit).contains(count) else { throw IMAPError.invalidResponse }
+                (0...IncomingMessage.mailReadLimit).contains(count)
+            else { throw IMAPError.invalidResponse }
             return count
         }
 
@@ -85,7 +87,10 @@ actor IMAPConnection {
     func idle(renewAfter: TimeInterval = 540) async throws {
         tag += 1
         let t = "C\(tag)"
-        if pendingExists { pendingExists = false; return }
+        if pendingExists {
+            pendingExists = false
+            return
+        }
         try await send("\(t) IDLE\r\n")
         while !(try await withTimeout(30, { try await self.readResponse() }).text.hasPrefix("+")) {}
         let renew = Task { [weak self] in
@@ -161,10 +166,15 @@ actor IMAPConnection {
     private func fill() async throws {
         let data: Data = try await withCheckedThrowingContinuation { cont in
             connection.receive(minimumIncompleteLength: 1, maximumLength: 1 << 16) { data, _, complete, error in
-                if let error { cont.resume(throwing: error) }
-                else if let data, !data.isEmpty { cont.resume(returning: data) }
-                else if complete { cont.resume(throwing: IMAPError.closed) }
-                else { cont.resume(returning: Data()) }
+                if let error {
+                    cont.resume(throwing: error)
+                } else if let data, !data.isEmpty {
+                    cont.resume(returning: data)
+                } else if complete {
+                    cont.resume(throwing: IMAPError.closed)
+                } else {
+                    cont.resume(returning: Data())
+                }
             }
         }
         buffer.append(data)
@@ -172,9 +182,11 @@ actor IMAPConnection {
 
     private func send(_ s: String) async throws {
         try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, Error>) in
-            connection.send(content: Data(s.utf8), completion: .contentProcessed { error in
-                if let error { cont.resume(throwing: error) } else { cont.resume() }
-            })
+            connection.send(
+                content: Data(s.utf8),
+                completion: .contentProcessed { error in
+                    if let error { cont.resume(throwing: error) } else { cont.resume() }
+                })
         }
     }
 
@@ -188,7 +200,10 @@ actor IMAPConnection {
     }
 
     private var timedOut = false
-    private func expire() { timedOut = true; close() }
+    private func expire() {
+        timedOut = true
+        close()
+    }
 
     func quote(_ s: String) throws -> String {
         guard !s.utf8.contains(where: { $0 == 0 || $0 == 10 || $0 == 13 }) else { throw IMAPError.invalidCredentials }

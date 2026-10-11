@@ -67,8 +67,9 @@ extension CodeItem.Origin {
         switch self {
         case .messages: Self.icon("com.apple.MobileSMS")
         case .mail where sourceKey == AppleMailStore.sourceKey: Self.icon("com.apple.mail")
-        case .mail: NSWorkspace.shared.urlForApplication(toOpen: URL(string: "mailto:")!)
-            .map { NSWorkspace.shared.icon(forFile: $0.path) }
+        case .mail:
+            NSWorkspace.shared.urlForApplication(toOpen: URL(string: "mailto:")!)
+                .map { NSWorkspace.shared.icon(forFile: $0.path) }
         case .vault: Self.icon("com.bitwarden.desktop")
         case .test: nil
         }

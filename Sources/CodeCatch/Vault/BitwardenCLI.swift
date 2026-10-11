@@ -74,7 +74,8 @@ enum BitwardenCLI {
         let shell = ProcessInfo.processInfo.environment["SHELL"] ?? "/bin/zsh"
         let fallback = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
         guard let out = try? execute(shell, ["-l", "-c", "printf %s \"$PATH\""], env: [:], timeout: 10),
-              out.status == 0, !out.stdout.isEmpty else { return fallback }
+            out.status == 0, !out.stdout.isEmpty
+        else { return fallback }
         return String(decoding: out.stdout, as: UTF8.self) + ":" + fallback
     }()
 
@@ -82,7 +83,8 @@ enum BitwardenCLI {
         try await Task.detached {
             let out = try execute("/usr/bin/env", ["bw"] + args + ["--nointeraction"], env: env.merging(["PATH": path]) { $1 }, timeout: timeout)
             guard out.status == 0 else {
-                let message = String(decoding: out.stderr.isEmpty ? out.stdout : out.stderr, as: UTF8.self)
+                let message =
+                    String(decoding: out.stderr.isEmpty ? out.stdout : out.stderr, as: UTF8.self)
                     .split(separator: "\n").first.map(String.init) ?? "Bitwarden CLI stopped with error \(out.status)"
                 throw Failure(errorDescription: out.status == 127 ? "Bitwarden CLI not found" : message)
             }
@@ -90,13 +92,16 @@ enum BitwardenCLI {
         }.value
     }
 
-    private static func execute(_ tool: String, _ args: [String], env: [String: String],
-                                timeout: TimeInterval) throws -> (status: Int32, stdout: Data, stderr: Data) {
+    private static func execute(
+        _ tool: String, _ args: [String], env: [String: String],
+        timeout: TimeInterval
+    ) throws -> (status: Int32, stdout: Data, stderr: Data) {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: tool)
         process.arguments = args
         process.environment = ProcessInfo.processInfo.environment.merging(env) { $1 }
-        let stdout = Pipe(), stderr = Pipe()
+        let stdout = Pipe()
+        let stderr = Pipe()
         (process.standardOutput, process.standardError, process.standardInput) = (stdout, stderr, FileHandle.nullDevice)
         try process.run()
         let deadline = DispatchWorkItem { process.terminate() }

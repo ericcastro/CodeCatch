@@ -21,18 +21,30 @@ struct BitwardenSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            SheetHeader(title: "Bitwarden Codes", about: "CodeCatch saves only each login's name, username, site and authenticator key to your Keychain, then makes the codes itself. Login passwords are never saved.")
+            SheetHeader(
+                title: "Bitwarden Codes",
+                about:
+                    "CodeCatch saves only each login's name, username, site and authenticator key to your Keychain, then makes the codes itself. Login passwords are never saved."
+            )
             VStack(alignment: .leading, spacing: 12) {
-                if let pending { review(pending) }
+                if let pending {
+                    review(pending)
+                }
                 // Nothing to change mid-read: a typed password is cleared when the import ends.
-                else if let status { steps(status).disabled(working) }
-                else { ProgressView().controlSize(.small).frame(maxWidth: .infinity) }
+                else if let status {
+                    steps(status).disabled(working)
+                } else {
+                    ProgressView().controlSize(.small).frame(maxWidth: .infinity)
+                }
             }
             .padding(14)
             .well()
             if let error { WarningText(message: error).font(.callout) }
             HStack {
-                Button("Check Again") { pending = nil; Task { await refresh() } }.disabled(working)
+                Button("Check Again") {
+                    pending = nil
+                    Task { await refresh() }
+                }.disabled(working)
                 Spacer()
                 Button("Cancel", role: .cancel) { dismiss() }.keyboardShortcut(.cancelAction)
                 if pending != nil {
@@ -50,14 +62,23 @@ struct BitwardenSheet: View {
         .frame(width: 500)
         .task { await refresh() }
         .onChange(of: model.vaultSession.isUnlocked) {
-            if !model.vaultSession.isUnlocked { pending = nil; importGeneration = nil }
+            if !model.vaultSession.isUnlocked {
+                pending = nil
+                importGeneration = nil
+            }
         }
-        .onDisappear { importTask?.cancel(); pending = nil; password = ""; session = "" }
+        .onDisappear {
+            importTask?.cancel()
+            pending = nil
+            password = ""
+            session = ""
+        }
     }
 
     @ViewBuilder private func steps(_ status: BitwardenCLI.Status) -> some View {
-        step(done: status.version != nil, "Bitwarden CLI", status.version.map { "Version \($0)" } ?? "Install it, then Check Again:",
-             command: status.version == nil ? "brew install bitwarden-cli" : nil)
+        step(
+            done: status.version != nil, "Bitwarden CLI", status.version.map { "Version \($0)" } ?? "Install it, then Check Again:",
+            command: status.version == nil ? "brew install bitwarden-cli" : nil)
         if status.version == nil {
             Link("Bitwarden CLI installation options", destination: URL(string: "https://bitwarden.com/help/cli/")!)
         }
@@ -70,12 +91,17 @@ struct BitwardenSheet: View {
                     .pickerStyle(.segmented).labelsHidden().fixedSize()
                 }
             }
-            step(done: status.loggedIn, "Account", status.email.map { "Signed in as \($0)" } ?? "Sign in once in Terminal (it asks for two-step login there), then Check Again:",
-                 command: status.loggedIn ? nil : "bw login")
+            step(
+                done: status.loggedIn, "Account",
+                status.email.map { "Signed in as \($0)" } ?? "Sign in once in Terminal (it asks for two-step login there), then Check Again:",
+                command: status.loggedIn ? nil : "bw login")
         }
         if status.loggedIn {
-            step(done: false, "Unlock", pasteSession ? "A session from `bw unlock --raw`; CodeCatch doesn't lock it afterwards."
-                 : "Your master password goes only to the Bitwarden CLI, once. The vault is locked again afterwards.")
+            step(
+                done: false, "Unlock",
+                pasteSession
+                    ? "A session from `bw unlock --raw`; CodeCatch doesn't lock it afterwards."
+                    : "Your master password goes only to the Bitwarden CLI, once. The vault is locked again afterwards.")
             Group {
                 if pasteSession { SecureField("Session", text: $session) } else { SecureField("Master password", text: $password) }
             }
@@ -90,15 +116,19 @@ struct BitwardenSheet: View {
         let name = status.region.map { "bitwarden.\($0 == .us ? "com" : "eu") (\($0.rawValue))" } ?? URL(string: status.server)?.host ?? status.server
         // The region is where the account was created, not where you live: a wrong one
         // makes `bw login` report the correct password as invalid.
-        return status.loggedIn ? "\(name) · to switch, run `bw logout` first"
+        return status.loggedIn
+            ? "\(name) · to switch, run `bw logout` first"
             : "\(name) · pick the one your web vault opens on (vault.bitwarden.com is US), not where you live"
     }
 
     private func step(done: Bool, _ title: String, _ detail: String, command: String? = nil) -> some View {
         step(done: done, title, command.map { "\(detail) `\($0)`" } ?? detail) {
             if let command {
-                Button("Copy") { NSPasteboard.general.clearContents(); NSPasteboard.general.setString(command, forType: .string) }
-                    .controlSize(.small)
+                Button("Copy") {
+                    NSPasteboard.general.clearContents()
+                    NSPasteboard.general.setString(command, forType: .string)
+                }
+                .controlSize(.small)
             }
         }
     }
@@ -109,7 +139,8 @@ struct BitwardenSheet: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.body.weight(.medium))
                 // Markdown only for `commands`: an email address would turn into a link.
-                (detail.contains("`") ? Text(.init(detail)) : Text(verbatim: detail)).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                (detail.contains("`") ? Text(.init(detail)) : Text(verbatim: detail)).font(.caption).foregroundStyle(.secondary).fixedSize(
+                    horizontal: false, vertical: true)
             }
             Spacer(minLength: 8)
             trailing()
@@ -147,8 +178,11 @@ struct BitwardenSheet: View {
         }
         if !unreadable.isEmpty {
             let named = unreadable.prefix(5) + (unreadable.count > 5 ? ["\(unreadable.count - 5) more"] : [])
-            WarningText(message: "Skipped \(unreadable.count == 1 ? "1 login" : "\(unreadable.count) logins") with a key CodeCatch can't read: \(named.formatted(.list(type: .and))). Check the key in Bitwarden.")
-                .font(.caption)
+            WarningText(
+                message:
+                    "Skipped \(unreadable.count == 1 ? "1 login" : "\(unreadable.count) logins") with a key CodeCatch can't read: \(named.formatted(.list(type: .and))). Check the key in Bitwarden."
+            )
+            .font(.caption)
         }
         Text("Your saved codes stay unchanged until you save.")
             .font(.caption).foregroundStyle(.secondary)
@@ -180,7 +214,11 @@ struct BitwardenSheet: View {
     private func importCodes() async {
         working = true
         error = nil
-        defer { working = false; password = ""; session = "" }
+        defer {
+            working = false
+            password = ""
+            session = ""
+        }
         do {
             try await model.authenticate()
             let generation = model.vaultSession.generation

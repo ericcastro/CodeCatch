@@ -27,8 +27,10 @@ final class AppleMailStore: LocalStore {
             return notSetUp
         } catch { return SourceStatus.needsDiskAccess }
         // "V10": the store's layout version; Mail keeps only the current one up to date.
-        guard let newest = versions.compactMap({ name in Int(name.dropFirst()).flatMap { name.hasPrefix("V") ? ($0, name) : nil } })
-            .max(by: { $0.0 < $1.0 })?.1 else { return notSetUp }
+        guard
+            let newest = versions.compactMap({ name in Int(name.dropFirst()).flatMap { name.hasPrefix("V") ? ($0, name) : nil } })
+                .max(by: { $0.0 < $1.0 })?.1
+        else { return notSetUp }
         let version = root.appendingPathComponent(newest)
         let index = version.appendingPathComponent("MailData/Envelope Index").path
         guard FileManager.default.fileExists(atPath: index) else { return notSetUp }
@@ -72,12 +74,13 @@ final class AppleMailStore: LocalStore {
                 } else {
                     waiting[id] = now.addingTimeInterval(Self.bodyWait)
                 }
-                return IncomingMessage(text: mail?.text ?? text(s, 5), subject: mail?.subject ?? text(s, 4),
-                                       senderName: mail?.fromName ?? text(s, 3), senderID: mail?.fromAddress ?? text(s, 2),
-                                       sourceKey: Self.sourceKey, sourceLabel: name,
-                                       date: Date(timeIntervalSince1970: Double(sqlite3_column_int64(s, 1))), isMail: true,
-                                       links: mail?.links ?? [], messageID: String(id), senderVerified: mail?.senderVerified,
-                                       internetMessageID: mail?.messageID)
+                return IncomingMessage(
+                    text: mail?.text ?? text(s, 5), subject: mail?.subject ?? text(s, 4),
+                    senderName: mail?.fromName ?? text(s, 3), senderID: mail?.fromAddress ?? text(s, 2),
+                    sourceKey: Self.sourceKey, sourceLabel: name,
+                    date: Date(timeIntervalSince1970: Double(sqlite3_column_int64(s, 1))), isMail: true,
+                    links: mail?.links ?? [], messageID: String(id), senderVerified: mail?.senderVerified,
+                    internetMessageID: mail?.messageID)
             }.compactMap { $0 }.reversed()
         }
         let late = waiting.isEmpty ? [] : try rows("m.ROWID IN (\(waiting.keys.map(String.init).joined(separator: ",")))")
@@ -108,7 +111,7 @@ final class AppleMailStore: LocalStore {
     /// Nil while Mail is still writing it: fewer bytes than promised, short of the 256 KB read.
     static func message(inEMLX data: Data) -> Data? {
         guard let newline = data.firstIndex(of: 0x0A),
-              let length = Int(String(decoding: data[..<newline], as: UTF8.self).trimmingCharacters(in: .whitespaces)), length >= 0
+            let length = Int(String(decoding: data[..<newline], as: UTF8.self).trimmingCharacters(in: .whitespaces)), length >= 0
         else { return nil }
         let message = data[(newline + 1)...].prefix(length)
         return message.count == length || data.count >= IncomingMessage.mailReadLimit ? Data(message) : nil

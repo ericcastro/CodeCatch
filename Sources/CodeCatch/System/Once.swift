@@ -5,7 +5,11 @@ final class Once: @unchecked Sendable {
     private var done = false
     private let lock = NSLock()
     func run(_ body: () -> Void) {
-        lock.lock(); defer { lock.unlock() }
-        if !done { done = true; body() }
+        lock.lock()
+        defer { lock.unlock() }
+        if !done {
+            done = true
+            body()
+        }
     }
 }

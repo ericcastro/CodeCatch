@@ -34,8 +34,9 @@ public enum MIME {
         let (name, address) = parseAddress(header(headers["from"]))
         let (text, links) = bodyText(headers: headers, body: body)
         let id = headers["message-id"]?.trimmingCharacters(in: CharacterSet(charactersIn: "<> \t\r\n"))
-        return MailMessage(fromName: name, fromAddress: address, subject: header(headers["subject"]), text: text, links: links,
-                           senderVerified: senderVerified(results, receiver: receiver, fromAddress: address), messageID: id?.isEmpty == false ? id : nil)
+        return MailMessage(
+            fromName: name, fromAddress: address, subject: header(headers["subject"]), text: text, links: links,
+            senderVerified: senderVerified(results, receiver: receiver, fromAddress: address), messageID: id?.isEmpty == false ? id : nil)
     }
 
     /// Receiver identity comes from the authenticated API, never from the message. Receivers must
@@ -51,9 +52,10 @@ public enum MIME {
         }
         let verdicts = parts.filter { $0.range(of: #"^dmarc(?:\s|=|$)"#, options: [.regularExpression, .caseInsensitive]) != nil }
         guard verdicts.count == 1, let verdict = verdicts.first,
-              let result = verdict.range(of: #"^dmarc\s*=\s*(pass|fail)(?=\s|$)"#, options: [.regularExpression, .caseInsensitive]),
-              let domain = fromAddress.split(separator: "@", omittingEmptySubsequences: false).last,
-              fromAddress.filter({ $0 == "@" }).count == 1 else { return nil }
+            let result = verdict.range(of: #"^dmarc\s*=\s*(pass|fail)(?=\s|$)"#, options: [.regularExpression, .caseInsensitive]),
+            let domain = fromAddress.split(separator: "@", omittingEmptySubsequences: false).last,
+            fromAddress.filter({ $0 == "@" }).count == 1
+        else { return nil }
         let ns = verdict as NSString
         let matches = headerFrom.matches(in: verdict, range: NSRange(location: 0, length: ns.length))
         guard matches.count == 1, let match = matches.first else { return nil }
@@ -62,12 +64,17 @@ public enum MIME {
         return verdict[result].lowercased().trimmingCharacters(in: .whitespaces).hasSuffix("pass")
     }
 
-    private static let headerFrom = try! NSRegularExpression(pattern: #"(?:^|\s)header\.from\s*=\s*(?:"([^"]+)"|([^\s]+))(?=\s|$)"#,
-                                                            options: .caseInsensitive)
+    private static let headerFrom = try! NSRegularExpression(
+        pattern: #"(?:^|\s)header\.from\s*=\s*(?:"([^"]+)"|([^\s]+))(?=\s|$)"#,
+        options: .caseInsensitive)
 
     /// Split method results without treating quoted or commented semicolons as new methods.
     private static func authenticationParts(_ value: String) -> [String]? {
-        var parts: [String] = [], part = "", comments = 0, quoted = false, escaped = false
+        var parts: [String] = []
+        var part = ""
+        var comments = 0
+        var quoted = false
+        var escaped = false
         for c in value {
             if escaped {
                 if comments == 0 { part.append(c) }
@@ -79,11 +86,14 @@ public enum MIME {
                 if c == "(" { comments += 1 }
                 if c == ")" { comments -= 1 }
             } else if c == "\"" {
-                quoted.toggle(); part.append(c)
+                quoted.toggle()
+                part.append(c)
             } else if !quoted, c == "(" {
-                comments = 1; part.append(" ")
+                comments = 1
+                part.append(" ")
             } else if !quoted, c == ";" {
-                parts.append(part.trimmingCharacters(in: .whitespacesAndNewlines)); part = ""
+                parts.append(part.trimmingCharacters(in: .whitespacesAndNewlines))
+                part = ""
             } else {
                 part.append(c)
             }
@@ -126,7 +136,10 @@ public enum MIME {
                 continue
             }
             flush()
-            guard let colon = line.firstIndex(of: ":") else { current = nil; continue }
+            guard let colon = line.firstIndex(of: ":") else {
+                current = nil
+                continue
+            }
             current = (line[..<colon].lowercased(), line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces))
         }
         flush()
@@ -134,7 +147,8 @@ public enum MIME {
     }
 
     private static func bodyText(headers: [String: String], body: String) -> (String, [MailLink]) {
-        var plain: String?, html: String?
+        var plain: String?
+        var html: String?
         collect(headers: headers, body: body, plain: &plain, html: &html, depth: 0)
         let parsedHTML = html.map(readHTML)
         let links = parsedHTML?.links ?? plain.map(bareLinks) ?? []
@@ -153,7 +167,8 @@ public enum MIME {
         let trim = CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters)
         var above: String?
         return text.split(separator: "\n").flatMap { line -> [MailLink] in
-            let l = String(line), ns = l as NSString
+            let l = String(line)
+            let ns = l as NSString
             let matches = bareURL.matches(in: l, range: NSRange(location: 0, length: ns.length))
             defer {
                 let text = l.trimmingCharacters(in: trim)
@@ -178,7 +193,8 @@ public enum MIME {
             return
         }
         guard type == "text/plain" || type == "text/html",
-              !(headers["content-disposition"] ?? "").lowercased().hasPrefix("attachment") else { return }
+            !(headers["content-disposition"] ?? "").lowercased().hasPrefix("attachment")
+        else { return }
         let bytes = decodeTransfer(body, encoding: (headers["content-transfer-encoding"] ?? "").lowercased())
         let text = decodeCharset(bytes, params["charset"])
         if type == "text/plain" { plain = plain ?? text } else { html = html ?? text }
@@ -212,12 +228,21 @@ public enum MIME {
 
     private static func quotedPrintable(_ bytes: Data, underscoreIsSpace: Bool) -> Data {
         let b = [UInt8](bytes)
-        var out = Data(), i = 0
+        var out = Data()
+        var i = 0
         while i < b.count {
-            if b[i] == UInt8(ascii: "="), i + 1 < b.count, b[i + 1] == 0x0A { i += 2; continue }
-            if b[i] == UInt8(ascii: "="), i + 2 < b.count, b[i + 1] == 0x0D, b[i + 2] == 0x0A { i += 3; continue }
+            if b[i] == UInt8(ascii: "="), i + 1 < b.count, b[i + 1] == 0x0A {
+                i += 2
+                continue
+            }
+            if b[i] == UInt8(ascii: "="), i + 2 < b.count, b[i + 1] == 0x0D, b[i + 2] == 0x0A {
+                i += 3
+                continue
+            }
             if b[i] == UInt8(ascii: "="), i + 2 < b.count, let v = UInt8(String(bytes: b[i + 1...i + 2], encoding: .ascii) ?? "", radix: 16) {
-                out.append(v); i += 3; continue
+                out.append(v)
+                i += 3
+                continue
             }
             out.append(underscoreIsSpace && b[i] == UInt8(ascii: "_") ? 0x20 : b[i])
             i += 1
@@ -229,7 +254,8 @@ public enum MIME {
         if let charset {
             let cf = CFStringConvertIANACharSetNameToEncoding(charset as CFString)
             if cf != kCFStringEncodingInvalidId,
-               let s = String(data: data, encoding: String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(cf))) {
+                let s = String(data: data, encoding: String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(cf)))
+            {
                 return s
             }
         }
@@ -243,7 +269,8 @@ public enum MIME {
         let v = value.replacingOccurrences(of: #"\?=\s+=\?"#, with: "?==?", options: .regularExpression)
         return replacing(encodedWord, in: v) { m, ns in
             let payload = ns.substring(with: m.range(at: 3))
-            let data = ns.substring(with: m.range(at: 2)).uppercased() == "B"
+            let data =
+                ns.substring(with: m.range(at: 2)).uppercased() == "B"
                 ? Data(base64Encoded: payload, options: .ignoreUnknownCharacters) ?? Data()
                 : quotedPrintable(Data(payload.utf8), underscoreIsSpace: true)
             return decodeCharset(data, ns.substring(with: m.range(at: 1)))
@@ -251,10 +278,13 @@ public enum MIME {
     }
 
     /// `value` with each match of `regex` replaced by what `replace` makes of it.
-    private static func replacing(_ regex: NSRegularExpression, in value: String,
-                                  with replace: (NSTextCheckingResult, NSString) -> String) -> String {
+    private static func replacing(
+        _ regex: NSRegularExpression, in value: String,
+        with replace: (NSTextCheckingResult, NSString) -> String
+    ) -> String {
         let ns = value as NSString
-        var out = "", last = 0
+        var out = ""
+        var last = 0
         for m in regex.matches(in: value, range: NSRange(location: 0, length: ns.length)) {
             out += ns.substring(with: NSRange(location: last, length: m.range.location - last)) + replace(m, ns)
             last = m.range.upperBound
@@ -273,17 +303,26 @@ public enum MIME {
     // MARK: - HTML
 
     /// "&amp;" last, so "&amp;lt;" stays the text "&lt;".
-    private static let entities = [("&nbsp;", " "), ("&lt;", "<"), ("&gt;", ">"), ("&quot;", "\""), ("&#39;", "'"), ("&apos;", "'"), ("&zwnj;", ""), ("&shy;", ""), ("&amp;", "&")]
+    private static let entities = [
+        ("&nbsp;", " "), ("&lt;", "<"), ("&gt;", ">"), ("&quot;", "\""), ("&#39;", "'"), ("&apos;", "'"), ("&zwnj;", ""), ("&shy;", ""), ("&amp;", "&"),
+    ]
 
     /// A forward-only scan keeps malformed markup from repeatedly searching the remaining message.
     /// This extracts text and links; it does not render or execute HTML.
     private static func readHTML(_ html: String) -> (text: String, links: [MailLink]) {
         let bytes = Array(html.utf8)
-        var i = 0, text = "", links: [MailLink] = [], hidden: [UInt8]?
+        var i = 0
+        var text = ""
+        var links: [MailLink] = []
+        var hidden: [UInt8]?
         var anchor: (url: String, text: String, alt: String?)?
-        func append(_ value: String) { text += value; anchor?.text += value }
+        func append(_ value: String) {
+            text += value
+            anchor?.text += value
+        }
         func string(_ range: Range<Int>) -> String { String(decoding: bytes[range], as: UTF8.self) }
-        let commentStart: [UInt8] = [60, 33, 45, 45], commentEnd: [UInt8] = [45, 45, 62]
+        let commentStart: [UInt8] = [60, 33, 45, 45]
+        let commentEnd: [UInt8] = [45, 45, 62]
         func matches(_ expected: [UInt8], at offset: Int) -> Bool {
             guard offset + expected.count <= bytes.count else { return false }
             return expected.enumerated().allSatisfy { j, b in
@@ -293,27 +332,34 @@ public enum MIME {
         }
         while i < bytes.count {
             if let close = hidden {
-                if !matches(close, at: i) { i += 1; continue }
+                if !matches(close, at: i) {
+                    i += 1
+                    continue
+                }
                 let end = i + close.count
-                guard end < bytes.count, htmlSpace(bytes[end]) || bytes[end] == 62 else { i += 1; continue }
+                guard end < bytes.count, htmlSpace(bytes[end]) || bytes[end] == 62 else {
+                    i += 1
+                    continue
+                }
             }
             if bytes[i] != 60 {
                 let start = i
                 while i < bytes.count, bytes[i] != 60 { i += 1 }
-                append(string(start..<i)); continue
+                append(string(start..<i))
+                continue
             }
             if matches(commentStart, at: i) {
                 i += 4
                 while i < bytes.count, !matches(commentEnd, at: i) { i += 1 }
-                i = min(i + 3, bytes.count); continue
+                i = min(i + 3, bytes.count)
+                continue
             }
             let start = i + 1
-            var end = start, quote: UInt8?
+            var end = start
+            var quote: UInt8?
             while end < bytes.count {
                 let c = bytes[end]
-                if let q = quote { if c == q { quote = nil } }
-                else if c == 34 || c == 39 { quote = c }
-                else if c == 62 { break }
+                if let q = quote { if c == q { quote = nil } } else if c == 34 || c == 39 { quote = c } else if c == 62 { break }
                 end += 1
             }
             guard end < bytes.count else { break }
@@ -325,13 +371,21 @@ public enum MIME {
             let nameStart = cursor
             while cursor < end, !htmlSpace(bytes[cursor]), bytes[cursor] != 47 { cursor += 1 }
             let name = string(nameStart..<cursor).lowercased()
-            if hidden != nil { hidden = nil; append(" "); continue }
+            if hidden != nil {
+                hidden = nil
+                append(" ")
+                continue
+            }
             if !closing, ["style", "script", "title"].contains(name) {
-                hidden = Array(("</" + name).utf8); append(" "); continue
+                hidden = Array(("</" + name).utf8)
+                append(" ")
+                continue
             }
             if name == "br" || closing && ["p", "div", "tr", "td", "th", "h1", "h2", "h3", "h4", "h5", "h6", "li", "table", "center"].contains(name) {
                 append("\n")
-            } else { append(" ") }
+            } else {
+                append(" ")
+            }
             if name == "a", closing {
                 if let current = anchor {
                     let label = readableHTMLText(current.text).replacingOccurrences(of: "\n", with: " ")
@@ -344,7 +398,9 @@ public enum MIME {
                     anchor = attributes["href"].map {
                         (decodeEntities($0).filter { $0 != "\t" && $0 != "\r" && $0 != "\n" }, "", nil)
                     }
-                } else if anchor?.alt == nil { anchor?.alt = attributes["alt"] }
+                } else if anchor?.alt == nil {
+                    anchor?.alt = attributes["alt"]
+                }
             }
         }
         return (readableHTMLText(text), links)
@@ -354,7 +410,8 @@ public enum MIME {
 
     /// Only href and alt are needed. Consume each attribute once, including unquoted values.
     private static func htmlAttributes(_ bytes: [UInt8], start: Int, end: Int) -> [String: String] {
-        var result: [String: String] = [:], i = start
+        var result: [String: String] = [:]
+        var i = start
         while i < end {
             while i < end, htmlSpace(bytes[i]) || bytes[i] == 47 { i += 1 }
             let start = i
@@ -368,11 +425,10 @@ public enum MIME {
             if quote != nil { i += 1 }
             let valueStart = i
             while i < end {
-                if let quote { if bytes[i] == quote { break } }
-                else if htmlSpace(bytes[i]) { break }
+                if let quote { if bytes[i] == quote { break } } else if htmlSpace(bytes[i]) { break }
                 i += 1
             }
-            if (name == "href" || name == "alt"), result[name] == nil {
+            if name == "href" || name == "alt", result[name] == nil {
                 result[name] = String(decoding: bytes[valueStart..<i], as: UTF8.self)
             }
             if quote != nil, i < end { i += 1 }

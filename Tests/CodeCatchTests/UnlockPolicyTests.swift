@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
@@ -15,18 +16,21 @@ private enum PolicyFailure: Error { case unavailable }
     var onAuthenticate: (() async -> Void)?
 
     func policy() -> UnlockPolicy {
-        UnlockPolicy(load: {
-            if self.loadFails { throw PolicyFailure.unavailable }
-            return self.stored
-        }, save: { enabled in
-            if self.saveFails { throw PolicyFailure.unavailable }
-            self.writes.append(enabled)
-            self.stored = enabled
-        }, authenticate: {
-            self.authCalls += 1
-            await self.onAuthenticate?()
-            if self.authFails { throw PolicyFailure.unavailable }
-        })
+        UnlockPolicy(
+            load: {
+                if self.loadFails { throw PolicyFailure.unavailable }
+                return self.stored
+            },
+            save: { enabled in
+                if self.saveFails { throw PolicyFailure.unavailable }
+                self.writes.append(enabled)
+                self.stored = enabled
+            },
+            authenticate: {
+                self.authCalls += 1
+                await self.onAuthenticate?()
+                if self.authFails { throw PolicyFailure.unavailable }
+            })
     }
 }
 

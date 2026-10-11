@@ -6,12 +6,15 @@ struct CodeCatchMark: Shape {
     func path(in rect: CGRect) -> Path {
         let size = min(rect.width, rect.height)
         let radius = size * 84 / 608
-        let stroke = Path(roundedRect: CGRect(x: -radius, y: -size / 2, width: radius * 2, height: size),
-                          cornerRadius: radius)
+        let stroke = Path(
+            roundedRect: CGRect(x: -radius, y: -size / 2, width: radius * 2, height: size),
+            cornerRadius: radius)
         var mark = Path()
         for angle in [0.0, Double.pi / 3, -Double.pi / 3] {
-            mark.addPath(stroke, transform: CGAffineTransform(rotationAngle: angle)
-                .concatenating(CGAffineTransform(translationX: rect.midX, y: rect.midY)))
+            mark.addPath(
+                stroke,
+                transform: CGAffineTransform(rotationAngle: angle)
+                    .concatenating(CGAffineTransform(translationX: rect.midX, y: rect.midY)))
         }
         return mark
     }
@@ -23,7 +26,8 @@ enum AppBrand {
     /// "1.0 (52)": marketing version and build. Nil in an unbundled build.
     static let version: String? = {
         guard let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-              let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String else { return nil }
+            let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+        else { return nil }
         return "\(version) (\(build))"
     }()
     static let colors = [Color(red: 1, green: 0.63529, blue: 0.05882), Color(red: 1, green: 0.17647, blue: 0.33333)]
@@ -52,9 +56,13 @@ enum AppBrand {
         url.queryItems = [URLQueryItem(name: "template", value: issue.rawValue)]
         if issue == .bug {
             let os = ProcessInfo.processInfo.operatingSystemVersion
-            url.queryItems! += [URLQueryItem(name: "build", value: version),
-                                URLQueryItem(name: "macos", value: "macOS \(os.majorVersion).\(os.minorVersion).\(os.patchVersion), "
-                                    + "\(sysctl("machdep.cpu.brand_string")) (\(sysctl("hw.model")))")]
+            url.queryItems! += [
+                URLQueryItem(name: "build", value: version),
+                URLQueryItem(
+                    name: "macos",
+                    value: "macOS \(os.majorVersion).\(os.minorVersion).\(os.patchVersion), "
+                        + "\(sysctl("machdep.cpu.brand_string")) (\(sysctl("hw.model")))"),
+            ]
         }
         NSWorkspace.shared.open(url.url!)
     }

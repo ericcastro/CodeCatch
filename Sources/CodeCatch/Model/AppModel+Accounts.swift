@@ -65,7 +65,8 @@ struct AccountKeychain {
     var revoke: (OAuth, String) -> Void
 
     static var login: AccountKeychain {
-        AccountKeychain(read: Secrets.get, write: { try Secrets.set($0, for: $1) }, remove: Secrets.remove,
-                        revoke: { provider, token in Task { await provider.revoke(token) } })
+        AccountKeychain(
+            read: Secrets.get, write: { try Secrets.set($0, for: $1) }, remove: Secrets.remove,
+            revoke: { provider, token in Task { await provider.revoke(token) } })
     }
 }

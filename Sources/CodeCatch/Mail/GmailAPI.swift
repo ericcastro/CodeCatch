@@ -24,7 +24,9 @@ struct GmailAPI: MailAPI {
     }
 
     func added(since historyID: String) async throws -> (ids: [String], cursor: String) {
-        var ids: [String] = [], latest = historyID, page: String?
+        var ids: [String] = []
+        var latest = historyID
+        var page: String?
         repeat {
             var query = ["startHistoryId": historyID, "historyTypes": "messageAdded", "labelId": "INBOX"]
             query["pageToken"] = page
@@ -46,8 +48,9 @@ struct GmailAPI: MailAPI {
         do { json = try await get("messages/\(id)", ["format": "raw"]) } catch MailAPIError.gone { return nil }
         guard let raw = (json["raw"] as? String).flatMap(Data.init(base64URL:)) else { return nil }
         let received = (json["internalDate"] as? String).flatMap(Double.init).map { Date(timeIntervalSince1970: $0 / 1000) }
-        return IncomingMessage(mail: raw, receiver: .gmail, account: account, date: received, messageID: "gmail:\(id)",
-                               webURL: Self.webURL(id, account: account))
+        return IncomingMessage(
+            mail: raw, receiver: .gmail, account: account, date: received, messageID: "gmail:\(id)",
+            webURL: Self.webURL(id, account: account))
     }
 
     /// The message in Gmail on the web, in the right account when several are signed in. `authuser`,
@@ -67,8 +70,8 @@ struct GmailAPI: MailAPI {
     }
 }
 
-private extension Data {
-    init?(base64URL: String) {
+extension Data {
+    fileprivate init?(base64URL: String) {
         var text = base64URL.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
         text += String(repeating: "=", count: (4 - text.count % 4) % 4)
         self.init(base64Encoded: text)

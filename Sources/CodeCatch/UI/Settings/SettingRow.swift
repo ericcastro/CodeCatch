@@ -16,11 +16,15 @@ struct SettingRow<Trailing: View>: View {
     var body: some View {
         HStack(spacing: 10) {
             if let details {
-                Button { presented.toggle() } label: { label }
-                    .buttonStyle(.plain)
-                    .hoverHighlight(in: RoundedRectangle(cornerRadius: 6), outset: 4)
-                    .accessibilityHint("Shows status and options")
-                    .popover(isPresented: $presented, arrowEdge: .bottom) { InfoCard(title: title) { details } }
+                Button {
+                    presented.toggle()
+                } label: {
+                    label
+                }
+                .buttonStyle(.plain)
+                .hoverHighlight(in: RoundedRectangle(cornerRadius: 6), outset: 4)
+                .accessibilityHint("Shows status and options")
+                .popover(isPresented: $presented, arrowEdge: .bottom) { InfoCard(title: title) { details } }
             } else {
                 label
             }

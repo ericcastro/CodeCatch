@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
@@ -14,7 +15,10 @@ private enum AccountRemovalFailure: Error { case denied }
 
     var keychain: AccountKeychain {
         AccountKeychain(
-            read: { [self] key in events.append("read \(key)"); return hasTokens ? "token for \(key)" : nil },
+            read: { [self] key in
+                events.append("read \(key)")
+                return hasTokens ? "token for \(key)" : nil
+            },
             write: { _, _ in },
             remove: { [self] key in
                 events.append("remove \(key)")
@@ -60,8 +64,9 @@ private enum AccountRemovalFailure: Error { case denied }
     func makeModel() -> AppModel {
         let session = VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {})
         let monitor = SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults)
-        return AppModel(vaultSession: session, monitor: monitor, defaults: defaults,
-                        copyToClipboard: { _, _ in })
+        return AppModel(
+            vaultSession: session, monitor: monitor, defaults: defaults,
+            copyToClipboard: { _, _ in })
     }
 
     func cleanUp() { defaults.removePersistentDomain(forName: suite) }
@@ -81,10 +86,12 @@ private enum AccountRemovalFailure: Error { case denied }
         supplied.user = other.user
         var removed: [String] = []
 
-        try model.remove(supplied, keychain: .stub(remove: { key in
-            #expect(Set(model.accounts.map(\.id)) == Set([saved.id, other.id]))
-            removed.append(key)
-        }))
+        try model.remove(
+            supplied,
+            keychain: .stub(remove: { key in
+                #expect(Set(model.accounts.map(\.id)) == Set([saved.id, other.id]))
+                removed.append(key)
+            }))
 
         #expect(removed.count == 2)
         #expect(Set(removed) == Set([saved.secretKey, saved.refreshTokenKey]))
@@ -143,10 +150,12 @@ private enum AccountRemovalFailure: Error { case denied }
         var attempted: [String] = []
 
         do {
-            try model.remove(saved, keychain: .stub(remove: { key in
-                attempted.append(key)
-                if attempted.count == failingCall { throw AccountRemovalFailure.denied }
-            }))
+            try model.remove(
+                saved,
+                keychain: .stub(remove: { key in
+                    attempted.append(key)
+                    if attempted.count == failingCall { throw AccountRemovalFailure.denied }
+                }))
             Issue.record("Credential deletion failure must propagate")
         } catch AccountRemovalFailure.denied {
         }
@@ -195,11 +204,13 @@ private enum AccountRemovalFailure: Error { case denied }
         model.save(edited)
         var removed: [String] = []
 
-        try model.removeUnusedCredentials(for: original, keychain: .stub(remove: { key in
-            #expect(model.accounts.map(\.id) == [edited.id])
-            #expect(model.accounts.map(\.secretKey) == [edited.secretKey])
-            removed.append(key)
-        }))
+        try model.removeUnusedCredentials(
+            for: original,
+            keychain: .stub(remove: { key in
+                #expect(model.accounts.map(\.id) == [edited.id])
+                #expect(model.accounts.map(\.secretKey) == [edited.secretKey])
+                removed.append(key)
+            }))
 
         #expect(removed.count == 2)
         #expect(Set(removed) == Set([original.secretKey, original.refreshTokenKey]))
@@ -227,10 +238,12 @@ private enum AccountRemovalFailure: Error { case denied }
         var attempted: [String] = []
 
         do {
-            try model.removeUnusedCredentials(for: original, keychain: .stub(remove: { key in
-                attempted.append(key)
-                if attempted.count == failingCall { throw AccountRemovalFailure.denied }
-            }))
+            try model.removeUnusedCredentials(
+                for: original,
+                keychain: .stub(remove: { key in
+                    attempted.append(key)
+                    if attempted.count == failingCall { throw AccountRemovalFailure.denied }
+                }))
             Issue.record("Unused credential deletion failure must propagate")
         } catch AccountRemovalFailure.denied {
         }
@@ -248,10 +261,13 @@ private enum AccountRemovalFailure: Error { case denied }
 
     /// A forgotten sign-in token must be revoked at its provider (not left live), once, after the
     /// Keychain removal, and never for a plain IMAP host that has no provider.
-    @Test(arguments: RevokeEntry.allCases,
-          [("imap.gmail.com", "Google"), ("outlook.office365.com", "Microsoft"), ("work.example.com", nil)])
-    private func forgettingASignInRevokesItsTokenWithTheRightProvider(entry: RevokeEntry,
-                                                                      host: (String, String?)) throws {
+    @Test(
+        arguments: RevokeEntry.allCases,
+        [("imap.gmail.com", "Google"), ("outlook.office365.com", "Microsoft"), ("work.example.com", nil)])
+    private func forgettingASignInRevokesItsTokenWithTheRightProvider(
+        entry: RevokeEntry,
+        host: (String, String?)
+    ) throws {
         let fixture = try AccountRemovalFixture()
         defer { fixture.cleanUp() }
         let model = fixture.makeModel()

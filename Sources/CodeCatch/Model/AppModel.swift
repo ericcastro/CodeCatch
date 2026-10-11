@@ -6,10 +6,10 @@ import LocalAuthentication
 @MainActor
 final class AppModel: ObservableObject {
     #if DEBUG
-    /// `--snapshot` swaps in a model with sample sources that needs no Touch ID.
-    static var shared = AppModel()
+        /// `--snapshot` swaps in a model with sample sources that needs no Touch ID.
+        static var shared = AppModel()
     #else
-    static let shared = AppModel()
+        static let shared = AppModel()
     #endif
     /// How far back codes are listed; re-read from the sources on launch, never stored.
     var history: TimeInterval { Prefs.history(in: defaults) }
@@ -29,9 +29,10 @@ final class AppModel: ObservableObject {
     let search: CodeSearch
     let recovery = RecoveryInbox()
     /// `codecatch` requests. Its switch and rules load in `start`, so tests never read the Keychain.
-    lazy var agents = AgentAccess(items: { [unowned self] in items }, markUsed: { [unowned self] in markUsed($0) },
-                                  authenticate: { try await DeviceAuthentication().authenticate(reason: $0) },
-                                  load: AgentStore.load, save: AgentStore.save, defaults: defaults)
+    lazy var agents = AgentAccess(
+        items: { [unowned self] in items }, markUsed: { [unowned self] in markUsed($0) },
+        authenticate: { try await DeviceAuthentication().authenticate(reason: $0) },
+        load: AgentStore.load, save: AgentStore.save, defaults: defaults)
     private var observations = Set<AnyCancellable>()
     private let defaults: UserDefaults
     private let copyToClipboard: (String, UUID) -> Void
@@ -56,17 +57,20 @@ final class AppModel: ObservableObject {
         }
     }
 
-    init(vaultSession: VaultSession? = nil, monitor: SourceMonitor? = nil, search: CodeSearch? = nil, defaults: UserDefaults = .standard,
-         accounts: [MailAccount]? = nil,
-         copyToClipboard: @escaping (String, UUID) -> Void = { Clipboard.copy($0, id: $1) },
-         typeCode: (@MainActor (String) -> Void)? = nil,
-         unlockPolicy: UnlockPolicy? = nil,
-         confirmLink: LinkConfirmation? = nil,
-         openURL: (@MainActor (URL) -> Void)? = nil) {
+    init(
+        vaultSession: VaultSession? = nil, monitor: SourceMonitor? = nil, search: CodeSearch? = nil, defaults: UserDefaults = .standard,
+        accounts: [MailAccount]? = nil,
+        copyToClipboard: @escaping (String, UUID) -> Void = { Clipboard.copy($0, id: $1) },
+        typeCode: (@MainActor (String) -> Void)? = nil,
+        unlockPolicy: UnlockPolicy? = nil,
+        confirmLink: LinkConfirmation? = nil,
+        openURL: (@MainActor (URL) -> Void)? = nil
+    ) {
         self.defaults = defaults
-        self.confirmLink = confirmLink ?? { site, warning, details, email in
-            confirmed("Open \(site)?", warning, action: "Open", safeDefault: true, details: details, also: email)
-        }
+        self.confirmLink =
+            confirmLink ?? { site, warning, details, email in
+                confirmed("Open \(site)?", warning, action: "Open", safeDefault: true, details: details, also: email)
+            }
         self.openURL = openURL ?? { NSWorkspace.shared.open($0) }
         self.accounts = accounts ?? MailAccount.load(from: defaults)
         Prefs.register(in: defaults)
@@ -78,10 +82,11 @@ final class AppModel: ObservableObject {
         self.search = search ?? CodeSearch(defaults: defaults)
         self.copyToClipboard = copyToClipboard
         let session = self.vaultSession
-        self.typeCode = typeCode ?? { code in
-            // Re-check the same session and settings when queued typing begins.
-            KeyTyper.type(code) { KeyTyper.canType && session.isUnlocked && defaults.bool(forKey: Prefs.autoType) }
-        }
+        self.typeCode =
+            typeCode ?? { code in
+                // Re-check the same session and settings when queued typing begins.
+                KeyTyper.type(code) { KeyTyper.canType && session.isUnlocked && defaults.bool(forKey: Prefs.autoType) }
+            }
         self.vaultSession.objectWillChange.sink { [weak self] in self?.objectWillChange.send() }.store(in: &observations)
         self.monitor.objectWillChange.sink { [weak self] in self?.objectWillChange.send() }.store(in: &observations)
         self.search.objectWillChange.sink { [weak self] in self?.objectWillChange.send() }.store(in: &observations)
@@ -218,7 +223,9 @@ final class AppModel: ObservableObject {
         guard item.origin == .mail else { return item.origination }
         let account = accounts.first { $0.id.uuidString == item.sourceKey }
         // The badge is the mailbox's logo (Apple Mail: Mail's own icon); with logos off, every mailbox wears the mail app's.
-        let sharingBadge = !isOn(Prefs.serviceIcons) ? mailSourceKeys.count
+        let sharingBadge =
+            !isOn(Prefs.serviceIcons)
+            ? mailSourceKeys.count
             : account.map { mine in accounts.filter { $0.enabled && $0.iconDomain == mine.iconDomain }.count } ?? 1
         guard sharingBadge > 1 else { return "" }
         guard let account else { return item.sourceLabel }
@@ -232,7 +239,8 @@ final class AppModel: ObservableObject {
     func ingest(_ message: IncomingMessage) {
         let age = Date().timeIntervalSince(message.date)
         guard age < history, message.date > clearedAt,
-              !isIgnored(message.senderID) else { return }
+            !isIgnored(message.senderID)
+        else { return }
         let code = isOn(Prefs.receivedCodes) ? CodeExtractor.code(in: message.fullText) : nil
         let detectedLink = message.isMail ? SignInLink.find(in: message.links, subject: message.subject ?? "") : nil
         let resets = detectedLink?.kind == .passwordReset
@@ -280,7 +288,10 @@ final class AppModel: ObservableObject {
     /// A click on a hidden code: authenticate once, then do what was asked.
     @discardableResult
     func unlocked(_ action: @escaping @MainActor () -> Void) -> Task<Void, Never>? {
-        if isUnlocked { action(); return nil }
+        if isUnlocked {
+            action()
+            return nil
+        }
         return Task { if (try? await authenticate()) != nil { action() } }
     }
 
@@ -337,7 +348,8 @@ final class AppModel: ObservableObject {
             search.recordUse(current)
         } else {
             guard let retained = items.first(where: { $0.id == item.id && $0.copyValue == item.copyValue }),
-                  !isIgnored(retained.sender) else { return }
+                !isIgnored(retained.sender)
+            else { return }
             current = retained
         }
         objectWillChange.send()  // the clipboard is not observed: redraw the "Copied" marks now, not on the next tick
@@ -352,7 +364,8 @@ final class AppModel: ObservableObject {
 
     private func retainedLink(_ item: CodeItem) -> CodeItem? {
         guard isUnlocked, let current = items.first(where: { $0.id == item.id && $0.link == item.link }),
-              current.link != nil, isOn(current.linkSetting), !isIgnored(current.sender) else { return nil }
+            current.link != nil, isOn(current.linkSetting), !isIgnored(current.sender)
+        else { return nil }
         return current
     }
 
@@ -361,7 +374,8 @@ final class AppModel: ObservableObject {
     func copyRecoveryText(_ text: String, from id: UUID, at date: Date = Date()) -> Bool {
         recovery.prune(at: date)
         guard isUnlocked, isOn(Prefs.receivedCodes), !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-              let entry = recovery.entries.first(where: { $0.id == id }), entry.message.fullText.contains(text) else { return false }
+            let entry = recovery.entries.first(where: { $0.id == id }), entry.message.fullText.contains(text)
+        else { return false }
         copyToClipboard(text, id)
         return true
     }
@@ -385,11 +399,14 @@ final class AppModel: ObservableObject {
         if let notice = item.linkNotice, notice.warns, let destination = item.destination, let host = destination.host {
             // Site and path only: the query is a token, noise for the check.
             let address = host + destination.path
-            let details = ["From: \(item.sender)", "Subject: \(item.preview)",
-                           "Link: \(address.count > 60 ? address.prefix(59) + "…" : address)"].joined(separator: "\n")
+            let details = [
+                "From: \(item.sender)", "Subject: \(item.preview)",
+                "Link: \(address.count > 60 ? address.prefix(59) + "…" : address)",
+            ].joined(separator: "\n")
             let email = source(of: item).map { source in (title: source.title, run: { [openURL] in openURL(source.url) }) }
             guard confirmLink(ServiceIdentity.registrable(host), notice.text, details, email),
-                  retainedLink(item) != nil else { return }
+                retainedLink(item) != nil
+            else { return }
         }
         if leavingMenu { NSApp.hide(nil) }
         openURL(link)
@@ -398,8 +415,10 @@ final class AppModel: ObservableObject {
 
     /// Lets the user try the card and copy without waiting for a real code.
     func showTestCode() {
-        ingest(IncomingMessage(text: "Your CodeCatch code is \(Int.random(in: 100_000...999_999)).", senderName: "", senderID: "",
-                               sourceKey: CodeItem.testSourceKey, sourceLabel: "Test", date: Date(), isMail: false))
+        ingest(
+            IncomingMessage(
+                text: "Your CodeCatch code is \(Int.random(in: 100_000...999_999)).", senderName: "", senderID: "",
+                sourceKey: CodeItem.testSourceKey, sourceLabel: "Test", date: Date(), isMail: false))
     }
 
     /// Where "Show in …" goes: the exact email where macOS allows (its page in Gmail or Outlook, or
@@ -409,7 +428,8 @@ final class AppModel: ObservableObject {
         case .messages:
             // A number or an address opens its conversation; a named sender ("Revolut") has neither.
             if item.sender.contains("@") || item.sender.allSatisfy({ $0.isNumber || "+ ()-".contains($0) }),
-               let link = item.sender.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed).flatMap({ URL(string: "sms:\($0)") }) {
+                let link = item.sender.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed).flatMap({ URL(string: "sms:\($0)") })
+            {
                 return ("Show in Messages", link)
             }
             return NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.MobileSMS").map { ("Open Messages", $0) }
@@ -422,8 +442,9 @@ final class AppModel: ObservableObject {
             }
             // message:// always opens Mail, so only when Mail is the source, or the user's mail app for IMAP.
             if let id = item.internetMessageID?.addingPercentEncoding(withAllowedCharacters: .alphanumerics.union(.init(charactersIn: "@.-_"))),
-               let link = URL(string: "message://%3C\(id)%3E"), let handler = NSWorkspace.shared.urlForApplication(toOpen: link),
-               fromMail || handler == mailApp {
+                let link = URL(string: "message://%3C\(id)%3E"), let handler = NSWorkspace.shared.urlForApplication(toOpen: link),
+                fromMail || handler == mailApp
+            {
                 return ("Show in Mail", link)
             }
             return mailApp.map { ("Open \(FileManager.default.displayName(atPath: $0.path).replacingOccurrences(of: ".app", with: ""))", $0) }
@@ -480,9 +501,10 @@ final class AppModel: ObservableObject {
 
     /// What `codecatch status` reports: counts only, never account names.
     var agentStatus: AgentStatus {
-        AgentStatus(appVersion: AppBrand.version, access: agents.config.enabled, rules: agents.config.rules.count,
-                    sourcesWorking: sources.filter { $0.status == .live }.count,
-                    sourcesFailing: sources.filter { $0.status.needsAttention }.count, allowAll: agents.config.allowAll)
+        AgentStatus(
+            appVersion: AppBrand.version, access: agents.config.enabled, rules: agents.config.rules.count,
+            sourcesWorking: sources.filter { $0.status == .live }.count,
+            sourcesFailing: sources.filter { $0.status.needsAttention }.count, allowAll: agents.config.allowAll)
     }
 
     var hasHistory: Bool { !items.isEmpty || !recovery.entries.isEmpty }

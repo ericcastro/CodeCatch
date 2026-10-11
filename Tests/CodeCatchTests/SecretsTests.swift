@@ -1,6 +1,7 @@
 import Foundation
 import Security
 import Testing
+
 @testable import CodeCatch
 
 private func expectAccountScope(_ dictionary: CFDictionary, account: String) {
@@ -27,15 +28,18 @@ private func expectFailure(_ status: OSStatus, performing operation: () throws -
     var updateCalls = 0
     var addCalls = 0
 
-    try Secrets.set(value, for: account, update: { query, changes in
-        updateCalls += 1
-        expectAccountScope(query, account: account)
-        #expect((changes as NSDictionary)[kSecValueData as String] as? Data == Data(value.utf8))
-        return errSecSuccess
-    }, add: { _, _ in
-        addCalls += 1
-        return errSecSuccess
-    })
+    try Secrets.set(
+        value, for: account,
+        update: { query, changes in
+            updateCalls += 1
+            expectAccountScope(query, account: account)
+            #expect((changes as NSDictionary)[kSecValueData as String] as? Data == Data(value.utf8))
+            return errSecSuccess
+        },
+        add: { _, _ in
+            addCalls += 1
+            return errSecSuccess
+        })
 
     #expect(updateCalls == 1)
     #expect(addCalls == 0)
@@ -47,17 +51,20 @@ private func expectFailure(_ status: OSStatus, performing operation: () throws -
     var updateCalls = 0
     var addCalls = 0
 
-    try Secrets.set(value, for: account, update: { query, _ in
-        updateCalls += 1
-        expectAccountScope(query, account: account)
-        return errSecItemNotFound
-    }, add: { attributes, _ in
-        addCalls += 1
-        #expect(updateCalls == 1)
-        expectAccountScope(attributes, account: account)
-        #expect((attributes as NSDictionary)[kSecValueData as String] as? Data == Data(value.utf8))
-        return errSecSuccess
-    })
+    try Secrets.set(
+        value, for: account,
+        update: { query, _ in
+            updateCalls += 1
+            expectAccountScope(query, account: account)
+            return errSecItemNotFound
+        },
+        add: { attributes, _ in
+            addCalls += 1
+            #expect(updateCalls == 1)
+            expectAccountScope(attributes, account: account)
+            #expect((attributes as NSDictionary)[kSecValueData as String] as? Data == Data(value.utf8))
+            return errSecSuccess
+        })
 
     #expect(updateCalls == 1)
     #expect(addCalls == 1)
@@ -69,13 +76,16 @@ func failedUpdatePreservesStatusWithoutAttemptingAdd(status: OSStatus) {
     var addCalls = 0
 
     expectFailure(status) {
-        try Secrets.set("value", for: "account", update: { _, _ in
-            updateCalls += 1
-            return status
-        }, add: { _, _ in
-            addCalls += 1
-            return errSecSuccess
-        })
+        try Secrets.set(
+            "value", for: "account",
+            update: { _, _ in
+                updateCalls += 1
+                return status
+            },
+            add: { _, _ in
+                addCalls += 1
+                return errSecSuccess
+            })
     }
 
     #expect(updateCalls == 1)
@@ -88,14 +98,17 @@ func failedAddPreservesStatusWithoutRetrying(status: OSStatus) {
     var addCalls = 0
 
     expectFailure(status) {
-        try Secrets.set("value", for: "account", update: { _, _ in
-            updateCalls += 1
-            return errSecItemNotFound
-        }, add: { _, _ in
-            addCalls += 1
-            #expect(updateCalls == 1)
-            return status
-        })
+        try Secrets.set(
+            "value", for: "account",
+            update: { _, _ in
+                updateCalls += 1
+                return errSecItemNotFound
+            },
+            add: { _, _ in
+                addCalls += 1
+                #expect(updateCalls == 1)
+                return status
+            })
     }
 
     #expect(updateCalls == 1)

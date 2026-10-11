@@ -15,7 +15,11 @@ public struct TOTP: Equatable, Sendable {
 
     public init?(_ stored: String) {
         let text = stored.trimmingCharacters(in: .whitespacesAndNewlines)
-        var secret = text, algorithm = Algorithm.sha1, digits = 6, period: TimeInterval = 30, steam = false
+        var secret = text
+        var algorithm = Algorithm.sha1
+        var digits = 6
+        var period: TimeInterval = 30
+        var steam = false
         if text.lowercased().hasPrefix("steam://") {
             secret = String(text.dropFirst(8))
             steam = true
@@ -24,9 +28,18 @@ public struct TOTP: Equatable, Sendable {
             guard let url = URLComponents(string: text), url.host?.lowercased() == "totp" else { return nil }
             let query = Dictionary((url.queryItems ?? []).map { ($0.name.lowercased(), $0.value ?? "") }, uniquingKeysWith: { a, _ in a })
             secret = query["secret"] ?? ""
-            if let a = query["algorithm"] { guard let parsed = Algorithm(rawValue: a.lowercased()) else { return nil }; algorithm = parsed }
-            if let d = query["digits"] { guard let parsed = Int(d), (5...10).contains(parsed) else { return nil }; digits = parsed }
-            if let p = query["period"] { guard let parsed = TimeInterval(p), (1...86400).contains(parsed) else { return nil }; period = parsed }
+            if let a = query["algorithm"] {
+                guard let parsed = Algorithm(rawValue: a.lowercased()) else { return nil }
+                algorithm = parsed
+            }
+            if let d = query["digits"] {
+                guard let parsed = Int(d), (5...10).contains(parsed) else { return nil }
+                digits = parsed
+            }
+            if let p = query["period"] {
+                guard let parsed = TimeInterval(p), (1...86400).contains(parsed) else { return nil }
+                period = parsed
+            }
         }
         guard let key = Self.base32(secret), !key.isEmpty else { return nil }
         (self.key, self.algorithm, self.digits, self.period, self.isSteam) = (key, algorithm, digits, period, steam)
@@ -36,16 +49,21 @@ public struct TOTP: Equatable, Sendable {
         var counter = UInt64(max(0, date.timeIntervalSince1970) / period).bigEndian
         let message = Data(bytes: &counter, count: 8)
         let symmetric = SymmetricKey(data: key)
-        let mac: Data = switch algorithm {
-        case .sha1: Data(HMAC<Insecure.SHA1>.authenticationCode(for: message, using: symmetric))
-        case .sha256: Data(HMAC<SHA256>.authenticationCode(for: message, using: symmetric))
-        case .sha512: Data(HMAC<SHA512>.authenticationCode(for: message, using: symmetric))
-        }
+        let mac: Data =
+            switch algorithm {
+            case .sha1: Data(HMAC<Insecure.SHA1>.authenticationCode(for: message, using: symmetric))
+            case .sha256: Data(HMAC<SHA256>.authenticationCode(for: message, using: symmetric))
+            case .sha512: Data(HMAC<SHA512>.authenticationCode(for: message, using: symmetric))
+            }
         let offset = Int(mac[mac.count - 1] & 0x0f)
         var value = mac[offset..<offset + 4].reduce(0) { $0 << 8 | UInt32($1) } & 0x7fff_ffff
         guard !isSteam else {
             let alphabet = Array("23456789BCDFGHJKMNPQRTVWXY")
-            return String((0..<digits).map { _ in defer { value /= 26 }; return alphabet[Int(value % 26)] })
+            return String(
+                (0..<digits).map { _ in
+                    defer { value /= 26 }
+                    return alphabet[Int(value % 26)]
+                })
         }
         let code = String(UInt64(value) % UInt64(pow(10, Double(digits))))
         return String(repeating: "0", count: digits - code.count) + code
@@ -59,7 +77,9 @@ public struct TOTP: Equatable, Sendable {
     /// RFC 4648 base32, forgiving of case, spaces, dashes and padding as people paste them.
     static func base32(_ text: String) -> Data? {
         let alphabet = Array("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567")
-        var bits = 0, value = 0, out = Data()
+        var bits = 0
+        var value = 0
+        var out = Data()
         for ch in text.uppercased() where !" -=".contains(ch) {
             guard let index = alphabet.firstIndex(of: ch) else { return nil }
             value = value << 5 | index

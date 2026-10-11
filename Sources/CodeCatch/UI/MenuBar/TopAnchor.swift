@@ -31,16 +31,18 @@ struct TopAnchor: NSViewRepresentable {
             top = window.frame.maxY
             let center = NotificationCenter.default
             // Opening places the window under the menu bar: that is the edge to keep.
-            observers.append(center.addObserver(forName: NSWindow.didBecomeKeyNotification, object: window, queue: .main) { [weak self] _ in
-                MainActor.assumeIsolated {
-                    guard let self else { return }
-                    self.top = self.window?.frame.maxY
-                    self.fit(self.height)
-                }
-            })
-            observers.append(center.addObserver(forName: NSWindow.didResizeNotification, object: window, queue: .main) { [weak self] _ in
-                MainActor.assumeIsolated { self.map { $0.fit($0.height) } }
-            })
+            observers.append(
+                center.addObserver(forName: NSWindow.didBecomeKeyNotification, object: window, queue: .main) { [weak self] _ in
+                    MainActor.assumeIsolated {
+                        guard let self else { return }
+                        self.top = self.window?.frame.maxY
+                        self.fit(self.height)
+                    }
+                })
+            observers.append(
+                center.addObserver(forName: NSWindow.didResizeNotification, object: window, queue: .main) { [weak self] _ in
+                    MainActor.assumeIsolated { self.map { $0.fit($0.height) } }
+                })
         }
     }
 }

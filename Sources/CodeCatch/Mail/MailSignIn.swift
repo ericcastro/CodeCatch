@@ -10,10 +10,12 @@ final class MailSignIn: ObservableObject {
     private var task: Task<OAuth.Grant, Error>?
     private let authenticate: (MailAccount) async throws -> OAuth.Grant
 
-    init(authenticate: @escaping (MailAccount) async throws -> OAuth.Grant = {
-        guard let provider = $0.provider else { throw OAuth.Failure.denied("this server has no sign-in") }
-        return try await provider.signIn(email: $0.user)
-    }) {
+    init(
+        authenticate: @escaping (MailAccount) async throws -> OAuth.Grant = {
+            guard let provider = $0.provider else { throw OAuth.Failure.denied("this server has no sign-in") }
+            return try await provider.signIn(email: $0.user)
+        }
+    ) {
         self.authenticate = authenticate
     }
 
@@ -31,7 +33,10 @@ final class MailSignIn: ObservableObject {
         let task = Task { try await authenticate(account) }
         self.task = task
         defer {
-            if request == generation { isBusy = false; self.task = nil }
+            if request == generation {
+                isBusy = false
+                self.task = nil
+            }
         }
         let result = await task.result
         guard request == generation, !Task.isCancelled else { throw CancellationError() }

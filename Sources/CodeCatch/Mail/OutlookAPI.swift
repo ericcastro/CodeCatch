@@ -25,8 +25,10 @@ struct OutlookAPI: MailAPI {
     }
 
     func inbox(since date: Date, limit: Int) async throws -> [String] {
-        try await list(["$filter": "receivedDateTime ge \(Self.timestamp(date))", "$orderby": "receivedDateTime desc",
-                        "$top": "\(limit)"]).map(\.id).reversed()
+        try await list([
+            "$filter": "receivedDateTime ge \(Self.timestamp(date))", "$orderby": "receivedDateTime desc",
+            "$top": "\(limit)",
+        ]).map(\.id).reversed()
     }
 
     /// Mail that arrived at or after `cursor`; the one at the cursor comes again and the watcher skips it.
@@ -37,14 +39,16 @@ struct OutlookAPI: MailAPI {
 
     /// One message, from its MIME source.
     func message(_ id: String, account: MailAccount) async throws -> IncomingMessage? {
-        let info: [String: Any], raw: Data
+        let info: [String: Any]
+        let raw: Data
         do {
             info = try await json("me/messages/\(id)", ["$select": "receivedDateTime,webLink"])
             raw = try await get("me/messages/\(id)/$value")
         } catch MailAPIError.gone { return nil }
         let received = (info["receivedDateTime"] as? String).flatMap { try? Date($0, strategy: .iso8601) }
-        return IncomingMessage(mail: raw, receiver: .microsoft, account: account, date: received, messageID: "outlook:\(id)",
-                               webURL: (info["webLink"] as? String).flatMap(URL.init(string:)))
+        return IncomingMessage(
+            mail: raw, receiver: .microsoft, account: account, date: received, messageID: "outlook:\(id)",
+            webURL: (info["webLink"] as? String).flatMap(URL.init(string:)))
     }
 
     private func list(_ query: [String: String], allPages: Bool = false) async throws -> [(id: String, received: String)] {
@@ -63,9 +67,10 @@ struct OutlookAPI: MailAPI {
             guard allPages, let next = page["@odata.nextLink"] else { return messages }
             // Follow Graph's opaque next URL unchanged, but never send credentials to another origin.
             guard let link = next as? String, let url = URL(string: link),
-                  url.scheme == "https", url.host?.lowercased() == "graph.microsoft.com",
-                  url.port == nil || url.port == 443, url.user == nil, url.password == nil, url.fragment == nil,
-                  visited.insert(url).inserted else {
+                url.scheme == "https", url.host?.lowercased() == "graph.microsoft.com",
+                url.port == nil || url.port == 443, url.user == nil, url.password == nil, url.fragment == nil,
+                visited.insert(url).inserted
+            else {
                 throw MailAPIError.http(200, "invalid or cyclic mailbox pagination")
             }
             let data = try await send(URLRequest(url: url, timeoutInterval: 60))

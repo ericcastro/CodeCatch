@@ -24,7 +24,10 @@ enum CLIServer {
         source.setEventHandler {
             let fd = accept(listener, nil, nil)
             guard fd >= 0 else { return }
-            guard slots.wait(timeout: .now()) == .success else { close(fd); return }
+            guard slots.wait(timeout: .now()) == .success else {
+                close(fd)
+                return
+            }
             DispatchQueue.global().async {
                 connect(fd, model: model)
             }
@@ -117,8 +120,10 @@ enum CLIServer {
         }
     }
 
-    @MainActor private static func serve(_ request: AgentRequest, _ caller: AgentCaller, _ reply: @escaping (AgentReply) -> Void,
-                                         _ model: AppModel) async {
+    @MainActor private static func serve(
+        _ request: AgentRequest, _ caller: AgentCaller, _ reply: @escaping (AgentReply) -> Void,
+        _ model: AppModel
+    ) async {
         switch request.command {
         case .status:
             reply(AgentReply(status: model.agentStatus))

@@ -43,11 +43,13 @@ enum CommandLineTool {
     static func install(over state: State, link: URL = link, helper: URL = helper) throws {
         switch state {
         case .notInstalled:
-            let admin = "mkdir -p \(quoted(link.deletingLastPathComponent().path)) && [ ! -e \(quoted(link.path)) ] && [ ! -L \(quoted(link.path)) ] && ln -sh \(quoted(helper.path)) \(quoted(link.path))"
+            let admin =
+                "mkdir -p \(quoted(link.deletingLastPathComponent().path)) && [ ! -e \(quoted(link.path)) ] && [ ! -L \(quoted(link.path)) ] && ln -sh \(quoted(helper.path)) \(quoted(link.path))"
             // symlink(2) fails if anything is at the path, a folder included; `ln` would write into a folder.
             try change(link, asAdmin: admin) { Darwin.symlink(helper.path, link.path) == 0 }
         case .stale(let target):
-            let admin = "[ \"$(readlink \(quoted(link.path)))\" = \(quoted(target)) ] && [ ! -d \(quoted(link.path)) ] && ln -sfh \(quoted(helper.path)) \(quoted(link.path))"
+            let admin =
+                "[ \"$(readlink \(quoted(link.path)))\" = \(quoted(target)) ] && [ ! -d \(quoted(link.path)) ] && ln -sfh \(quoted(helper.path)) \(quoted(link.path))"
             try change(link, asAdmin: admin) { isLink(link, to: target) && Darwin.unlink(link.path) == 0 && Darwin.symlink(helper.path, link.path) == 0 }
         default: return
         }
@@ -82,7 +84,8 @@ enum CommandLineTool {
         guard let error else { return }
         // -128: the user cancelled the password prompt.
         if error[NSAppleScript.errorNumber] as? Int == -128 { throw CancellationError() }
-        throw error[NSAppleScript.errorNumber] as? Int == 1 ? changed
+        throw error[NSAppleScript.errorNumber] as? Int == 1
+            ? changed
             : Failure(errorDescription: error[NSAppleScript.errorMessage] as? String ?? "Couldn't change /usr/local/bin.")
     }
 

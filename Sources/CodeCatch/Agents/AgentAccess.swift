@@ -26,7 +26,11 @@ final class AgentAccess: ObservableObject {
 
     enum Always: Equatable { case site, allSites }
     /// `notice` names the rule that released the code; nil when Allow All did.
-    enum Presentation { case card, notice(CodeItem, AgentCaller, AgentRule?), hide }
+    enum Presentation {
+        case card
+        case notice(CodeItem, AgentCaller, AgentRule?)
+        case hide
+    }
 
     /// Codes this old still count when the request gives no `since`.
     static let lookback: TimeInterval = 30
@@ -63,14 +67,25 @@ final class AgentAccess: ObservableObject {
     private var cancelled: String?
     private static let logKey = "agentLog"
 
-    private enum Decision { case allow(Always?), deny, timeout, cancelled(String) }
+    private enum Decision {
+        case allow(Always?)
+        case deny, timeout
+        case cancelled(String)
+    }
 
-    init(items: @escaping () -> [CodeItem], markUsed: @escaping (CodeItem) -> Void,
-         authenticate: @escaping (String) async throws -> Void,
-         load: @escaping () throws -> AgentConfig, save: @escaping (AgentConfig) throws -> Void,
-         defaults: UserDefaults, now: @escaping () -> Date = Date.init) {
-        self.items = items; self.markUsed = markUsed; self.authenticate = authenticate
-        self.load = load; self.save = save; self.defaults = defaults; self.now = now
+    init(
+        items: @escaping () -> [CodeItem], markUsed: @escaping (CodeItem) -> Void,
+        authenticate: @escaping (String) async throws -> Void,
+        load: @escaping () throws -> AgentConfig, save: @escaping (AgentConfig) throws -> Void,
+        defaults: UserDefaults, now: @escaping () -> Date = Date.init
+    ) {
+        self.items = items
+        self.markUsed = markUsed
+        self.authenticate = authenticate
+        self.load = load
+        self.save = save
+        self.defaults = defaults
+        self.now = now
         log = defaults.data(forKey: Self.logKey).flatMap { try? JSONDecoder().decode([AgentLogEntry].self, from: $0) } ?? []
     }
 
@@ -84,8 +99,10 @@ final class AgentAccess: ObservableObject {
     static let accessOff = AgentError(.accessOff, "Command-line access is off. The user can turn it on in CodeCatch → Settings → Agents.")
 
     /// Finds or waits for a code for `site` and releases it once allowed. One request at a time.
-    func get(site: String, since: Date?, timeout: TimeInterval?, caller: AgentCaller,
-             progress: @escaping (String) -> Void) async -> Result<CodeItem, AgentError> {
+    func get(
+        site: String, since: Date?, timeout: TimeInterval?, caller: AgentCaller,
+        progress: @escaping (String) -> Void
+    ) async -> Result<CodeItem, AgentError> {
         guard config.enabled else { return .failure(Self.accessOff) }
         guard request == nil else { return .failure(AgentError(.busy, "CodeCatch is handling another request. Try again when it is done.")) }
         guard let query = SiteQuery(site) else { return .failure(AgentError(.usage, "\"\(site)\" isn't a site. Use a domain, URL or service name.")) }
@@ -105,7 +122,8 @@ final class AgentAccess: ObservableObject {
                 return await offer(item, unnamed: unnamed, deadline: deadline, progress: progress)
             }
             guard now() < deadline else {
-                return failure(.noCode, "No \(query.label) code arrived in \(Int(wait)) seconds. Send a new one and try again.", query, caller, log: "No code arrived")
+                return failure(
+                    .noCode, "No \(query.label) code arrived in \(Int(wait)) seconds. Send a new one and try again.", query, caller, log: "No code arrived")
             }
             if !announced {
                 progress("waiting up to \(Int(wait))s for a \(query.label) code…")
@@ -117,8 +135,10 @@ final class AgentAccess: ObservableObject {
 
     /// The newest unused, live code for the site since `from`; else an SMS that names no site.
     private func candidate(for query: SiteQuery, from: Date) -> (CodeItem, unnamed: Bool)? {
-        let fresh = items().filter { [.messages, .mail].contains($0.origin) && !$0.used && now() < $0.expires && $0.received >= from
-            && (!$0.isLink || config.links) }
+        let fresh = items().filter {
+            [.messages, .mail].contains($0.origin) && !$0.used && now() < $0.expires && $0.received >= from
+                && (!$0.isLink || config.links)
+        }
         let newest = { (a: CodeItem, b: CodeItem) in a.received < b.received }
         if let item = fresh.filter({ Self.matches($0, query) }).max(by: newest) { return (item, false) }
         if let sms = fresh.filter({ $0.origin == .messages && $0.domain == nil && !$0.code.isEmpty }).max(by: newest) { return (sms, true) }
@@ -131,7 +151,8 @@ final class AgentAccess: ObservableObject {
     /// the agent asks for, so it never matches and always goes to the card as unnamed.
     static func matches(_ item: CodeItem, _ query: SiteQuery) -> Bool {
         guard item.origin != .mail || item.domain != nil, item.domain != nil || item.service.lowercased() != item.sender.lowercased(),
-              query.matches(domain: item.domain, service: item.service) else { return false }
+            query.matches(domain: item.domain, service: item.service)
+        else { return false }
         return !item.isLink || releasesLink(item, for: query)
     }
 
@@ -140,18 +161,22 @@ final class AgentAccess: ObservableObject {
     /// (anthropic.com for claude.ai), not where its links may go.
     static func releasesLink(_ item: CodeItem, for query: SiteQuery) -> Bool {
         guard item.link != nil, !item.resetsPassword, item.senderVerified == true, item.linkNotice?.warns != true,
-              let host = item.destination?.host, let domain = query.domain else { return false }
+            let host = item.destination?.host, let domain = query.domain
+        else { return false }
         return ServiceIdentity.registrable(host) == domain
     }
 
     private func offer(_ item: CodeItem, unnamed: Bool, deadline: Date, progress: (String) -> Void) async -> Result<CodeItem, AgentError> {
         guard let request else { return .failure(AgentError(.failed, "The request ended.")) }
-        let query = request.query, caller = request.caller
+        let query = request.query
+        let caller = request.caller
         // A rule, or Allow All; never for an SMS that names no site, and past the hourly cap the user is asked.
         // Under Allow All the release is Allow All's, so the notice's Turn Off stops what released it.
-        let rule = config.allowAll ? nil : rule(for: item, caller: caller), releases = recentRuleReleases
+        let rule = config.allowAll ? nil : rule(for: item, caller: caller)
+        let releases = recentRuleReleases
         if !unnamed, item.origin != .mail || item.senderVerified == true,
-           rule != nil || config.allowAll, releases.count < Self.ruleLimit {
+            rule != nil || config.allowAll, releases.count < Self.ruleLimit
+        {
             var updated = config
             updated.releases = releases + [now()]
             // Count durably before releasing; a storage failure falls back to explicit approval.
@@ -174,13 +199,15 @@ final class AgentAccess: ObservableObject {
             }
             // The approval covers what the card showed: not a newer message that took its row.
             guard config.enabled, !item.isLink || config.links, let current = items().first(where: { $0.id == item.id }), !current.used,
-                  now() < current.expires, current.code == item.code, current.link == item.link else {
+                now() < current.expires, current.code == item.code, current.link == item.link
+            else {
                 return failure(.failed, "The code expired or changed before it was approved.", query, caller, log: "Expired")
             }
             denials = 0
             // A site rule needs the sender's domain; without one it must not quietly become "every site".
             if let always, let app = caller.app, !unnamed, item.origin != .mail || item.senderVerified == true,
-               always == .allSites || item.domain != nil {
+                always == .allSites || item.domain != nil
+            {
                 addRule(AgentRule(app: app, site: always == .site ? item.domain : nil, added: now()))
             }
             release(item, query, caller, log: always == nil ? "Allowed" : "Allowed, and always from now on")
@@ -190,7 +217,9 @@ final class AgentAccess: ObservableObject {
             if denials >= Self.denialLimit { turnOff(reason: "Turned off after you said no \(Self.denialLimit) times in a row") }
             return failure(.denied, "The user said no. Don't ask again unless they tell you to.", query, caller, log: "Denied")
         case .timeout:
-            return failure(.approvalTimeout, "The user didn't approve the \(query.label) code in time. Ask them to watch for the CodeCatch banner, then try again.", query, caller, log: "Not approved in time")
+            return failure(
+                .approvalTimeout, "The user didn't approve the \(query.label) code in time. Ask them to watch for the CodeCatch banner, then try again.", query,
+                caller, log: "Not approved in time")
         case .cancelled(let why):
             return failure(.approvalTimeout, why, query, caller, log: "Cancelled")
         }
@@ -213,7 +242,9 @@ final class AgentAccess: ObservableObject {
         record(caller, query, outcome)
     }
 
-    private func failure(_ code: AgentError.Code, _ message: String, _ query: SiteQuery, _ caller: AgentCaller, log outcome: String) -> Result<CodeItem, AgentError> {
+    private func failure(_ code: AgentError.Code, _ message: String, _ query: SiteQuery, _ caller: AgentCaller, log outcome: String) -> Result<
+        CodeItem, AgentError
+    > {
         record(caller, query, outcome)
         return .failure(AgentError(code, message))
     }
@@ -226,13 +257,15 @@ final class AgentAccess: ObservableObject {
         guard let request, let item = request.item, decision?.request == request.id, !authenticating else { return }
         authenticating = true
         defer { authenticating = false }
-        let app = request.caller.name, site = item.domain ?? request.query.label
+        let app = request.caller.name
+        let site = item.domain ?? request.query.label
         // The prompt names what is granted, so a script that picked Always Allow can't pass it off as one code.
-        let reason = switch always {
-        case nil: "give \(app) \(item.isLink ? "a \(site) sign-in link" : "your \(site) code")"
-        case .site: "give \(app) your \(site) code, and \(site) codes from now on without asking"
-        case .allSites: "give \(app) your \(site) code, and all codes from now on without asking"
-        }
+        let reason =
+            switch always {
+            case nil: "give \(app) \(item.isLink ? "a \(site) sign-in link" : "your \(site) code")"
+            case .site: "give \(app) your \(site) code, and \(site) codes from now on without asking"
+            case .allSites: "give \(app) your \(site) code, and all codes from now on without asking"
+            }
         do { try await authenticate(reason) } catch { return }
         resolve(.allow(always), for: request.id)
     }
@@ -394,12 +427,12 @@ final class AgentAccess: ObservableObject {
     }
 
     #if DEBUG
-    /// `--snapshot`: a request, rules and log to draw, without a client or the Keychain.
-    func preview(_ request: Request?, config: AgentConfig, log: [AgentLogEntry]) {
-        self.request = request
-        self.config = config
-        self.log = log
-    }
+        /// `--snapshot`: a request, rules and log to draw, without a client or the Keychain.
+        func preview(_ request: Request?, config: AgentConfig, log: [AgentLogEntry]) {
+            self.request = request
+            self.config = config
+            self.log = log
+        }
     #endif
 
     // MARK: - Wire
@@ -409,8 +442,9 @@ final class AgentAccess: ObservableObject {
     static func wire(_ item: CodeItem) -> AgentItem {
         let code = item.code.isEmpty ? nil : item.code
         let link = code == nil ? item.link?.absoluteString : nil
-        return AgentItem(kind: code == nil ? .link : .code, value: code ?? link ?? "", code: code, link: link, service: item.service,
-                         domain: item.domain, source: item.origin == .mail ? "mail" : "messages", senderVerified: item.senderVerified,
-                         received: item.received, expires: item.expires)
+        return AgentItem(
+            kind: code == nil ? .link : .code, value: code ?? link ?? "", code: code, link: link, service: item.service,
+            domain: item.domain, source: item.origin == .mail ? "mail" : "messages", senderVerified: item.senderVerified,
+            received: item.received, expires: item.expires)
     }
 }

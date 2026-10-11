@@ -4,9 +4,13 @@ enum PublicSuffix {
     private struct Rules { var exact = Set<String>(), wildcard = Set<String>(), exception = Set<String>() }
 
     private static let rules = list.split(separator: "\n").reduce(into: Rules()) { rules, line in
-        if line.hasPrefix("!") { rules.exception.insert(String(line.dropFirst())) }
-        else if line.hasPrefix("*.") { rules.wildcard.insert(String(line.dropFirst(2))) }
-        else { rules.exact.insert(String(line)) }
+        if line.hasPrefix("!") {
+            rules.exception.insert(String(line.dropFirst()))
+        } else if line.hasPrefix("*.") {
+            rules.wildcard.insert(String(line.dropFirst(2)))
+        } else {
+            rules.exact.insert(String(line))
+        }
     }
 
     /// How many trailing labels are the public suffix; 1 when no rule matches (the list's default "*").

@@ -12,33 +12,42 @@ struct AddAccountSheet: View {
     }
 
     private let others = [
-        Provider(name: "iCloud Mail", label: "iCloud", detail: "With an app-specific password from account.apple.com",
-                 host: "imap.mail.me.com", symbol: "icloud.fill", color: .blue),
-        Provider(name: "Yahoo Mail", label: "Yahoo", detail: "With an app password from Yahoo account security",
-                 host: "imap.mail.yahoo.com", symbol: "y.circle.fill", color: .purple),
-        Provider(name: "Other IMAP Account", label: "", detail: "Any server, with a password",
-                 host: "", symbol: "envelope.fill", color: .gray),
+        Provider(
+            name: "iCloud Mail", label: "iCloud", detail: "With an app-specific password from account.apple.com",
+            host: "imap.mail.me.com", symbol: "icloud.fill", color: .blue),
+        Provider(
+            name: "Yahoo Mail", label: "Yahoo", detail: "With an app password from Yahoo account security",
+            host: "imap.mail.yahoo.com", symbol: "y.circle.fill", color: .purple),
+        Provider(
+            name: "Other IMAP Account", label: "", detail: "Any server, with a password",
+            host: "", symbol: "envelope.fill", color: .gray),
     ]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             SheetHeader(title: "Add a Mail Account", about: "CodeCatch watches the inbox for codes and sign-in links. Your mail stays on the server.")
             VStack(spacing: 0) {
-                row(icon: AnyView(logo("google.com", fallback: "g.circle.fill", color: .red)), name: "Google",
-                    detail: "Gmail · Sign in with Google (beta) or an app password") {
+                row(
+                    icon: AnyView(logo("google.com", fallback: "g.circle.fill", color: .red)), name: "Google",
+                    detail: "Gmail · Sign in with Google (beta) or an app password"
+                ) {
                     dismiss()
                     edit(MailAccount(label: "Gmail", host: MailAccount.gmailHost, user: ""))
                 }
                 Divider().padding(.leading, 52)
-                row(icon: AnyView(logo("microsoft.com", fallback: "m.circle.fill", color: .blue)), name: "Microsoft",
-                    detail: "Outlook and Hotmail · Sign in with Microsoft (beta)") {
+                row(
+                    icon: AnyView(logo("microsoft.com", fallback: "m.circle.fill", color: .blue)), name: "Microsoft",
+                    detail: "Outlook and Hotmail · Sign in with Microsoft (beta)"
+                ) {
                     dismiss()
                     edit(MailAccount(label: "Outlook", host: MailAccount.outlookHost, user: ""))
                 }
                 ForEach(others, id: \.name) { provider in
                     Divider().padding(.leading, 52)
-                    row(icon: AnyView(IconTile(symbol: provider.symbol, color: provider.color).scaleEffect(1.3)),
-                        name: provider.name, detail: provider.detail) {
+                    row(
+                        icon: AnyView(IconTile(symbol: provider.symbol, color: provider.color).scaleEffect(1.3)),
+                        name: provider.name, detail: provider.detail
+                    ) {
                         dismiss()
                         edit(MailAccount(label: provider.label, host: provider.host, user: ""))
                     }

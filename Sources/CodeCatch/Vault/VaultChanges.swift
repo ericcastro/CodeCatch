@@ -7,7 +7,9 @@ struct VaultChanges {
         let name: String
         let account: String
         init(_ code: VaultCode) {
-            id = code.id; name = code.name; account = code.username ?? code.domain ?? ""
+            id = code.id
+            name = code.name
+            account = code.username ?? code.domain ?? ""
         }
     }
     let added: [Entry]

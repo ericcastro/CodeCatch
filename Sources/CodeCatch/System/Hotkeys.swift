@@ -18,18 +18,22 @@ enum Hotkeys {
         guard Prefs[Prefs.hotkeys] else { return }
         if handler == nil {
             var pressed = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-            InstallEventHandler(GetApplicationEventTarget(), { _, event, _ in
-                var id = EventHotKeyID()
-                GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID),
-                                  nil, MemoryLayout<EventHotKeyID>.size, nil, &id)
-                MainActor.assumeIsolated { Hotkeys.all.indices.contains(Int(id.id)) ? Hotkeys.all[Int(id.id)].action() : () }
-                return noErr
-            }, 1, &pressed, nil, &handler)
+            InstallEventHandler(
+                GetApplicationEventTarget(),
+                { _, event, _ in
+                    var id = EventHotKeyID()
+                    GetEventParameter(
+                        event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID),
+                        nil, MemoryLayout<EventHotKeyID>.size, nil, &id)
+                    MainActor.assumeIsolated { Hotkeys.all.indices.contains(Int(id.id)) ? Hotkeys.all[Int(id.id)].action() : () }
+                    return noErr
+                }, 1, &pressed, nil, &handler)
         }
         for (i, hotkey) in all.enumerated() {
             var ref: EventHotKeyRef?
-            RegisterEventHotKey(UInt32(hotkey.key), UInt32(controlKey | optionKey | cmdKey),
-                                EventHotKeyID(signature: OSType(0x4343_4348), id: UInt32(i)), GetApplicationEventTarget(), 0, &ref)
+            RegisterEventHotKey(
+                UInt32(hotkey.key), UInt32(controlKey | optionKey | cmdKey),
+                EventHotKeyID(signature: OSType(0x4343_4348), id: UInt32(i)), GetApplicationEventTarget(), 0, &ref)
             if let ref { registered.append(ref) }
         }
     }

@@ -33,7 +33,8 @@ public enum CodeSignature {
     public static func of(bundle url: URL) -> Identity? {
         var code: SecStaticCode?
         guard let appleIssued, SecStaticCodeCreateWithPath(url as CFURL, [], &code) == errSecSuccess, let code,
-              SecStaticCodeCheckValidity(code, SecCSFlags(rawValue: kSecCSDoNotValidateResources), appleIssued) == errSecSuccess else { return nil }
+            SecStaticCodeCheckValidity(code, SecCSFlags(rawValue: kSecCSDoNotValidateResources), appleIssued) == errSecSuccess
+        else { return nil }
         return info(code)
     }
 
@@ -59,7 +60,8 @@ public enum CodeSignature {
     private static func info(_ code: SecStaticCode) -> Identity? {
         var info: CFDictionary?
         guard SecCodeCopySigningInformation(code, SecCSFlags(rawValue: kSecCSSigningInformation), &info) == errSecSuccess,
-              let dict = info as? [String: Any], let id = dict[kSecCodeInfoIdentifier as String] as? String else { return nil }
+            let dict = info as? [String: Any], let id = dict[kSecCodeInfoIdentifier as String] as? String
+        else { return nil }
         var url: CFURL?
         SecCodeCopyPath(code, [], &url)
         return Identity(identifier: id, team: dict[kSecCodeInfoTeamIdentifier as String] as? String, path: (url as URL?)?.path)

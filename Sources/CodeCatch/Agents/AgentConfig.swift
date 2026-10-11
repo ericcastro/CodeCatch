@@ -24,7 +24,10 @@ struct AgentConfig: Codable, Equatable {
     var releases: [Date] = []
 
     init(enabled: Bool = false, rules: [AgentRule] = [], allowAll: Bool = false, links: Bool = false) {
-        self.enabled = enabled; self.rules = rules; self.allowAll = allowAll; self.links = links
+        self.enabled = enabled
+        self.rules = rules
+        self.allowAll = allowAll
+        self.links = links
     }
 
     /// Settings saved before a field existed still load.

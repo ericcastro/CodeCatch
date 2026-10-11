@@ -24,18 +24,24 @@ final class SourceMonitor: ObservableObject {
     private let watchMail: (MailAccount, Callbacks) async -> Void
     private let hasCredential: (MailAccount) -> Bool
 
-    init(watchMail: ((MailAccount, Callbacks) async -> Void)? = nil, hasCredential: @escaping (MailAccount) -> Bool = { $0.hasCredential }, defaults: UserDefaults = .standard) {
+    init(
+        watchMail: ((MailAccount, Callbacks) async -> Void)? = nil, hasCredential: @escaping (MailAccount) -> Bool = { $0.hasCredential },
+        defaults: UserDefaults = .standard
+    ) {
         self.defaults = defaults
         Prefs.register(in: defaults)
-        self.watchMail = watchMail ?? { account, callbacks in
-            if account.usesSignIn {
-                await APIWatcher.watch(account, status: callbacks.status, deliver: callbacks.deliver,
-                                         event: callbacks.event, lookback: Prefs.history(in: defaults))
-            } else {
-                await MailWatcher.watch(account, status: callbacks.status, deliver: callbacks.deliver,
-                                        event: callbacks.event, lookback: Prefs.history(in: defaults))
+        self.watchMail =
+            watchMail ?? { account, callbacks in
+                if account.usesSignIn {
+                    await APIWatcher.watch(
+                        account, status: callbacks.status, deliver: callbacks.deliver,
+                        event: callbacks.event, lookback: Prefs.history(in: defaults))
+                } else {
+                    await MailWatcher.watch(
+                        account, status: callbacks.status, deliver: callbacks.deliver,
+                        event: callbacks.event, lookback: Prefs.history(in: defaults))
+                }
             }
-        }
         self.hasCredential = hasCredential
     }
 
@@ -91,9 +97,13 @@ final class SourceMonitor: ObservableObject {
     }
 
     func check(_ key: String) {
-        if key == MessagesStore.sourceKey { restartMessages() }
-        else if key == AppleMailStore.sourceKey { restartAppleMail() }
-        else if let account = accounts.first(where: { $0.id.uuidString == key }) { restart(account) }
+        if key == MessagesStore.sourceKey {
+            restartMessages()
+        } else if key == AppleMailStore.sourceKey {
+            restartAppleMail()
+        } else if let account = accounts.first(where: { $0.id.uuidString == key }) {
+            restart(account)
+        }
     }
 
     func receivedCode(sourceKey: String, date: Date) {
@@ -138,15 +148,18 @@ final class SourceMonitor: ObservableObject {
         source.status = .off
         source.retryAt = nil
         health[key] = source
-        return Callbacks(status: { [weak self] status in
-            guard let self, self.generations[key] == generation else { return }
-            self.health[key]?.status = status
-        }, deliver: { [weak self] message in
-            guard let self, self.generations[key] == generation else { return }
-            self.deliver(message)
-        }, event: { [weak self] event in
-            guard let self, self.generations[key] == generation else { return }
-            self.health[key]?.record(event)
-        })
+        return Callbacks(
+            status: { [weak self] status in
+                guard let self, self.generations[key] == generation else { return }
+                self.health[key]?.status = status
+            },
+            deliver: { [weak self] message in
+                guard let self, self.generations[key] == generation else { return }
+                self.deliver(message)
+            },
+            event: { [weak self] event in
+                guard let self, self.generations[key] == generation else { return }
+                self.health[key]?.record(event)
+            })
     }
 }

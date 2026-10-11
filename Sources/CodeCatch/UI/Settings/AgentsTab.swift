@@ -20,24 +20,34 @@ struct AgentsTab: View {
         Form {
             Section {
                 // One switch: turning it on also installs codecatch, since access is useless without it.
-                SettingRow(symbol: "terminal.fill", color: .gray, title: "Let Agents Ask for Codes",
-                           subtitle: access.config.enabled && tool == .installed ? "Agents can run codecatch." : nil,
-                           info: "Agents such as Claude Code and Codex run codecatch get github.com when a site sends a code. Turning this on installs codecatch in /usr/local/bin. You approve each code with \(DeviceAuthentication.unlockMethods), unless you allowed it below. If you say no three times in a row, this turns off.",
-                           isOn: Binding(get: { access.config.enabled }, set: { on in Task { await setEnabled(on) } }))
+                SettingRow(
+                    symbol: "terminal.fill", color: .gray, title: "Let Agents Ask for Codes",
+                    subtitle: access.config.enabled && tool == .installed ? "Agents can run codecatch." : nil,
+                    info:
+                        "Agents such as Claude Code and Codex run codecatch get github.com when a site sends a code. Turning this on installs codecatch in /usr/local/bin. You approve each code with \(DeviceAuthentication.unlockMethods), unless you allowed it below. If you say no three times in a row, this turns off.",
+                    isOn: Binding(get: { access.config.enabled }, set: { on in Task { await setEnabled(on) } }))
                 if let error = access.error {
                     WarningText(message: error).font(.callout)
                 }
                 if access.config.enabled, autoCopy || autoType {
-                    SettingRow(symbol: "exclamationmark.triangle.fill", color: .orange, title: "Automatic Copy Is On",
-                               subtitle: "Any app can read the clipboard.",
-                               info: "An agent could read new codes from the clipboard without asking. CodeCatch skips copying while a request waits, but codes that arrive at other times are still copied.") {
-                        Button("Turn Off") { autoCopy = false; autoType = false }
+                    SettingRow(
+                        symbol: "exclamationmark.triangle.fill", color: .orange, title: "Automatic Copy Is On",
+                        subtitle: "Any app can read the clipboard.",
+                        info:
+                            "An agent could read new codes from the clipboard without asking. CodeCatch skips copying while a request waits, but codes that arrive at other times are still copied."
+                    ) {
+                        Button("Turn Off") {
+                            autoCopy = false
+                            autoType = false
+                        }
                     }
                 }
                 // Only when something needs a hand: a failed install, a moved app, or a link left behind.
                 if let toolSummary {
-                    SettingRow(symbol: "chevron.left.forwardslash.chevron.right", color: .indigo, title: "Command-Line Tool", subtitle: toolSummary,
-                               info: "codecatch lives in /usr/local/bin so agents can run it by name. They can also use its full path, which is in the instructions.") {
+                    SettingRow(
+                        symbol: "chevron.left.forwardslash.chevron.right", color: .indigo, title: "Command-Line Tool", subtitle: toolSummary,
+                        info: "codecatch lives in /usr/local/bin so agents can run it by name. They can also use its full path, which is in the instructions."
+                    ) {
                         switch tool {
                         case .notInstalled: Button("Install…") { change { try CommandLineTool.install(over: tool) } }
                         case .stale: Button("Repair…") { change { try CommandLineTool.install(over: tool) } }
@@ -60,8 +70,10 @@ struct AgentsTab: View {
                         // Connecting waits for access; removing a skill is cleanup, so Disconnect stays.
                         .disabled(!access.config.enabled && skills[agent] != .connected)
                 }
-                SettingRow(symbol: "doc.on.doc.fill", color: .blue, title: "Other Agents",
-                           info: "For an agent not listed above: paste this into its instructions, such as AGENTS.md.") {
+                SettingRow(
+                    symbol: "doc.on.doc.fill", color: .blue, title: "Other Agents",
+                    info: "For an agent not listed above: paste this into its instructions, such as AGENTS.md."
+                ) {
                     // Says "Copied" for a moment, like a code's Copy button.
                     Button {
                         NSPasteboard.general.clearContents()
@@ -88,35 +100,50 @@ struct AgentsTab: View {
             }
             // The same rows as Sources → What to Catch: what agents may get of what CodeCatch catches.
             Section("What to Share") {
-                SettingRow(symbol: CatchKind.code.symbol, color: CatchKind.code.color, title: "Verification Codes",
-                           subtitle: catchesCodes ? nil : "Off in Sources",
-                           info: "Agents get codes while Let Agents Ask for Codes is on.") {
+                SettingRow(
+                    symbol: CatchKind.code.symbol, color: CatchKind.code.color, title: "Verification Codes",
+                    subtitle: catchesCodes ? nil : "Off in Sources",
+                    info: "Agents get codes while Let Agents Ask for Codes is on."
+                ) {
                     Text("Included").foregroundStyle(.secondary)
                 }
-                SettingRow(symbol: CatchKind.signIn.symbol, color: CatchKind.signIn.color, title: "Sign-In Links",
-                           subtitle: catchesLinks ? nil : "Off in Sources",
-                           info: "A link signs the agent in as you, so this is off until you turn it on. Links go out only from the site’s own verified sender. Turning this on asks for \(DeviceAuthentication.unlockMethods).") {
+                SettingRow(
+                    symbol: CatchKind.signIn.symbol, color: CatchKind.signIn.color, title: "Sign-In Links",
+                    subtitle: catchesLinks ? nil : "Off in Sources",
+                    info:
+                        "A link signs the agent in as you, so this is off until you turn it on. Links go out only from the site’s own verified sender. Turning this on asks for \(DeviceAuthentication.unlockMethods)."
+                ) {
                     Switch(isOn: Binding(get: { access.config.links }, set: { on in Task { await access.setLinks(on) } }), label: "Sign-In Links")
                         .disabled(!catchesLinks)
                 }
-                SettingRow(symbol: CatchKind.passwordReset.symbol, color: CatchKind.passwordReset.color, title: "Password Reset Links",
-                           info: "A reset link lets whoever opens it take over the account, so agents never get one.") {
+                SettingRow(
+                    symbol: CatchKind.passwordReset.symbol, color: CatchKind.passwordReset.color, title: "Password Reset Links",
+                    info: "A reset link lets whoever opens it take over the account, so agents never get one."
+                ) {
                     Text("Never").foregroundStyle(.secondary)
                 }
             }
             .disabled(!access.config.enabled)
             Section("Permissions") {
-                SettingRow(symbol: "exclamationmark.shield.fill", color: .red, title: "Allow All Without Asking",
-                           subtitle: access.config.allowAll ? "Automatic sharing is on." : nil,
-                           info: "Any agent can receive codes automatically, and sign-in links too if they are on. Email needs a verified sender; Apple Mail and generic IMAP codes still ask. A text that doesn't name its site also asks. You see each release in a banner and Request History. Turning this on asks for \(DeviceAuthentication.unlockMethods).",
-                           isOn: Binding(get: { access.config.allowAll }, set: { on in Task { await access.setAllowAll(on) } }))
-                    .disabled(!access.config.enabled)
-                SettingRow(symbol: "checkmark.shield.fill", color: .green, title: "Always Allowed", subtitle: rulesSummary,
-                           info: "Apps that get codes without asking you. Unverified email always asks. To add an app, choose Always Allow on a request. Rules and Allow All give out at most 20 codes an hour in all. After that, CodeCatch asks again.") {
+                SettingRow(
+                    symbol: "exclamationmark.shield.fill", color: .red, title: "Allow All Without Asking",
+                    subtitle: access.config.allowAll ? "Automatic sharing is on." : nil,
+                    info:
+                        "Any agent can receive codes automatically, and sign-in links too if they are on. Email needs a verified sender; Apple Mail and generic IMAP codes still ask. A text that doesn't name its site also asks. You see each release in a banner and Request History. Turning this on asks for \(DeviceAuthentication.unlockMethods).",
+                    isOn: Binding(get: { access.config.allowAll }, set: { on in Task { await access.setAllowAll(on) } })
+                )
+                .disabled(!access.config.enabled)
+                SettingRow(
+                    symbol: "checkmark.shield.fill", color: .green, title: "Always Allowed", subtitle: rulesSummary,
+                    info:
+                        "Apps that get codes without asking you. Unverified email always asks. To add an app, choose Always Allow on a request. Rules and Allow All give out at most 20 codes an hour in all. After that, CodeCatch asks again."
+                ) {
                     Button("Edit…") { showingRules = true }
                 }
-                SettingRow(symbol: "clock.arrow.circlepath", color: .teal, title: "Request History", subtitle: historySummary,
-                           info: "Which app asked for which site, and what happened. Never the code. CodeCatch keeps the last 50.") {
+                SettingRow(
+                    symbol: "clock.arrow.circlepath", color: .teal, title: "Request History", subtitle: historySummary,
+                    info: "Which app asked for which site, and what happened. Never the code. CodeCatch keeps the last 50."
+                ) {
                     Button("Show…") { showingHistory = true }
                 }
             }
@@ -206,7 +233,9 @@ private struct AgentSkillRow: View {
                     Text(subtitle).font(.subheadline).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .hoverInfo(agent.name, "Connect adds a codecatch skill to \(agent.name). It loads only when \(agent.name) needs a code, so it doesn’t add to every prompt.")
+            .hoverInfo(
+                agent.name, "Connect adds a codecatch skill to \(agent.name). It loads only when \(agent.name) needs a code, so it doesn’t add to every prompt."
+            )
             Spacer(minLength: 12)
             switch state {
             case .notConnected: Button("Connect") { run { try agent.connect(home: home, guidance: CommandLineTool.guidance) } }

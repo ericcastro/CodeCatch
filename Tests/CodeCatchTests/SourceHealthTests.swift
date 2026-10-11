@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 
 @Test func successfulChecksDoNotInventMessageOrCodeActivity() {
@@ -31,10 +32,11 @@ import Testing
     let starts = AsyncStream<String>.makeStream()
     var iterator = starts.stream.makeAsyncIterator()
     var callbacks: [String: [SourceMonitor.Callbacks]] = [:]
-    let monitor = SourceMonitor(watchMail: { account, value in
-        callbacks[account.id.uuidString, default: []].append(value)
-        starts.continuation.yield(account.id.uuidString)
-    }, hasCredential: { _ in true }, defaults: defaults)
+    let monitor = SourceMonitor(
+        watchMail: { account, value in
+            callbacks[account.id.uuidString, default: []].append(value)
+            starts.continuation.yield(account.id.uuidString)
+        }, hasCredential: { _ in true }, defaults: defaults)
     var delivered = 0
     monitor.deliver = { _ in delivered += 1 }
     monitor.restartMail([a, b])
@@ -48,8 +50,9 @@ import Testing
 
     monitor.check(key)
     #expect(await iterator.next() == key)
-    let message = IncomingMessage(text: "test", senderName: "", senderID: "", sourceKey: key,
-                                  sourceLabel: "A", date: checked, isMail: true)
+    let message = IncomingMessage(
+        text: "test", senderName: "", senderID: "", sourceKey: key,
+        sourceLabel: "A", date: checked, isMail: true)
     original.status(.failed("stale"))
     original.event(.checked(checked.addingTimeInterval(100)))
     original.deliver(message)
@@ -88,10 +91,11 @@ import Testing
     let starts = AsyncStream<SourceMonitor.Callbacks>.makeStream()
     var iterator = starts.stream.makeAsyncIterator()
     var startCount = 0
-    let monitor = SourceMonitor(watchMail: { _, callbacks in
-        startCount += 1
-        starts.continuation.yield(callbacks)
-    }, hasCredential: { _ in true }, defaults: defaults)
+    let monitor = SourceMonitor(
+        watchMail: { _, callbacks in
+            startCount += 1
+            starts.continuation.yield(callbacks)
+        }, hasCredential: { _ in true }, defaults: defaults)
     monitor.restartMail([account])
     let original = await iterator.next()!
     original.status(.live)
@@ -122,10 +126,11 @@ import Testing
     let starts = AsyncStream<String>.makeStream()
     var iterator = starts.stream.makeAsyncIterator()
     var callbacks: [String: SourceMonitor.Callbacks] = [:]
-    let monitor = SourceMonitor(watchMail: { account, value in
-        callbacks[account.id.uuidString] = value
-        starts.continuation.yield(account.id.uuidString)
-    }, hasCredential: { _ in true }, defaults: defaults)
+    let monitor = SourceMonitor(
+        watchMail: { account, value in
+            callbacks[account.id.uuidString] = value
+            starts.continuation.yield(account.id.uuidString)
+        }, hasCredential: { _ in true }, defaults: defaults)
     let session = VaultSession(authenticate: {}, read: { [] }, write: { _ in }, remove: {})
     let model = AppModel(vaultSession: session, monitor: monitor, defaults: defaults, accounts: [a, b])
     monitor.restartMail(model.accounts)

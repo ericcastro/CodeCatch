@@ -22,9 +22,14 @@ final class VaultSession: ObservableObject {
     private let erase: () throws -> Void
     private(set) var generation = 0
 
-    init(authenticate: @escaping () async throws -> Void, read: @escaping () throws -> [VaultCode],
-         write: @escaping ([VaultCode]) throws -> Void, remove: @escaping () throws -> Void) {
-        self.authenticate = authenticate; self.read = read; self.write = write; self.erase = remove
+    init(
+        authenticate: @escaping () async throws -> Void, read: @escaping () throws -> [VaultCode],
+        write: @escaping ([VaultCode]) throws -> Void, remove: @escaping () throws -> Void
+    ) {
+        self.authenticate = authenticate
+        self.read = read
+        self.write = write
+        self.erase = remove
     }
 
     func unlock() async throws {

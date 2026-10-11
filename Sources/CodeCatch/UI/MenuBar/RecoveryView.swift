@@ -33,7 +33,8 @@ struct RecoveryView: View {
                     HStack(spacing: 4) {
                         Text("Recent Emails").font(.title3.weight(.semibold))
                         SettingInfo(title: "Recent Emails") {
-                            Text("Emails from the last 30 minutes that look like they hold a code, where CodeCatch didn't find one. This isn't your full inbox.")
+                            Text(
+                                "Emails from the last 30 minutes that look like they hold a code, where CodeCatch didn't find one. This isn't your full inbox.")
                             Text("Detected codes and sign-in links appear in the main menu. Select a code in an email here and press ⌘C to copy it.")
                             Text("CodeCatch keeps up to 20 of these and never saves them to disk. If nothing appears, request a new code and check again.")
                                 .foregroundStyle(.secondary)
@@ -158,7 +159,10 @@ struct RecoveryView: View {
         model.mailSourceKeys.forEach(model.monitor.check)
     }
     private func copy(_ text: String, from id: UUID) -> Bool {
-        guard model.copyRecoveryText(text, from: id) else { NSSound.beep(); return false }
+        guard model.copyRecoveryText(text, from: id) else {
+            NSSound.beep()
+            return false
+        }
         lastCopy = (id, UUID())
         return true
     }

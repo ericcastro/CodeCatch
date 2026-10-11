@@ -14,8 +14,10 @@ final class MessagesStore: LocalStore {
     /// Starts at the last ROWID before `since`.
     func open(since: Date) -> String? {
         guard let db = SQLiteReader(path: Self.dbPath),
-              let start = try? db.query("SELECT COALESCE(MAX(ROWID), 0) FROM message WHERE date < ?1",
-                                        Int64(since.timeIntervalSinceReferenceDate * 1e9), row: { sqlite3_column_int64($0, 0) }).first
+            let start = try? db.query(
+                "SELECT COALESCE(MAX(ROWID), 0) FROM message WHERE date < ?1",
+                Int64(since.timeIntervalSinceReferenceDate * 1e9), row: { sqlite3_column_int64($0, 0) }
+            ).first
         else { return SourceStatus.needsDiskAccess }
         self.db = db
         position = start
@@ -42,9 +44,10 @@ final class MessagesStore: LocalStore {
             let raw = sqlite3_column_int64(s, 3)
             let date = Date(timeIntervalSinceReferenceDate: raw > 1_000_000_000_000 ? Double(raw) / 1e9 : Double(raw))
             let handle = String(cString: sqlite3_column_text(s, 4))
-            return IncomingMessage(text: text, subject: nil, senderName: "", senderID: handle,
-                                   sourceKey: Self.sourceKey, sourceLabel: name, date: date, isMail: false,
-                                   messageID: String(position))
+            return IncomingMessage(
+                text: text, subject: nil, senderName: "", senderID: handle,
+                sourceKey: Self.sourceKey, sourceLabel: name, date: date, isMail: false,
+                messageID: String(position))
         }.compactMap { $0 }
     }
 }

@@ -24,9 +24,11 @@ final class LocalWatcher {
 
     init(_ store: LocalStore) { self.store = store }
 
-    func start(lookback: TimeInterval, status: @escaping @MainActor (SourceStatus) -> Void,
-               deliver: @escaping @MainActor (IncomingMessage) -> Void,
-               event: @escaping @MainActor (SourceEvent) -> Void = { _ in }) {
+    func start(
+        lookback: TimeInterval, status: @escaping @MainActor (SourceStatus) -> Void,
+        deliver: @escaping @MainActor (IncomingMessage) -> Void,
+        event: @escaping @MainActor (SourceEvent) -> Void = { _ in }
+    ) {
         let t = DispatchSource.makeTimerSource(queue: queue)
         t.schedule(deadline: .now(), repeating: 1)
         t.setEventHandler { [weak self] in self?.poll(lookback: lookback, status: status, deliver: deliver, event: event) }
@@ -42,9 +44,11 @@ final class LocalWatcher {
         queue.async { [store] in store.close() }
     }
 
-    private func poll(lookback: TimeInterval, status: @escaping @MainActor (SourceStatus) -> Void,
-                      deliver: @escaping @MainActor (IncomingMessage) -> Void,
-                      event: @escaping @MainActor (SourceEvent) -> Void) {
+    private func poll(
+        lookback: TimeInterval, status: @escaping @MainActor (SourceStatus) -> Void,
+        deliver: @escaping @MainActor (IncomingMessage) -> Void,
+        event: @escaping @MainActor (SourceEvent) -> Void
+    ) {
         func report(_ s: SourceStatus) {
             guard s != lastStatus else { return }
             lastStatus = s

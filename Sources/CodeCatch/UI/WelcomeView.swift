@@ -28,21 +28,27 @@ struct WelcomeView: View {
                 .padding(.vertical, 8)
             }
             Section("See It Work") {
-                SettingRow(symbol: "rectangle.inset.topright.filled", color: .blue, title: "Show a Test Code",
-                           subtitle: "A banner appears at the top right, as a real code would. Click it to unlock and copy.") {
+                SettingRow(
+                    symbol: "rectangle.inset.topright.filled", color: .blue, title: "Show a Test Code",
+                    subtitle: "A banner appears at the top right, as a real code would. Click it to unlock and copy."
+                ) {
                     Button("Try It") { model.showTestCode() }
                         .disabled(!model.isOn(Prefs.receivedCodes))
                 }
             }
             Section("What to Catch") {
                 let messages = model.status[MessagesStore.sourceKey] ?? .off
-                SettingRow(symbol: SourceKind.messages.symbol, color: SourceKind.messages.color, title: "Messages",
-                           subtitle: messages.needsDiskAccess
-                               ? "Needs Full Disk Access: turn on CodeCatch in the list that opens."
-                               : "iMessage, and SMS once Text Message Forwarding is on in your iPhone’s Messages settings", status: messages) {
+                SettingRow(
+                    symbol: SourceKind.messages.symbol, color: SourceKind.messages.color, title: "Messages",
+                    subtitle: messages.needsDiskAccess
+                        ? "Needs Full Disk Access: turn on CodeCatch in the list that opens."
+                        : "iMessage, and SMS once Text Message Forwarding is on in your iPhone’s Messages settings", status: messages
+                ) {
                     switch messages {
                     case .live:
-                        Label { Text("Watching").foregroundStyle(.secondary) } icon: {
+                        Label {
+                            Text("Watching").foregroundStyle(.secondary)
+                        } icon: {
                             Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                         }
                     case .attention(SourceStatus.needsDiskAccess):
@@ -51,13 +57,17 @@ struct WelcomeView: View {
                         Text(messages.summary).foregroundStyle(.secondary)
                     }
                 }
-                SettingRow(symbol: SourceKind.appleMail.symbol, color: SourceKind.appleMail.color, title: "Apple Mail",
-                           subtitle: "Mail app inboxes, with the same Full Disk Access",
-                           status: model.status[AppleMailStore.sourceKey] ?? .off) {
+                SettingRow(
+                    symbol: SourceKind.appleMail.symbol, color: SourceKind.appleMail.color, title: "Apple Mail",
+                    subtitle: "Mail app inboxes, with the same Full Disk Access",
+                    status: model.status[AppleMailStore.sourceKey] ?? .off
+                ) {
                     AppleMailToggle()
                 }
-                SettingRow(symbol: SourceKind.mail.symbol, color: SourceKind.mail.color, title: "Mail Accounts and Bitwarden",
-                           subtitle: "Gmail, iCloud, Yahoo, other mail and Bitwarden codes") {
+                SettingRow(
+                    symbol: SourceKind.mail.symbol, color: SourceKind.mail.color, title: "Mail Accounts and Bitwarden",
+                    subtitle: "Gmail, iCloud, Yahoo, other mail and Bitwarden codes"
+                ) {
                     Button("Set Up…") { openSettings(at: .sources) }
                 }
             }

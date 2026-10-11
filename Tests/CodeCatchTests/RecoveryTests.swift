@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import CodeCatch
 @testable import CodeCatchCore
 
@@ -22,18 +23,22 @@ import Testing
 
     func makeModel() -> AppModel {
         let monitor = SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults)
-        return AppModel(vaultSession: session, monitor: monitor, search: CodeSearch(defaults: defaults),
-                        defaults: defaults, accounts: [], copyToClipboard: { [weak self] value, _ in self?.copied.append(value) })
+        return AppModel(
+            vaultSession: session, monitor: monitor, search: CodeSearch(defaults: defaults),
+            defaults: defaults, accounts: [], copyToClipboard: { [weak self] value, _ in self?.copied.append(value) })
     }
 
     func cleanUp() { defaults.removePersistentDomain(forName: suite) }
 }
 
-private func missedCode(date: Date = Date(), id: String = "mail-1", source: String = "test-mail",
-                        sender: String = "login@example.invalid") -> IncomingMessage {
-    IncomingMessage(text: "Your verification code: 4 · 8 · 2 · 9 · 1 · 3",
-                    subject: "Verify your sign-in", senderName: "Example", senderID: sender,
-                    sourceKey: source, sourceLabel: "Test", date: date, isMail: true, messageID: id)
+private func missedCode(
+    date: Date = Date(), id: String = "mail-1", source: String = "test-mail",
+    sender: String = "login@example.invalid"
+) -> IncomingMessage {
+    IncomingMessage(
+        text: "Your verification code: 4 · 8 · 2 · 9 · 1 · 3",
+        subject: "Verify your sign-in", senderName: "Example", senderID: sender,
+        sourceKey: source, sourceLabel: "Test", date: date, isMail: true, messageID: id)
 }
 
 @MainActor @Suite struct RecoveryTests {

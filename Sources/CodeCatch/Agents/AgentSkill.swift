@@ -142,7 +142,10 @@ enum AgentSkill: CaseIterable, Identifiable {
             fd = open(url.path, O_RDWR | O_NOFOLLOW | O_NONBLOCK)
             guard fd >= 0 else { return false }
             old = ownContent(fd)
-            guard old != nil else { close(fd); return false }
+            guard old != nil else {
+                close(fd)
+                return false
+            }
         }
         defer { close(fd) }
         func replace(with bytes: [UInt8]) -> Bool {
@@ -166,7 +169,8 @@ enum AgentSkill: CaseIterable, Identifiable {
         let fd = open(url.path, O_RDONLY | O_NOFOLLOW | O_NONBLOCK)
         guard fd >= 0 else { return false }
         defer { close(fd) }
-        var opened = stat(), moved = stat()
+        var opened = stat()
+        var moved = stat()
         guard isOurs(fd), fstat(fd, &opened) == 0 else { return false }
         let aside = url.deletingLastPathComponent().appendingPathComponent(".codecatch-\(UUID().uuidString)").path
         guard renamex_np(url.path, aside, UInt32(RENAME_EXCL)) == 0 else { return false }
