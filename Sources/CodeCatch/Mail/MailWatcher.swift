@@ -41,14 +41,7 @@ enum MailWatcher {
 
                     func receive(_ uids: [Int]) async throws {
                         try Task.checkCancellation()
-                        let messages = try await conn.fetch(uids, account: account)
-                        try Task.checkCancellation()
-                        await event(.checked(Date()))
-                        if let newest = messages.map(\.date).max() { await event(.message(newest)) }
-                        for message in messages {
-                            try Task.checkCancellation()
-                            await deliver(message)
-                        }
+                        try await hand(try await conn.fetch(uids, account: account), event: event, deliver: deliver)
                     }
 
                     if lastUID == nil {
@@ -83,13 +76,33 @@ enum MailWatcher {
                 if Task.isCancelled { break }
                 let noPassword = if case IMAPError.noPassword = error { true } else { false }
                 let authFailed = noPassword || "\(error)".contains("AUTHENTICATIONFAILED")
-                await status(.failed(authFailed ? "Sign-in failed. Check the app password." : error.localizedDescription))
-                let delay = authFailed ? 300 : backoff
-                await event(.retry(Date().addingTimeInterval(delay)))
-                try? await Task.sleep(for: .seconds(delay))
-                backoff = min(backoff * 2, 120)
+                await wait(after: authFailed ? "Sign-in failed. Check the app password." : error.localizedDescription,
+                           signIn: authFailed, backoff: &backoff, status: status, event: event)
             }
         }
+    }
+
+    /// Hands a fetched batch to the app: the check time, the newest message's date, then each message.
+    static func hand(_ messages: [IncomingMessage], event: @MainActor (SourceEvent) -> Void,
+                     deliver: @MainActor (IncomingMessage) -> Void) async throws {
+        try Task.checkCancellation()
+        await event(.checked(Date()))
+        if let newest = messages.map(\.date).max() { await event(.message(newest)) }
+        for message in messages {
+            try Task.checkCancellation()
+            await deliver(message)
+        }
+    }
+
+    /// Shows the failure and waits before the next try: 5 minutes after a sign-in problem, which
+    /// retrying soon won't fix, else `backoff`, which doubles up to 2 minutes.
+    static func wait(after failure: String, signIn: Bool, backoff: inout TimeInterval,
+                     status: @MainActor (SourceStatus) -> Void, event: @MainActor (SourceEvent) -> Void) async {
+        await status(.failed(failure))
+        let delay = signIn ? 300 : backoff
+        await event(.retry(Date().addingTimeInterval(delay)))
+        try? await Task.sleep(for: .seconds(delay))
+        backoff = min(backoff * 2, 120)
     }
 
     static func imapDay(_ date: Date) -> String {

@@ -76,12 +76,7 @@ enum APIWatcher {
                     try Task.checkCancellation()
                     if seen.count > 1000 { seen.removeAll() }
                     seen.formUnion(ids)
-                    await event(.checked(Date()))
-                    if let newest = messages.map(\.date).max() { await event(.message(newest)) }
-                    for message in messages {
-                        try Task.checkCancellation()
-                        await deliver(message)
-                    }
+                    try await MailWatcher.hand(messages, event: event, deliver: deliver)
                 }
 
                 if cursor == nil {
@@ -108,11 +103,8 @@ enum APIWatcher {
             } catch {
                 if Task.isCancelled { break }
                 let signInFailed = error is OAuth.Failure
-                await status(.failed(signInFailed ? SourceStatus.signInExpired : error.localizedDescription))
-                let delay = signInFailed ? 300 : backoff
-                await event(.retry(Date().addingTimeInterval(delay)))
-                try? await Task.sleep(for: .seconds(delay))
-                backoff = min(backoff * 2, 120)
+                await MailWatcher.wait(after: signInFailed ? SourceStatus.signInExpired : error.localizedDescription,
+                                       signIn: signInFailed, backoff: &backoff, status: status, event: event)
             }
         }
     }
