@@ -116,7 +116,7 @@ final class AgentAccess: ObservableObject {
     }
 
     /// The newest unused, live code for the site since `from`; else an SMS that names no site.
-    func candidate(for query: SiteQuery, from: Date) -> (CodeItem, unnamed: Bool)? {
+    private func candidate(for query: SiteQuery, from: Date) -> (CodeItem, unnamed: Bool)? {
         let fresh = items().filter { [.messages, .mail].contains($0.origin) && !$0.used && now() < $0.expires && $0.received >= from
             && (!$0.isLink || config.links) }
         let newest = { (a: CodeItem, b: CodeItem) in a.received < b.received }
@@ -196,7 +196,7 @@ final class AgentAccess: ObservableObject {
         }
     }
 
-    func rule(for item: CodeItem, caller: AgentCaller) -> AgentRule? {
+    private func rule(for item: CodeItem, caller: AgentCaller) -> AgentRule? {
         guard let app = caller.app else { return nil }
         return config.rules.first { rule in
             rule.app.same(as: app) && (rule.site == nil || rule.site == item.domain)

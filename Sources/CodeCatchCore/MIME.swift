@@ -41,7 +41,7 @@ public enum MIME {
     /// Receiver identity comes from the authenticated API, never from the message. Receivers must
     /// remove forged results claiming their identity (RFC 8601 section 7.1). Only their first header
     /// counts; combining later headers lets an attacker override a genuine failure.
-    static func senderVerified(_ results: [String], receiver: Receiver?, fromAddress: String) -> Bool? {
+    private static func senderVerified(_ results: [String], receiver: Receiver?, fromAddress: String) -> Bool? {
         guard let receiver, let top = results.first, let parts = authenticationParts(top), let first = parts.first else { return nil }
         switch receiver {
         case .gmail:
@@ -239,7 +239,7 @@ public enum MIME {
     private static let encodedWord = try! NSRegularExpression(pattern: #"=\?([^?]+)\?([BbQq])\?([^?]*)\?="#)
 
     /// RFC 2047 `=?charset?B|Q?...?=` words; whitespace between adjacent words is dropped.
-    static func decodeWords(_ value: String) -> String {
+    private static func decodeWords(_ value: String) -> String {
         let v = value.replacingOccurrences(of: #"\?=\s+=\?"#, with: "?==?", options: .regularExpression)
         return replacing(encodedWord, in: v) { m, ns in
             let payload = ns.substring(with: m.range(at: 3))
