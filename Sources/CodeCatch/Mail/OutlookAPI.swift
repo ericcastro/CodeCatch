@@ -35,19 +35,16 @@ struct OutlookAPI: MailAPI {
         return (new.map(\.id), new.last?.received ?? cursor)
     }
 
-    /// One message's MIME source, parsed from its first 256 KB (codes live in the text, not attachments).
+    /// One message, from its MIME source.
     func message(_ id: String, account: MailAccount) async throws -> IncomingMessage? {
         let info: [String: Any], raw: Data
         do {
             info = try await json("me/messages/\(id)", ["$select": "receivedDateTime,webLink"])
             raw = try await get("me/messages/\(id)/$value")
         } catch MailAPIError.gone { return nil }
-        let m = MIME.parse(raw.prefix(262_144), receiver: .microsoft)
         let received = (info["receivedDateTime"] as? String).flatMap { try? Date($0, strategy: .iso8601) }
-        return IncomingMessage(text: m.text, subject: m.subject, senderName: m.fromName, senderID: m.fromAddress,
-                               sourceKey: account.id.uuidString, sourceLabel: account.label, date: received ?? Date(),
-                               isMail: true, links: m.links, messageID: "outlook:\(id)", senderVerified: m.senderVerified,
-                               internetMessageID: m.messageID, webURL: (info["webLink"] as? String).flatMap(URL.init(string:)))
+        return IncomingMessage(mail: raw, receiver: .microsoft, account: account, date: received, messageID: "outlook:\(id)",
+                               webURL: (info["webLink"] as? String).flatMap(URL.init(string:)))
     }
 
     private func list(_ query: [String: String], allPages: Bool = false) async throws -> [(id: String, received: String)] {

@@ -8,8 +8,6 @@ final class AppleMailStore: LocalStore {
     static let sourceKey = "applemail"
     /// Mail lists a message before it has downloaded the body: look again for this long.
     static let bodyWait: TimeInterval = 60
-    /// Codes live in the text, not attachments: the first 256 KB is enough, as for IMAP.
-    static let readLimit = 262_144
 
     let name = "Apple Mail"
     private(set) var position: Int64 = 0
@@ -100,7 +98,7 @@ final class AppleMailStore: LocalStore {
             for name in ["\(id).emlx", "\(id).partial.emlx"] {
                 guard let file = try? FileHandle(forReadingFrom: messages.appendingPathComponent(name)) else { continue }
                 defer { try? file.close() }
-                if let data = try? file.read(upToCount: readLimit), let message = message(inEMLX: data) { return message }
+                if let data = try? file.read(upToCount: IncomingMessage.mailReadLimit), let message = message(inEMLX: data) { return message }
             }
         }
         return nil
@@ -113,6 +111,6 @@ final class AppleMailStore: LocalStore {
               let length = Int(String(decoding: data[..<newline], as: UTF8.self).trimmingCharacters(in: .whitespaces)), length >= 0
         else { return nil }
         let message = data[(newline + 1)...].prefix(length)
-        return message.count == length || data.count >= readLimit ? Data(message) : nil
+        return message.count == length || data.count >= IncomingMessage.mailReadLimit ? Data(message) : nil
     }
 }

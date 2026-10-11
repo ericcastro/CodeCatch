@@ -25,7 +25,7 @@ actor IMAPConnection {
         static func literalSize(in line: String) throws -> Int? {
             guard line.hasSuffix("}"), let open = line.lastIndex(of: "{") else { return nil }
             guard let count = Int(line[line.index(after: open)..<line.index(before: line.endIndex)]),
-                  (0...262_144).contains(count) else { throw IMAPError.invalidResponse }
+                  (0...IncomingMessage.mailReadLimit).contains(count) else { throw IMAPError.invalidResponse }
             return count
         }
 

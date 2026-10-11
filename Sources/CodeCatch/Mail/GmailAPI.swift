@@ -41,17 +41,13 @@ struct GmailAPI: MailAPI {
         return (ids, latest)
     }
 
-    /// One message, parsed from its first 256 KB (codes live in the text, not attachments).
     func message(_ id: String, account: MailAccount) async throws -> IncomingMessage? {
         let json: [String: Any]
         do { json = try await get("messages/\(id)", ["format": "raw"]) } catch MailAPIError.gone { return nil }
         guard let raw = (json["raw"] as? String).flatMap(Data.init(base64URL:)) else { return nil }
-        let m = MIME.parse(raw.prefix(262_144), receiver: .gmail)
         let received = (json["internalDate"] as? String).flatMap(Double.init).map { Date(timeIntervalSince1970: $0 / 1000) }
-        return IncomingMessage(text: m.text, subject: m.subject, senderName: m.fromName, senderID: m.fromAddress,
-                               sourceKey: account.id.uuidString, sourceLabel: account.label, date: received ?? Date(),
-                               isMail: true, links: m.links, messageID: "gmail:\(id)", senderVerified: m.senderVerified,
-                               internetMessageID: m.messageID, webURL: Self.webURL(id, account: account))
+        return IncomingMessage(mail: raw, receiver: .gmail, account: account, date: received, messageID: "gmail:\(id)",
+                               webURL: Self.webURL(id, account: account))
     }
 
     /// The message in Gmail on the web, in the right account when several are signed in. `authuser`,

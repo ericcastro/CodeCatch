@@ -20,22 +20,18 @@ extension IMAPConnection {
         }
     }
 
-    /// Fetches up to the first 256 KB of each message (codes live in the text, not attachments).
+    /// Fetches the start of each message, up to `IncomingMessage.mailReadLimit`.
     func fetch(_ uids: [Int], account: MailAccount) async throws -> [IncomingMessage] {
         guard !uids.isEmpty else { return [] }
         let set = uids.map(String.init).joined(separator: ",")
         let internalDate = DateFormatter()
         internalDate.locale = Locale(identifier: "en_US_POSIX")
         internalDate.dateFormat = "d-MMM-yyyy HH:mm:ss Z"
-        return try await command("UID FETCH \(set) (UID INTERNALDATE BODY.PEEK[]<0.262144>)", timeout: 90).compactMap { r in
+        return try await command("UID FETCH \(set) (UID INTERNALDATE BODY.PEEK[]<0.\(IncomingMessage.mailReadLimit)>)", timeout: 90).compactMap { r in
             guard let raw = r.literals.first, let q = r.text.range(of: "INTERNALDATE \"") else { return nil }
             let dateText = r.text[q.upperBound...].prefix(while: { $0 != "\"" }).trimmingCharacters(in: .whitespaces)
-            let m = MIME.parse(raw)
-            return IncomingMessage(text: m.text, subject: m.subject, senderName: m.fromName, senderID: m.fromAddress,
-                                   sourceKey: account.id.uuidString, sourceLabel: account.label,
-                                   date: internalDate.date(from: dateText) ?? Date(), isMail: true, links: m.links,
-                                   messageID: r.number(after: "UID ").map { "\(uidValidity ?? 0):\($0)" }, senderVerified: m.senderVerified,
-                                   internetMessageID: m.messageID)
+            return IncomingMessage(mail: raw, account: account, date: internalDate.date(from: dateText),
+                                   messageID: r.number(after: "UID ").map { "\(uidValidity ?? 0):\($0)" })
         }
     }
 }
