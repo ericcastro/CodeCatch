@@ -75,6 +75,9 @@ kbd {
 .mark { fill: url(#brand); }
 .mark.mono { fill: currentColor; }
 .eyebrow { color: var(--label); font-size: 14px; font-weight: 650; letter-spacing: 0.01em; }
+/* A label sits with its heading, 10px above it, closer than the text below. */
+.eyebrow + :is(h1, h2, h3) { margin-top: -6px; }
+:is(.compare, .steps, .principles) > .eyebrow + h2 { margin-top: -4px; }  /* their gap is 14px, not 16px */
 .lede { color: var(--muted); font-size: 20px; line-height: 1.5; }
 .fine { color: var(--faint); font-size: 14px; }
 
@@ -131,10 +134,13 @@ section[id] { scroll-margin-top: 60px; }
   padding-top: 72px !important;
   padding-bottom: 72px !important;
 }
-.hero-copy { display: grid; gap: 22px; }
+/* Grouped, not evenly spaced: a clear break before the buttons, the fine print tucked under them. */
+.hero-copy { display: grid; gap: 20px; }
+.hero-copy .actions { margin-top: 12px; }
+.hero-copy .fine { margin-top: -6px; }
 .news { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 4px 14px 4px 4px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 14px; font-weight: 550; transition: color 0.15s, border-color 0.15s; }
 .news:hover { color: var(--text); border-color: color-mix(in srgb, var(--brand-2) 40%, var(--line)); }
-.hero h1 { font-size: clamp(40px, 5.2vw, 64px); font-weight: 750; letter-spacing: -0.035em; line-height: 1.02; }
+.hero h1 { font-size: clamp(36px, 4.4vw, 56px); font-weight: 750; letter-spacing: -0.035em; line-height: 1.02; }
 
 /* The stage: a small desktop with a menu bar, a sign-in page and the banner. */
 .stage {
@@ -721,6 +727,9 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
   .compare td.no { color: var(--faint); }
   .privacy { padding-bottom: 72px !important; }
   .why { padding-top: 72px !important; padding-bottom: 72px !important; }
+  /* The same 72px section rhythm as the features above them. */
+  .compare, .steps, .cta { padding-top: 72px !important; }
+  .compare, .faq, .cta { padding-bottom: 72px !important; }
   .faq { grid-template-columns: minmax(0, 1fr); }
   .guide-card { display: none; }  /* the footer lists the guides */
   .nav nav { display: none; }
@@ -743,6 +752,7 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
   .sources ul { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-around; width: 100%; gap: 8px; }
   .sources li { flex-direction: column; gap: 6px; font-size: 13px; white-space: nowrap; }
   .sources img { --icon: 32px; }
+  .actions .button { flex: 1 1 100%; justify-content: center; }  /* stacked buttons, one width */
   .cc { zoom: 0.8; }
   .feature-art { padding: 24px 8px; }
   .window { right: 5%; top: 38%; }
