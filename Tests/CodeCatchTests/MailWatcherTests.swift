@@ -370,8 +370,10 @@ func apiCursorCannotSkipFreshMailAfterBurstOrFailedFetch(failOnce: Bool, count: 
             status: { _ in }, deliver: { if let id = $0.messageID { delivered.append(id) } },
             mailbox: inbox, poll: 0.001, retryDelay: 0)
     }
+    // Only ends a hung watcher: a passing run stops at the end marker. With every test running at
+    // once, CI's Intel runner needed close to 3 seconds here.
     let deadline = Task {
-        try? await Task.sleep(for: .seconds(2))
+        try? await Task.sleep(for: .seconds(10))
         completed.continuation.finish()
     }
     var result: String?
@@ -398,8 +400,10 @@ func imapCursorCannotSkipFreshMailAfterBurstOrFailedFetch(failOnce: Bool, count:
             status: { _ in }, deliver: { if let id = $0.messageID { delivered.append(id) } },
             connection: { inbox }, retryDelay: 0)
     }
+    // Only ends a hung watcher: a passing run stops at the end marker. With every test running at
+    // once, CI's Intel runner needed close to 3 seconds here.
     let deadline = Task {
-        try? await Task.sleep(for: .seconds(2))
+        try? await Task.sleep(for: .seconds(10))
         completed.continuation.finish()
     }
     var result: String?
