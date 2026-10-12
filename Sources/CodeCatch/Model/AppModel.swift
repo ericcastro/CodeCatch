@@ -318,7 +318,7 @@ final class AppModel: ObservableObject {
     }
 
     /// On wake the lock screen may still be up; codes wait for it.
-    private static var screenIsLocked: Bool {
+    nonisolated static var screenIsLocked: Bool {
         (CGSessionCopyCurrentDictionary() as? [String: Any])?["CGSSessionScreenIsLocked"] as? Bool ?? false
     }
 
