@@ -298,20 +298,35 @@ struct MenuContent: View {
         }
     }
 
+    /// With no codes yet, naming what's watched is the only sign that setup worked.
     private var emptyNotice: some View {
-        ContentUnavailableView {
-            Label(
-                !model.receiving && model.vault.isEmpty ? "Catching Paused" : model.vault.isEmpty ? "No Codes Yet" : "Find a Saved Login",
-                systemImage: "key.viewfinder")
+        let paused = !model.receiving && model.vault.isEmpty
+        return ContentUnavailableView {
+            Label(paused ? "Catching Paused" : model.receiving ? "No Codes Yet" : "Find a Saved Login", systemImage: "key.viewfinder")
         } description: {
             Text(
-                !model.receiving && model.vault.isEmpty
+                paused
                     ? (hasLogins ? "Unlock to search your Bitwarden logins." : "Choose what to catch in Settings → Sources.")
-                    : model.vault.isEmpty
-                        ? "New codes and links show up here as they arrive."
-                        : "Search by service or account. Pin a login to keep it here.")
+                    : !model.receiving
+                        ? "Search by service or account. Pin a login to keep it here."
+                        : [watching, "New codes show up here."].compactMap { $0 }.joined(separator: "\n"))
+        } actions: {
+            if model.receiving {
+                Button("Add Source…") { openSettings(at: .sources) }
+                    .controlSize(.small)
+            }
         }
         .padding(.bottom, 8)
+    }
+
+    /// "Watching Messages and 2 mail accounts.": local sources by name, accounts counted, since their labels are addresses.
+    private var watching: String? {
+        let local = [MessagesStore.sourceKey, AppleMailStore.sourceKey]
+        let live = model.sources.filter { $0.status == .live }
+        let accounts = live.count { !local.contains($0.key) }
+        let names = live.filter { local.contains($0.key) }.map(\.label)
+            + (accounts == 0 ? [] : [accounts == 1 ? "1 mail account" : "\(accounts) mail accounts"])
+        return names.isEmpty ? nil : "Watching \(names.formatted(.list(type: .and)))."
     }
 
     /// Runs an action that opens a window, then closes the popover, which macOS 27 would leave on top of it.
