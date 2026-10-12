@@ -49,6 +49,8 @@ final class AppModel: ObservableObject {
     var status: [String: SourceStatus] { monitor.health.mapValues(\.status) }
     /// A search to show in the popover, from a shortcut or a codecatch:// link; the popover takes it.
     @Published var searchRequest: String?
+    /// An account to open in Settings → Sources, asked for from the menu's banner.
+    @Published var editAccountRequest: UUID?
     @Published var accounts: [MailAccount] {
         didSet {
             MailAccount.save(accounts, in: defaults)

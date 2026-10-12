@@ -52,8 +52,7 @@ struct SourcesTab: View {
                     subtitle: codes ? problem(status) : "Paused while Verification Codes is off", info: about, status: status,
                     details: sourceDetails(MessagesStore.sourceKey, about: about, enabled: messagesEnabled && codes)
                 ) {
-                    Toggle("Messages", isOn: $messagesEnabled).labelsHidden()
-                        .onChange(of: messagesEnabled) { model.restartMessages() }
+                    MessagesToggle()
                 }
                 if messagesEnabled { diskAccessRow(status) }
             }
@@ -140,6 +139,11 @@ struct SourcesTab: View {
         .sheet(isPresented: $bitwarden) { BitwardenSheet() }
         .sheet(isPresented: $adding) { AddAccountSheet { editing = $0 } }
         .sheet(isPresented: $ignoring) { IgnoredSendersSheet() }
+        .onReceive(model.$editAccountRequest) { id in
+            guard let id else { return }
+            model.editAccountRequest = nil
+            editing = model.accounts.first { $0.id == id }
+        }
     }
 
     private var ignoredSummary: String {
@@ -255,6 +259,16 @@ struct SourcesTab: View {
             }
         }
     #endif
+}
+
+/// Messages on or off, restarting its watcher on change. Shared by Welcome and Settings → Sources.
+struct MessagesToggle: View {
+    @AppStorage(Prefs.messages) private var enabled = true
+
+    var body: some View {
+        Toggle("Messages", isOn: $enabled).labelsHidden()
+            .onChange(of: enabled) { AppModel.shared.restartMessages() }
+    }
 }
 
 /// Apple Mail on or off, restarting its watcher on change. Shared by Welcome and Settings → Sources.

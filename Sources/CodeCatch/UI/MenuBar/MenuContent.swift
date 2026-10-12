@@ -53,11 +53,17 @@ struct MenuContent: View {
         let selectionID = searchFocused ? (items.first { $0.id == selectedID } ?? items.first)?.id : nil
         VStack(spacing: 0) {
             header
-            // Silent while everything works; a source that needs you gets a banner.
-            if let problem = model.sources.first(where: \.status.needsAttention) {
-                attention(problem.label, problem.status).padding(.horizontal, 10).padding(.bottom, 10)
+            // Silent while everything works; a source that needs you gets a banner. A missing
+            // Full Disk Access waits behind other problems, so it can't hide a failing mail account.
+            let problems = model.sources.filter(\.status.needsAttention)
+            if let problem = problems.first(where: { !$0.status.needsDiskAccess }) ?? problems.first {
+                let account = model.accounts.first { $0.id.uuidString == problem.key }
+                // The address, as in Settings: two accounts can share a label such as "Gmail".
+                let detail = [account.flatMap { $0.user.isEmpty || $0.user == problem.label ? nil : $0.user }, problem.status.summary]
+                attention(problem.label, detail.compactMap { $0 }.joined(separator: " · "), fix: fix(problem.status, account))
+                    .padding(.horizontal, 10).padding(.bottom, 10)
             } else if model.receiving, !hasLogins, model.sources.allSatisfy({ $0.status == .off }) {
-                attention("All sources off", .attention("Turn on a source in Settings."))
+                attention("All sources off", "Turn on a source in Settings.", fix: ("Open Settings", { openSettings(at: .sources) }))
                     .padding(.horizontal, 10).padding(.bottom, 10)
             }
             if model.items.count > Self.recent || hasLogins || searchRequested { searchField }
@@ -255,20 +261,31 @@ struct MenuContent: View {
         .disabled(model.vaultSession.isBusy)
     }
 
-    private func attention(_ label: String, _ status: SourceStatus) -> some View {
+    /// The banner's button, named for what it does, and only when there is something to do from here:
+    /// a local source that can't be read retries by itself, and an offline account waits for the network.
+    private func fix(_ status: SourceStatus, _ account: MailAccount?) -> (title: String, action: () -> Void)? {
+        if status.needsDiskAccess { return ("Allow…", { leave(SystemSettings.fullDiskAccess) }) }
+        guard let account, status != .attention(SourceStatus.waitingForNetwork) else { return nil }
+        return (
+            status.needsSignIn ? "Sign In…" : "Edit Account…",
+            {
+                model.editAccountRequest = account.id
+                openSettings(at: .sources)
+            }
+        )
+    }
+
+    private func attention(_ label: String, _ detail: String, fix: (title: String, action: () -> Void)?) -> some View {
         HStack(spacing: 10) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(.orange)
             VStack(alignment: .leading, spacing: 1) {
                 Text(label).font(.callout.weight(.semibold))
-                Text(status.summary).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
+                Text(detail).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)  // the popover sizes to its content: let it wrap
             }
             Spacer(minLength: 6)
-            Button("Fix…") {
-                if status.needsDiskAccess { return leave(SystemSettings.fullDiskAccess) }
-                openSettings(at: .sources)
-            }
-            .controlSize(.small)
+            if let fix { Button(fix.title, action: fix.action).controlSize(.small) }
         }
         .padding(10)
         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.orange.opacity(0.1)))
@@ -309,7 +326,9 @@ struct MenuContent: View {
                     ? (hasLogins ? "Unlock to search your Bitwarden logins." : "Choose what to catch in Settings → Sources.")
                     : !model.receiving
                         ? "Search by service or account. Pin a login to keep it here."
-                        : [watching, "New codes show up here."].compactMap { $0 }.joined(separator: "\n"))
+                        // Bitwarden logins join the list only once pinned or used: until then, search finds them.
+                        : [watching, "New codes show up here.", hasLogins ? "Search to find a Bitwarden login." : nil]
+                            .compactMap { $0 }.joined(separator: "\n"))
         } actions: {
             if model.receiving {
                 Button("Add Source…") { openSettings(at: .sources) }

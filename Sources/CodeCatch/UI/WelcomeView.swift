@@ -44,18 +44,10 @@ struct WelcomeView: View {
                         ? "Needs Full Disk Access: turn on CodeCatch in the list that opens."
                         : "iMessage, and SMS once Text Message Forwarding is on in your iPhone’s Messages settings", status: messages
                 ) {
-                    switch messages {
-                    case .live:
-                        Label {
-                            Text("Watching").foregroundStyle(.secondary)
-                        } icon: {
-                            Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-                        }
-                    case .attention(SourceStatus.needsDiskAccess):
+                    if messages.needsDiskAccess {
                         Button("Allow…") { SystemSettings.fullDiskAccess() }
-                    default:
-                        Text(messages.summary).foregroundStyle(.secondary)
                     }
+                    MessagesToggle()
                 }
                 SettingRow(
                     symbol: SourceKind.appleMail.symbol, color: SourceKind.appleMail.color, title: "Apple Mail",
