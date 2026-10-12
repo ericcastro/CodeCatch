@@ -1,6 +1,6 @@
 <div align="center">
   <h1>CodeCatch</h1>
-  <p><em>Sign-in codes, caught the moment they arrive.</em></p>
+  <p><em>Sign in without checking your phone or inbox.</em></p>
   <p>
     <a href="https://github.com/ugzv/CodeCatch/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ugzv/CodeCatch/ci.yml?branch=main&style=flat-square&label=tests" alt="Tests"></a>
     <a href="https://github.com/ugzv/CodeCatch/releases/latest"><img src="https://img.shields.io/github/v/release/ugzv/CodeCatch?style=flat-square" alt="Latest release"></a>
