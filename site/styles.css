@@ -764,6 +764,13 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
   .sources li { flex-direction: column; gap: 6px; font-size: 13px; white-space: nowrap; }
   .sources img { --icon: 32px; }
   .actions .button { flex: 1 1 100%; justify-content: center; }  /* stacked buttons, one width */
+  /* Steps as a numbered list, without the cards and pictures. */
+  .steps ol { gap: 0; margin-top: 8px; counter-reset: step; }
+  .steps ol > li { grid-template-columns: 28px minmax(0, 1fr); gap: 4px 14px; padding: 18px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: none; counter-increment: step; }
+  .steps ol > li > * { grid-column: 2; padding: 0 !important; }
+  .steps ol > li::before { content: counter(step); grid-area: 1 / 1 / span 2; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(180deg, var(--brand-1), var(--brand-2)); color: #fff; font-size: 14px; font-weight: 700; }
+  .step-art { display: none; }
+  .step-n { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .cc { zoom: 0.8; }
   .feature-art { padding: 24px 8px; }
   .window { right: 5%; top: 38%; }
