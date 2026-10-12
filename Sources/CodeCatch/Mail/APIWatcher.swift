@@ -87,7 +87,7 @@ enum APIWatcher {
                 if Task.isCancelled { break }
                 let signInFailed = error is OAuth.Failure
                 await MailWatcher.wait(
-                    after: signInFailed ? SourceStatus.signInExpired : error.localizedDescription,
+                    after: signInFailed ? SourceStatus.signInExpired : MailWatcher.describe(error),
                     signIn: signInFailed, backoff: &backoff, status: status, event: event)
             }
         }

@@ -1,4 +1,5 @@
 import Foundation
+import Network
 
 protocol MailConnection: Sendable {
     var capabilities: Set<String> { get async }
@@ -29,7 +30,7 @@ enum MailWatcher {
         while !Task.isCancelled {
             let conn: any MailConnection
             do { conn = try connection?() ?? IMAPConnection(account: account) } catch {
-                await status(.failed(error.localizedDescription))
+                await status(.failed(describe(error)))
                 return
             }
             do {
@@ -83,7 +84,7 @@ enum MailWatcher {
                 let noPassword = if case IMAPError.noPassword = error { true } else { false }
                 let authFailed = noPassword || "\(error)".contains("AUTHENTICATIONFAILED")
                 await wait(
-                    after: authFailed ? "Sign-in failed. Check the app password." : error.localizedDescription,
+                    after: authFailed ? SourceStatus.signInFailed : describe(error),
                     signIn: authFailed, backoff: &backoff, status: status, event: event)
             }
         }
@@ -114,6 +115,22 @@ enum MailWatcher {
         await event(.retry(Date().addingTimeInterval(delay)))
         try? await Task.sleep(for: .seconds(delay))
         backoff = min(backoff * 2, 120)
+    }
+
+    /// A failure in plain words, for the source's status. System errors describe themselves as
+    /// "The operation couldn't be completed. (Network.NWError error 61…)"; CodeCatch's own read fine.
+    static func describe(_ error: Error) -> String {
+        switch error {
+        case NWError.dns: "Can't find the mail server. Check its name."
+        case NWError.posix(.ECONNREFUSED): "The mail server refused the connection. Check its name and port."
+        case NWError.tls: "Can't make a secure connection to the mail server."
+        case is NWError: "Can't reach the mail server."
+        case URLError.badServerResponse: "The mail service sent a reply CodeCatch can't read."
+        case is URLError: "Can't reach the mail service."
+        case MailAPIError.http(let status, _) where status >= 500: "The mail service is having trouble (\(status)). CodeCatch will try again."
+        case MailAPIError.http(let status, _): "The mail service refused the request (\(status))."
+        default: error.localizedDescription
+        }
     }
 
     static func imapDay(_ date: Date) -> String {

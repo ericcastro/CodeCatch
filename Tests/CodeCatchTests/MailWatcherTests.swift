@@ -1,4 +1,5 @@
 import Foundation
+import Network
 import SQLite3
 import Testing
 
@@ -212,6 +213,16 @@ private actor FakeGmail: MailAPI {
     watcher.cancel()
     await watcher.value
     #expect(reported == .failed(SourceStatus.signInExpired))
+}
+
+/// The status shows in the menu's banner: a system error's own text there reads as gibberish.
+@Test(arguments: [
+    NWError.dns(-65554), NWError.posix(.ECONNREFUSED), NWError.posix(.ETIMEDOUT), NWError.tls(-9806),
+    URLError(.notConnectedToInternet), URLError(.badServerResponse), MailAPIError.http(503, #"{"error":"backendError"}"#),
+] as [any Error])
+func rawSystemErrorTextNeverReachesTheSourceStatus(error: any Error) {
+    let text = MailWatcher.describe(error)
+    for raw in ["couldn’t be completed", "NWError", "NSURLErrorDomain", "{"] { #expect(!text.contains(raw)) }
 }
 
 /// Guards the Apple Mail source against reading other mailboxes, deleted or old mail, against

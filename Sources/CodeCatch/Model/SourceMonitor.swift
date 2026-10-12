@@ -129,11 +129,11 @@ final class SourceMonitor: ObservableObject {
         let callbacks = begin(key)
         guard receiving, account.enabled else { return }
         guard hasCredential(account) else {
-            health[key]?.status = .attention("Needs sign-in")
+            health[key]?.status = .attention(SourceStatus.needsSignIn)
             return
         }
         guard network?.online != false else {
-            health[key]?.status = .attention("Waiting for network")
+            health[key]?.status = .attention(SourceStatus.waitingForNetwork)
             return
         }
         health[key]?.status = .connecting
