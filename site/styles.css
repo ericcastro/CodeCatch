@@ -381,6 +381,14 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
 .pin { font-size: 9px; color: var(--faint); align-self: center; }
 .open { border: 0.500px solid var(--line); border-radius: 999px; padding: 3px 10px; background: var(--surface); color: var(--text); font: 12px var(--font); box-shadow: 0 0.500px 1px rgba(0, 0, 0, 0.1); }
 .empty { padding: 20px; text-align: center; color: var(--muted); font-size: 12px; }
+.empty b { display: block; margin-bottom: 4px; color: var(--text); font-size: 13px; }
+.empty .open { display: inline-block; margin-top: 10px; }
+/* MenuContent.swift: a source that needs you, with the one button that fixes it. */
+.source-alert { display: flex; align-items: center; gap: 10px; margin: 0 10px 10px; padding: 10px; border-radius: 12px; background: color-mix(in srgb, var(--orange) 10%, transparent); font-size: 12px; }
+.source-alert > svg { font-size: 15px; color: var(--orange); }
+.source-alert div { display: grid; gap: 1px; min-width: 0; margin-right: auto; }
+.source-alert span { color: var(--muted); font-size: 11px; }
+.source-alert .open { flex: none; color: var(--text); }
 .popover.locked .rows { padding-top: 2px; }
 .popover.locked .row-code { letter-spacing: 0.12em; color: var(--muted); }
 .popover.locked .row:hover .row-code { color: #fff; }  /* white on the blue pill, as in the app */

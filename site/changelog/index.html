@@ -32,7 +32,7 @@
    "description": "What changed in CodeCatch, newest first.",
    "url": "https://codecatch.app/changelog/",
    "inLanguage": "en",
-   "dateModified": "2026-10-11",
+   "dateModified": "2026-10-12",
    "author": {
     "@id": "https://codecatch.app/#author"
    },
@@ -110,8 +110,32 @@
 <section class="releases">
   <article class="release">
     <header>
-      <h2><time datetime="2026-10-11">11 October 2026</time></h2>
+      <h2><time datetime="2026-10-12">12 October 2026</time></h2>
       <p class="tag">Latest</p>
+    </header>
+    <div class="release-body">
+      <div class="feature-art release-art" aria-hidden="true">
+        <!-- MenuContent.swift -->
+        <div class="cc">
+          <div class="popover floating">
+            <div class="popover-head"><svg class="mark" viewBox="208 208 608 608"><use href="#mark"/></svg><b>CodeCatch</b><span class="glyph"><svg viewBox="0 0 24 24"><use href="#i-lock"/></svg></span><span class="glyph gear"><svg viewBox="0 0 24 24"><use href="#i-gear"/></svg></span></div>
+            <div class="source-alert"><svg viewBox="0 0 24 24"><use href="#i-warning"/></svg><div><b>Gmail</b><span>you@gmail.com · Sign-in expired. Sign in again.</span></div><span class="open">Sign In…</span></div>
+            <div class="empty"><b>No Codes Yet</b>Watching Messages.<br>New codes show up here.<br><span class="open">Add Source…</span></div>
+          </div>
+        </div>
+      </div>
+      <dl class="points">
+        <div><dt>Problems point to the fix</dt><dd>When a source needs you, the menu’s button says what it does. Sign In… opens that account in Settings, and Allow… opens Full Disk Access. A mail account that stops working shows before a missing permission, with its address, so two Gmail accounts don’t look alike.</dd></div>
+        <div><dt>Errors in plain words</dt><dd>When a mail server can’t be reached, CodeCatch says so, such as “Can’t find the mail server. Check its name.”, instead of a system error code.</dd></div>
+        <div><dt>A clearer empty menu</dt><dd>With no codes yet, the menu says what it watches, such as “Watching Messages and 2 mail accounts.”, and has an Add Source… button. With Bitwarden set up, it says to search for your logins.</dd></div>
+        <div><dt>Messages switch in Welcome</dt><dd>If you’d rather not give Full Disk Access, turn Messages off right in the Welcome window.</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="release">
+    <header>
+      <h2><time datetime="2026-10-11">11 October 2026</time></h2>
     </header>
     <div class="release-body">
       <dl class="points">
@@ -403,6 +427,7 @@
     <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.500 4.500 4.500L19 7"/></g>
     <g id="i-link" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.500 4.500 0 0 0 6.400 0l3-3a4.500 4.500 0 0 0-6.400-6.400l-1 1"/><path d="M14 10a4.500 4.500 0 0 0-6.400 0l-3 3a4.500 4.500 0 0 0 6.400 6.400l1-1"/></g>
     <g id="i-lock" fill="currentColor"><path d="M7 10V8a5 5 0 0 1 10 0v2h.500A2.500 2.500 0 0 1 20 12.500v6a2.500 2.500 0 0 1-2.500 2.500h-11A2.500 2.500 0 0 1 4 18.500v-6A2.500 2.500 0 0 1 6.500 10H7Zm2.200 0h5.600V8a2.800 2.800 0 0 0-5.600 0v2Z"/></g>
+    <g id="i-gear" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linejoin="round"><path d="M10.21 4.82 L10.44 2.12 L13.56 2.12 L13.79 4.82 L15.81 5.66 L17.88 3.91 L20.09 6.12 L18.34 8.19 L19.18 10.21 L21.88 10.44 L21.88 13.56 L19.18 13.79 L18.34 15.81 L20.09 17.88 L17.88 20.09 L15.81 18.34 L13.79 19.18 L13.56 21.88 L10.44 21.88 L10.21 19.18 L8.19 18.34 L6.12 20.09 L3.91 17.88 L5.66 15.81 L4.82 13.79 L2.12 13.56 L2.12 10.44 L4.82 10.21 L5.66 8.19 L3.91 6.12 L6.12 3.91 L8.19 5.66Z"/><circle cx="12" cy="12" r="3.200"/></g>
     <g id="i-search" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round"><circle cx="10.500" cy="10.500" r="6.500"/><path d="m20 20-4.800-4.800"/></g>
     <g id="i-warning" fill="currentColor"><path d="M10.300 3.900a2 2 0 0 1 3.400 0l8 13.600a2 2 0 0 1-1.700 3H4a2 2 0 0 1-1.700-3l8-13.600ZM12 8.500a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm0 7.500a1.150 1.150 0 1 0 0 2.300 1.150 1.150 0 0 0 0-2.300Z"/></g>
     <g id="i-compass" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.500 8.500-2 5-5 2 2-5 5-2Z"/></g>
