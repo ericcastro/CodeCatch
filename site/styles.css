@@ -721,10 +721,21 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
   /* One line per app, its name on the left and its answer on the right; CodeCatch's line tinted. */
   .compare tbody td { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 7px 0; border-top: 1px solid var(--line); text-align: right; }
   .compare tbody td.us { margin: 0 -10px; padding: 7px 10px; border: 0; border-radius: 10px; }
-  .compare tbody td.us + td { border-top: 0; }
+  .compare tbody td.has:not(td.has ~ td) { border-top: 0; }
   .compare td::before { content: attr(data-label); flex: none; white-space: nowrap; text-align: left; font-size: 14px; font-weight: 500; color: var(--faint); }
   .compare td.us::before { color: var(--red); font-weight: 600; }
   .compare td.no { color: var(--faint); }
+  /* Apps without the feature share one last line: "macOS autofill, 2FHey, MessAuto ... No". */
+  .compare tbody tr { display: flex; flex-wrap: wrap; align-items: baseline; align-content: start; }
+  .compare tbody tr > * { flex: 1 0 100%; }
+  .compare tbody td.no { order: 2; flex: 0 0 auto; padding: 0; border: 0; }
+  .compare tbody td.no:has(~ td.no) { gap: 0; padding-right: 5px; font-size: 0; }
+  .compare tbody td.no:has(~ td.no)::before { content: attr(data-label) ","; }
+  .compare tbody td.no:not(:has(~ td.no)) { flex: 1 0 auto; }
+  /* The line's spacing and rule sit outside the cells, so wrapped names stay as close as lines of text. */
+  .compare tbody tr:has(td.no)::before, .compare tbody tr:has(td.no)::after { content: ""; order: 1; flex: 1 0 100%; height: 7px; }
+  .compare tbody tr:has(td.has):has(td.no)::before { border-top: 1px solid var(--line); }
+  .compare tbody tr:has(td.no)::after { order: 3; }
   .privacy { padding-bottom: 72px !important; }
   .why { padding-top: 72px !important; padding-bottom: 72px !important; }
   /* The same 72px section rhythm as the features above them. */
