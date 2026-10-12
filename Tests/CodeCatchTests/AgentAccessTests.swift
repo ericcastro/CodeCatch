@@ -64,6 +64,7 @@ private struct Boom: Error {}
         defaults = UserDefaults(suiteName: suite)!
         access = AgentAccess(
             items: { [unowned self] in self.items },
+            readingAnySource: { true },
             markUsed: { [unowned self] used in
                 self.marked.append(used)
                 if let i = self.items.firstIndex(where: { $0.id == used.id }) { self.items[i].used = true }

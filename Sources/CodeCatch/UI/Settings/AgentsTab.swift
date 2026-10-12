@@ -29,12 +29,17 @@ struct AgentsTab: View {
                 if let error = access.error {
                     WarningText(message: error).font(.callout)
                 }
+                // Both hand codes over without asking: the clipboard to any app, typing to the app in front.
                 if access.config.enabled, autoCopy || autoType {
                     SettingRow(
-                        symbol: "exclamationmark.triangle.fill", color: .orange, title: "Automatic Copy Is On",
-                        subtitle: "Any app can read the clipboard.",
+                        symbol: "exclamationmark.triangle.fill", color: .orange,
+                        title: autoCopy && autoType ? "Automatic Copy and Typing Are On" : autoCopy ? "Automatic Copy Is On" : "Automatic Typing Is On",
+                        subtitle: [
+                            autoCopy ? "Any app can read the clipboard." : nil, autoType ? "Codes are typed into the app in front, even a terminal." : nil,
+                        ]
+                        .compactMap { $0 }.joined(separator: " "),
                         info:
-                            "An agent could read new codes from the clipboard without asking. CodeCatch skips copying while a request waits, but codes that arrive at other times are still copied."
+                            "An agent could get new codes without asking, from the clipboard or typed into its window. CodeCatch skips both while a request waits, but codes that arrive at other times still go out."
                     ) {
                         Button("Turn Off") {
                             autoCopy = false

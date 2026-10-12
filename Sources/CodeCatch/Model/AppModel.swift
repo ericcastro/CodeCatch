@@ -30,7 +30,8 @@ final class AppModel: ObservableObject {
     let recovery = RecoveryInbox()
     /// `codecatch` requests. Its switch and rules load in `start`, so tests never read the Keychain.
     lazy var agents = AgentAccess(
-        items: { [unowned self] in items }, markUsed: { [unowned self] in markUsed($0) },
+        items: { [unowned self] in items }, readingAnySource: { [unowned self] in sources.contains { $0.status == .live } },
+        markUsed: { [unowned self] in markUsed($0) },
         authenticate: { try await DeviceAuthentication().authenticate(reason: $0) },
         load: AgentStore.load, save: AgentStore.save, defaults: defaults)
     private var observations = Set<AnyCancellable>()

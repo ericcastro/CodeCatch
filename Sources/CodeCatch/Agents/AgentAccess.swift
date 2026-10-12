@@ -52,6 +52,8 @@ final class AgentAccess: ObservableObject {
     var approvalGrace: TimeInterval = 45
 
     private let items: () -> [CodeItem]
+    /// Whether Messages or any mail source is being read: else no code can arrive.
+    private let readingAnySource: () -> Bool
     private let markUsed: (CodeItem) -> Void
     private let authenticate: (String) async throws -> Void
     private let load: () throws -> AgentConfig
@@ -74,12 +76,13 @@ final class AgentAccess: ObservableObject {
     }
 
     init(
-        items: @escaping () -> [CodeItem], markUsed: @escaping (CodeItem) -> Void,
+        items: @escaping () -> [CodeItem], readingAnySource: @escaping () -> Bool, markUsed: @escaping (CodeItem) -> Void,
         authenticate: @escaping (String) async throws -> Void,
         load: @escaping () throws -> AgentConfig, save: @escaping (AgentConfig) throws -> Void,
         defaults: UserDefaults, now: @escaping () -> Date = Date.init
     ) {
         self.items = items
+        self.readingAnySource = readingAnySource
         self.markUsed = markUsed
         self.authenticate = authenticate
         self.load = load
@@ -122,8 +125,12 @@ final class AgentAccess: ObservableObject {
                 return await offer(item, unnamed: unnamed, deadline: deadline, progress: progress)
             }
             guard now() < deadline else {
-                return failure(
-                    .noCode, "No \(query.label) code arrived in \(Int(wait)) seconds. Send a new one and try again.", query, caller, log: "No code arrived")
+                // Sending another code can't help when nothing is being read.
+                let next =
+                    readingAnySource()
+                    ? "Send a new one and try again."
+                    : "CodeCatch isn't reading any messages or mail right now, so a new one won't arrive either. The user can fix this in CodeCatch → Settings → Sources."
+                return failure(.noCode, "No \(query.label) code arrived in \(Int(wait)) seconds. \(next)", query, caller, log: "No code arrived")
             }
             if !announced {
                 progress("waiting up to \(Int(wait))s for a \(query.label) code…")
