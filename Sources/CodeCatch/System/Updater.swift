@@ -26,7 +26,8 @@ private final class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
             installNow()
         } else if lockObserver == nil {
             lockObserver = DistributedNotificationCenter.default().addObserver(
-                forName: .init("com.apple.screenIsLocked"), object: nil, queue: .main) { [weak self] _ in self?.installNow() }
+                forName: .init("com.apple.screenIsLocked"), object: nil, queue: .main
+            ) { [weak self] _ in self?.installNow() }
         }
         return true
     }
