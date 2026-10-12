@@ -343,7 +343,8 @@ struct MenuContent: View {
         let local = [MessagesStore.sourceKey, AppleMailStore.sourceKey]
         let live = model.sources.filter { $0.status == .live }
         let accounts = live.count { !local.contains($0.key) }
-        let names = live.filter { local.contains($0.key) }.map(\.label)
+        let names =
+            live.filter { local.contains($0.key) }.map(\.label)
             + (accounts == 0 ? [] : [accounts == 1 ? "1 mail account" : "\(accounts) mail accounts"])
         return names.isEmpty ? nil : "Watching \(names.formatted(.list(type: .and)))."
     }
