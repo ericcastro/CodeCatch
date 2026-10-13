@@ -353,6 +353,7 @@ NONE | Your Hello Nori gift card expires Jan 01, 2026. Use it before it's gone.\
 NONE | OXO - Sandbox: Welcome! You can now look forward to getting texts about new deals, recipes and more. Use code OXO15 for 15% off your first order! https://example.com/example-link\nText STOP to opt-out
 NONE | Posterjack: Double Deals Alert: Our 4-day flash sale is ON! Enjoy 25% OFF Sitewide with code: JDD25 + extra markdowns on all print styles. Limited time only!\nTransform your space with savings. Shop now https://example.com/example-link\nReply STOP to stop\ninfo: example.com/example-link
 NONE | Looking for Kuwait Flights? Book your International flight with Yatra and save upto Rs.20,000. Code: YTINTFLY  Click here http://example.com/example-link TnC
+NONE | Get 50% off your Example plan\nMeet Cue\n\nA new app for your personal agents. Give it a cue, and it gets to work.\n\nEarly access invite code\n\nMEETCUE\n\nTry Cue → https://example.com/example-link
 NONE | sRide carpool : Dear Example, Get Rs 50  FREE credits on sign up when you use promocode GRN50
 NONE | Tap to reset your Instagram password: https://example.com/example-link\nStd data rates may apply.
 NONE | Brigit: Your $10.00 advance payment was due on January 01, 2026. Finish making your payment to access your next advance:  https://example.com/example-link This message is for informational purposes only.\nText 'STOP' to quit.

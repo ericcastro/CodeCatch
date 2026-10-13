@@ -211,9 +211,10 @@ public enum CodeExtractor {
     /// The code is introduced on its own line: "…Moj A1: 3071", "…s kartico *4321 je 318842".
     private static let introducer = rx(#"(?:[:=]|\b(?:is|je|ist|lautet|glasi|est|es|è|é))\s*$"#, .caseInsensitive)
 
-    /// Marketing words: a letter "code" near them is a coupon.
+    /// Marketing words: a letter "code" near them is a coupon, or an invite code sent to everyone.
     private static let promo = rx(
-        #"\d\s*%|\b(?:off|discount|coupon|promo\w*|voucher|sale|save\s+up\s*to|upto|cashback|popust\w*|akcij\w*|rabatt?)\b"#, .caseInsensitive)
+        #"\d\s*%|\b(?:off|discount|coupon|promo\w*|voucher|sale|save\s+up\s*to|upto|cashback|popust\w*|akcij\w*|rabatt?|invit(?:e|ation)\s+codes?)\b"#,
+        .caseInsensitive)
 
     private static let explicitBefore = rx(
         "(?:" + codeWord + #"|kod[aoe]?|passcode|pin|otp|geslo|token|código|codice)\s*(?:is|je|ist|es|est|lautet)?\s*[:=\-–]?\s*$"#,
