@@ -45,8 +45,10 @@ public enum CodeExtractor {
                     continue
                 }
                 // A PIN beside a booking's confirmation number ("Confirmation: 5984715426 / PIN: 0260")
-                // manages that booking; it isn't one-time.
+                // manages that booking, and an auth code beside a transaction ID ("Transaction ID: 121875559327 /
+                // Auth Code: 051115") is a receipt's card approval: neither is one-time.
                 if matches(pinLabel, String(before)), matches(bookingNumber, text) { continue }
+                if matches(approvalLabel, String(before)), matches(transactionNumber, text) { continue }
                 let explicit = matches(explicitBefore, String(before)) || matches(explicitAfter, String(after))
                 // Introduced on the keyword's line ("… Moj A1: 30718264", "Enkratno geslo … je 318842"),
                 // or on the line above a code standing alone ("… Steam Guard code you need …:" over "6VCC5").
@@ -225,6 +227,8 @@ public enum CodeExtractor {
     private static let pinLabel = rx(#"\bpin\s*[:=]?\s*$"#, .caseInsensitive)
     private static let bookingNumber = rx(
         #"\b(?:confirmation|booking|reservation|buchung|rezervacij\w*)(?:\s+(?:number|no\.?|nr\.?|code))?\s*[:#]\s*\d{6,}"#, .caseInsensitive)
+    private static let approvalLabel = rx(#"\b(?:auth(?:ori[sz]ation)?|approval)\s+code\s*[:#]?\s*$"#, .caseInsensitive)
+    private static let transactionNumber = rx(#"\btransaction\s+(?:id|number|no\.?)\s*[:#]?\s*\w{6,}"#, .caseInsensitive)
 
     private static let explicitAfter = rx(
         #"^\s*(?:is|je|ist|es|est)\s+(?:your|the|vaša|vaš|vasa|vas|tvoja|tvoj|ihr|dein|la|le|el|il)\b"#,

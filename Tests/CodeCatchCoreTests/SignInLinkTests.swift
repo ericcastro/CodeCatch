@@ -52,6 +52,14 @@ import Testing
             "Pricing change for Instagram Profile Scraper – Followers, Bio, Posts, Verified",
             [("https://console.apify.com/actors/bGhA", "Instagram Profile Scraper – Followers, Bio, Posts, Verified")], nil
         ),
+        // Google reviewing the reader's app is not the reader signing in.
+        (
+            "[Action Needed] OAuth Verification Request Acknowledgement",
+            [
+                ("https://www.appdefensealliance.org/certification/authorized-labs", "ADA-authorized lab"),
+                ("https://console.cloud.google.com/auth/verification", "Verification Center"),
+            ], nil
+        ),
     ] as [(String, [(String, String)], String?)])
 func findsSignInLink(subject: String, links: [(String, String)], expected: String?) {
     let found = SignInLink.find(in: links.map { MailLink(url: $0.0, label: $0.1) }, subject: subject)

@@ -11,7 +11,7 @@ public enum SignInLink {
         let kind: Kind
         if matches(resetContext, subject), !matches(passwordAlert, subject) {
             kind = .passwordReset
-        } else if matches(context, subject) {
+        } else if matches(context, subject), !matches(review, subject) {
             kind = .signIn
         } else {
             return nil
@@ -41,6 +41,8 @@ public enum SignInLink {
     private static let context = rx(
         #"\bverif(y|ication)\b|confirm (your )?(sign|log|e-?mail|account|identity|device)|sign[- ]?in (link|request|attempt|to)|log[- ]?in (link|request|attempt|code|to)|(secure|magic|one-time) link|activate your|approve (your )?(sign|log)|is (this|it) you|potrdi|\bpovezava za prijavo\b|\bprijav[ao] v (vaš )?(račun|profil|naročniški center)\b|aktivir|bestätig|anmeld"#
     )
+    /// "OAuth verification", "domain verification": a review of the reader's app or business, not a sign-in.
+    private static let review = rx(#"\b(oauth|app|brand|domain|business|publisher) verification\b"#)
     private static let action = rx(
         #"\bverif(y|ication)\b|confirm|sign[- ]?in|log[- ]?in|magic|activat|approv|authori[sz]|yes|it'?s me|was me|continue|access link|access (your|my) (\w+ )?account|to access\b|potrdi|prijava|prijavi|aktiviraj|bestätig|anmelden|click here to (sign|log|verify|confirm)"#
     )
