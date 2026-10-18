@@ -399,11 +399,11 @@ li.copied .tick, button.copied > svg { display: block; stroke-dasharray: 21; ani
 .sources li { display: inline-flex; align-items: center; gap: 8px; color: var(--text); font-weight: 550; }
 .sources img { --icon: 24px; }
 /* Source icons in the scene chips and the sources strip. Messages and Mail are macOS app icons, a squircle
-   80% of their box; Bitwarden's tile and the bare Gmail logo are drawn as that squircle, Gmail's white as
-   its own app icon. */
+   80% of their box; Bitwarden's tile and the bare Gmail logo are drawn as that squircle with the app icons'
+   soft shadow, Gmail's white as its own app icon. */
 :is(.types, .sources) img { width: var(--icon); height: var(--icon); }
-:is(.types, .sources) img:is([src$="gmail.png"], [src$="bitwarden-app.png"]) { width: calc(var(--icon) * 0.8); height: calc(var(--icon) * 0.8); margin: calc(var(--icon) * 0.1); border-radius: 23%; }
-:is(.types, .sources) img[src$="gmail.png"] { padding: calc(var(--icon) * 0.12); background: #fff; box-shadow: 0 0.5px 1.5px rgba(0, 0, 0, 0.2), 0 0 0 0.5px rgba(0, 0, 0, 0.1); }
+:is(.types, .sources) img:is([src$="gmail.png"], [src$="bitwarden-app.png"]) { width: calc(var(--icon) * 0.8); height: calc(var(--icon) * 0.8); margin: calc(var(--icon) * 0.1); border-radius: 23%; box-shadow: 0 0.5px 1.5px rgba(0, 0, 0, 0.2); }
+:is(.types, .sources) img[src$="gmail.png"] { padding: calc(var(--icon) * 0.12); background: #fff; }
 
 /* Features */
 .features { display: grid; gap: 112px; padding-top: 104px !important; padding-bottom: 104px !important; }
