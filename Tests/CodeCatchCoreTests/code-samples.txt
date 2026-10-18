@@ -388,3 +388,4 @@ A2BC4D | Save this sign-in code: A2BC4D
 ABCDE | YOUR CODE IS ABCDE USE IT NOW
 2468 | Booking.com\nSign in to your account\nPIN: 2468
 A2BC4D | Your code: A2BC4D\nSave up to 20% on your next order
+NONE | New API token created\nNEW API TOKEN CREATED\n\nHey Uros G ,\n\nYou just created a new API token with the following permissions:\n\n* connections:read\n* scenarios:write\n\nTo manage your tokens, click here.

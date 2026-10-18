@@ -21,8 +21,6 @@ public enum CodeExtractor {
         }
         let text = clean(text)
         let ns = text as NSString
-        let letters = text.filter(\.isLetter)
-        let shouting = Double(letters.filter(\.isUppercase).count) > 0.6 * Double(letters.count)
         let keywords = keyword.matches(in: text, range: NSRange(location: 0, length: ns.length)).map(\.range)
         guard !keywords.isEmpty else { return nil }
 
@@ -37,11 +35,9 @@ public enum CodeExtractor {
                 let before = ns.substring(to: range.location).suffix(40)
                 let after = ns.substring(from: range.location + range.length).prefix(40)
                 let line = ns.lineRange(for: range)
-                // In a message mostly in capitals, a letters-only word set straight after "KODE" and
-                // running on is just a word ("KODE RAHASIA utk"); "YOUR CODE IS SZBPM" is introduced.
-                if !isNumeric, shouting, !raw.contains(where: \.isNumber), !matches(introducer, String(before)),
-                    after.prefix(while: { $0 != "\n" }).first(where: { !$0.isWhitespace })?.isLetter == true
-                {
+                // A letters-only word set straight after the keyword is just the next word ("KODE RAHASIA utk",
+                // "NEW API TOKEN CREATED"); "YOUR CODE IS SZBPM", "code: SZBPM" and "SZBPM is your code" name one.
+                if !isNumeric, !raw.contains(where: \.isNumber), !matches(introducer, String(before)), !matches(explicitAfter, String(after)) {
                     continue
                 }
                 // A PIN beside a booking's confirmation number ("Confirmation: 5984715426 / PIN: 0260")
