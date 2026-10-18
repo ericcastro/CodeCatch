@@ -7,13 +7,18 @@ enum Entry {
         #if DEBUG
             DebugCommand.runIfAsked()
         #endif
-        // One menu bar icon: a second copy (the DMG's, or another install) bows out.
-        if let id = Bundle.main.bundleIdentifier,
-            NSRunningApplication.runningApplications(withBundleIdentifier: id).contains(where: { $0 != .current })
-        {
-            exit(0)
+        // One menu bar icon, and the newest build keeps it: a stale copy left in another folder
+        // must not take over, since an old build may not read what the newer one saved.
+        if let id = Bundle.main.bundleIdentifier {
+            let others = NSRunningApplication.runningApplications(withBundleIdentifier: id).filter { $0 != .current }
+            if others.contains(where: { build(of: $0) >= build(of: .current) }) { exit(0) }
+            others.forEach { $0.terminate() }
         }
         CodeCatchApp.main()
+    }
+
+    private static func build(of app: NSRunningApplication) -> Int {
+        app.bundleURL.flatMap { Bundle(url: $0)?.infoDictionary?["CFBundleVersion"] as? String }.flatMap(Int.init) ?? 0
     }
 }
 
