@@ -12,7 +12,7 @@ enum Entry {
         if let id = Bundle.main.bundleIdentifier {
             let others = NSRunningApplication.runningApplications(withBundleIdentifier: id).filter { $0 != .current }
             if others.contains(where: { build(of: $0) >= build(of: .current) }) { exit(0) }
-            others.forEach { $0.terminate() }
+            for other in others { other.terminate() }
         }
         CodeCatchApp.main()
     }
