@@ -17,7 +17,8 @@ final class AppModel: ObservableObject {
     @Published private(set) var items: [CodeItem] = [] {
         didSet { agents.itemsChanged() }
     }
-    @Published private(set) var now = Date()
+    /// Current to the second; views hear of a new second only while one shows it (see `tick`).
+    private(set) var now = Date()
     /// Why the last unlock failed; cleared when the next one starts.
     @Published private(set) var unlockError: String?
     /// Senders whose messages are never read for codes: addresses, domains and SMS senders.
@@ -91,7 +92,16 @@ final class AppModel: ObservableObject {
                 KeyTyper.type(code) { KeyTyper.canType && session.isUnlocked && defaults.bool(forKey: Prefs.autoType) }
             }
         self.vaultSession.objectWillChange.sink { [weak self] in self?.objectWillChange.send() }.store(in: &observations)
-        self.monitor.objectWillChange.sink { [weak self] in self?.objectWillChange.send() }.store(in: &observations)
+        // Messages records a check every second: that alone is no news to views. Settings, which shows it,
+        // redraws each second while on screen anyway.
+        self.monitor.$health.map {
+            $0.mapValues {
+                var health = $0
+                health.lastChecked = nil
+                return health
+            }
+        }.removeDuplicates().dropFirst()
+            .sink { [weak self] _ in self?.objectWillChange.send() }.store(in: &observations)
         self.search.objectWillChange.sink { [weak self] in self?.objectWillChange.send() }.store(in: &observations)
         recovery.objectWillChange.sink { [weak self] in self?.objectWillChange.send() }.store(in: &observations)
         recovery.onRemove = { Clipboard.clearIfOurs(ids: $0) }
@@ -100,7 +110,8 @@ final class AppModel: ObservableObject {
 
     var latest: CodeItem? { items.first { $0.isRecent(at: now) } }
     /// What the menu bar shows and the shortcut copies: codes only, never a link.
-    var latestCode: CodeItem? { items.first { $0.isRecent(at: now) && !$0.isLink } }
+    var latestCode: CodeItem? { latestCode(at: now) }
+    private func latestCode(at date: Date) -> CodeItem? { items.first { $0.isRecent(at: date) && !$0.isLink } }
     /// Still valid: not marked Expired.
     func isFresh(_ item: CodeItem) -> Bool { now < item.expires }
 
@@ -114,6 +125,13 @@ final class AppModel: ObservableObject {
     func start() {
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
+        }
+        // A window that opens shows the second last drawn: redraw it with the current one, not up to a second later.
+        NotificationCenter.default.addObserver(forName: NSWindow.didBecomeKeyNotification, object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in
+                self?.objectWillChange.send()
+                self?.now = Date()
+            }
         }
         let center = NSWorkspace.shared.notificationCenter
         center.addObserver(forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [weak self] _ in
@@ -157,14 +175,25 @@ final class AppModel: ObservableObject {
         agents.cancel("\(event) before the request was approved.")
     }
 
-    private func tick() {
-        now = Date()
+    func tick(at date: Date = Date()) {
+        // Every observing view redraws on each change, the closed popover's too: a new second is news only
+        // while a window is on screen (not just open on another Space), or when the menu bar label changes.
+        let onScreen = NSApplication.shared.windows.contains { $0.occlusionState.contains(.visible) && $0.className != "NSStatusBarWindow" }
+        if onScreen || menuBarLabel(at: now) != menuBarLabel(at: date) { objectWillChange.send() }
+        now = date
         // Every window, including menus and tooltips, follows a change within a second; the banner,
         // the popover and Recent Emails are also covered from their first frame.
         let sharing: NSWindow.SharingType = isOn(Prefs.hideFromCapture) ? .none : .readOnly
-        for window in NSApp.windows where window.sharingType != sharing { window.sharingType = sharing }
-        items.removeAll { now.timeIntervalSince($0.received) > history }
+        for window in NSApplication.shared.windows where window.sharingType != sharing { window.sharingType = sharing }
+        let cutoff = now.addingTimeInterval(-history)
+        if items.contains(where: { $0.received < cutoff }) { items.removeAll { $0.received < cutoff } }
         recovery.prune(at: now)
+    }
+
+    /// What MenuBarLabel's look turns on at `date`: the code it may announce, and whether a recent item may put a lock there.
+    private func menuBarLabel(at date: Date) -> (code: UUID?, recent: Bool) {
+        let code = latestCode(at: date)
+        return (code?.shouldAnnounce(at: date) == true ? code?.id : nil, items.contains { $0.isRecent(at: date) })
     }
 
     // MARK: - Settings

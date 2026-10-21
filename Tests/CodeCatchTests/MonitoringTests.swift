@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import LocalAuthentication
 import Testing
@@ -39,8 +40,8 @@ import Testing
         model = makeModel()
     }
 
-    func makeModel(session: VaultSession? = nil) -> AppModel {
-        let monitor = SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults)
+    func makeModel(session: VaultSession? = nil, monitor: SourceMonitor? = nil) -> AppModel {
+        let monitor = monitor ?? SourceMonitor(watchMail: { _, _ in }, hasCredential: { _ in false }, defaults: defaults)
         let policy = UnlockPolicy(
             load: { false }, save: { _ in },
             authenticate: { [self] in
@@ -496,5 +497,57 @@ private func monitoringMessage() -> IncomingMessage {
         type("000", { true }, true)
         await withCheckedContinuation { done in KeyTyper.queue.async { done.resume() } }
         #expect(recorder.pressed == "12345689")
+    }
+
+    /// The once-a-second clock redrew every observing view, so the closed menu rebuilt its list each second
+    /// (2% CPU at idle). With no window open it may only redraw when the menu bar label changes.
+    @Test func clockRedrawsAClosedMenuOnlyWhenTheMenuBarLabelChanges() throws {
+        let fixture = try MonitoringFixture()
+        defer { fixture.cleanUp() }
+        let start = Date()
+        fixture.model.ingest(
+            IncomingMessage(
+                text: "Your verification code is 482913.", senderName: "Example", senderID: "support@example.com",
+                sourceKey: "test-mail", sourceLabel: "Test", date: start, isMail: true))
+        try #require(fixture.model.latestCode != nil)
+        var redraws = 0
+        let observation = fixture.model.objectWillChange.sink { redraws += 1 }
+        defer { observation.cancel() }
+
+        for second in [1.0, 2, 60, 179] { fixture.model.tick(at: start + second) }
+        #expect(redraws == 0)
+        fixture.model.tick(at: start + 181)  // the code leaves the menu bar
+        #expect(redraws == 1)
+        for second in [182.0, 300, 599] { fixture.model.tick(at: start + second) }
+        #expect(redraws == 1)
+        fixture.model.tick(at: start + 601)  // no longer recent
+        #expect(redraws == 2)
+    }
+
+    /// Messages records a check every second, and each one redrew every view, the closed menu's too.
+    @Test func aSourceCheckAloneRedrawsNothing() async throws {
+        let fixture = try MonitoringFixture()
+        defer { fixture.cleanUp() }
+        let account = MailAccount(label: "Test", host: "example.invalid", user: "test@example.invalid")
+        let starts = AsyncStream<SourceMonitor.Callbacks>.makeStream()
+        var started = starts.stream.makeAsyncIterator()
+        let monitor = SourceMonitor(
+            watchMail: { _, callbacks in
+                starts.continuation.yield(callbacks)
+                try? await Task.sleep(nanoseconds: 60_000_000_000)
+            }, hasCredential: { _ in true }, defaults: fixture.defaults)
+        let model = fixture.makeModel(monitor: monitor)
+        monitor.restartMail([account])
+        let callbacks = try #require(await started.next())
+        var redraws = 0
+        let observation = model.objectWillChange.sink { redraws += 1 }
+        defer { observation.cancel() }
+
+        for second in 1...3 { callbacks.event(.checked(Date(timeIntervalSince1970: Double(second)))) }
+        #expect(redraws == 0)
+        #expect(monitor.health[account.id.uuidString]?.lastChecked == Date(timeIntervalSince1970: 3))
+        callbacks.status(.live)
+        #expect(redraws == 1)
+        monitor.restartMail([])
     }
 }
