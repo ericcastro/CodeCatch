@@ -19,7 +19,9 @@ struct TopAnchor: NSViewRepresentable {
         func fit(_ height: CGFloat) {
             let height = height.rounded(.up)  // the window has whole-point heights
             self.height = height
-            guard let window, let top, height > 0, window.frame.height != height || window.frame.maxY != top else { return }
+            // A closed popover is left alone: opening fits it. Resizing it while closed could fight SwiftUI's
+            // own sizing of the window, back and forth forever.
+            guard let window, window.isVisible, let top, height > 0, window.frame.height != height || window.frame.maxY != top else { return }
             window.setFrame(NSRect(x: window.frame.minX, y: top - height, width: window.frame.width, height: height), display: true)
         }
 
