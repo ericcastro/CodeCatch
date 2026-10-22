@@ -91,7 +91,10 @@ fi
 python3 scripts/check-release-privacy.py "$APP"
 # Developer ID: Keychain items and privacy grants name the team, so every rebuild
 # keeps them. Override with CODECATCH_IDENTITY (any unique part of the name).
-SIGN=(codesign --force --options runtime --timestamp --sign "${CODECATCH_IDENTITY:-Developer ID Application}")
+IDENTITY="${CODECATCH_IDENTITY:-Developer ID Application}"
+SIGN=(codesign --force --options runtime --timestamp --sign "$IDENTITY")
+# Without one, sign ad hoc and drop the hardened runtime, which would refuse to load Sparkle.
+if ! $RELEASING && [[ "$(security find-identity -v -p codesigning)" != *"$IDENTITY"* ]]; then SIGN=(codesign --force --sign -); fi
 # Inside out: notarization wants every Sparkle helper signed by us, before the app seals them.
 "${SIGN[@]}" "$FRAMEWORK/Versions/B/XPCServices/Installer.xpc"
 "${SIGN[@]}" --preserve-metadata=entitlements "$FRAMEWORK/Versions/B/XPCServices/Downloader.xpc"
