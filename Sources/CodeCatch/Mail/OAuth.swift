@@ -1,9 +1,8 @@
 import AppKit
-import AuthenticationServices
 import CryptoKit
 
 /// "Sign in with Google" and "Sign in with Microsoft", for reading mail. The provider's consent opens in the
-/// system sign-in sheet (PKCE). CodeCatch's own clients ship in the app: public clients with no secret,
+/// default browser (PKCE). CodeCatch's own clients ship in the app: public clients with no secret,
 /// which is what both providers prescribe for desktop apps.
 struct OAuth: Sendable {
     enum Failure: LocalizedError {
@@ -71,7 +70,7 @@ struct OAuth: Sendable {
                 .init(name: "code_challenge", value: Data(SHA256.hash(data: Data(verifier.utf8))).base64URL),
                 .init(name: "code_challenge_method", value: "S256"),
             ] + (email.isEmpty ? [] : [.init(name: "login_hint", value: email)])
-        let callback = try await authorize(url.url!)
+        let callback = try await authorize(url.url!, state: state)
         guard let code = try authorizationCode(in: callback.absoluteString, state: state) else {
             throw Failure.denied("no sign-in code came back")
         }
@@ -159,30 +158,28 @@ struct OAuth: Sendable {
         return code
     }
 
-    /// The provider's page in the system sign-in sheet, until it redirects back to CodeCatch.
-    @MainActor private func authorize(_ url: URL) async throws -> URL {
-        let flow = SignInSheet()
-        let scheme = String(redirect.prefix { $0 != ":" })
+    /// The provider's page in the default browser, until it redirects back to CodeCatch's URL scheme.
+    /// Only a callback for this sign-in's `state` ends the wait; any other is ignored.
+    @MainActor private func authorize(_ url: URL, state: String) async throws -> URL {
+        let scheme = String(redirect.prefix { $0 != ":" }).lowercased()
+        let id = UUID()
         return try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { (cont: CheckedContinuation<URL, Error>) in
-                let once = Once()
-                let session = ASWebAuthenticationSession(url: url, callback: .customScheme(scheme)) { url, error in
-                    once.run {
-                        if let url {
-                            cont.resume(returning: url)
-                        } else if (error as? ASWebAuthenticationSessionError)?.code == .canceledLogin {
-                            cont.resume(throwing: CancellationError())
-                        } else {
-                            cont.resume(throwing: error ?? Failure.denied("no response"))
-                        }
-                    }
+                BrowserSignIn.pending = BrowserSignIn.Pending(id: id, scheme: scheme) { callback in
+                    // A provider error with the right state ends sign-in too; authorizationCode throws it.
+                    do { guard try authorizationCode(in: callback.absoluteString, state: state) != nil else { return false } } catch {}
+                    cont.resume(returning: callback)
+                    return true
+                } cancel: {
+                    cont.resume(throwing: CancellationError())
                 }
-                session.presentationContextProvider = flow
-                flow.session = session
-                if !session.start() { once.run { cont.resume(throwing: Failure.denied("the sign-in sheet did not open")) } }
+                guard NSWorkspace.shared.open(url) else {
+                    BrowserSignIn.pending = nil
+                    return cont.resume(throwing: Failure.denied("the browser did not open"))
+                }
             }
         } onCancel: {
-            Task { @MainActor in flow.session?.cancel() }
+            Task { @MainActor in BrowserSignIn.cancel(id) }
         }
     }
 
@@ -234,11 +231,37 @@ extension APIAuth {
     }
 }
 
-/// Keeps the session alive for the whole sign-in and anchors its sheet to CodeCatch's front window.
-private final class SignInSheet: NSObject, ASWebAuthenticationPresentationContextProviding, @unchecked Sendable {
-    var session: ASWebAuthenticationSession?
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        MainActor.assumeIsolated { NSApp.keyWindow ?? NSApp.windows.first(where: \.isVisible) ?? ASPresentationAnchor() }
+/// The one sign-in waiting for the browser to come back through a provider's redirect scheme
+/// (registered in Info.plist). Any browser works, unlike the system sheet, which only some can serve.
+@MainActor enum BrowserSignIn {
+    struct Pending {
+        let id: UUID
+        let scheme: String
+        /// True when the callback ended the sign-in.
+        let accept: (URL) -> Bool
+        let cancel: () -> Void
+    }
+
+    /// A new sign-in cancels the one before it, so its wait never hangs. Clearing it cancels nothing:
+    /// whoever clears it resumes the wait themselves.
+    static var pending: Pending? {
+        willSet { if let old = pending, let new = newValue, old.id != new.id { old.cancel() } }
+    }
+
+    /// Called for every URL CodeCatch is opened with; true when it was this sign-in's callback.
+    static func handle(_ url: URL) -> Bool {
+        guard let flow = pending, url.scheme?.lowercased() == flow.scheme else { return false }
+        if flow.accept(url) {
+            pending = nil
+            NSApp.activate()  // back from the browser to the account sheet
+        }
+        return true
+    }
+
+    static func cancel(_ id: UUID) {
+        guard let flow = pending, flow.id == id else { return }
+        pending = nil
+        flow.cancel()
     }
 }
 

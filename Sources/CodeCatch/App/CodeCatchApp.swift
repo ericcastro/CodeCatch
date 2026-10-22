@@ -71,7 +71,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
-    /// codecatch:// links. SwiftUI keeps `application(_:open:)` for its own scenes, so take the event directly.
+    /// codecatch:// links, and Google's and Microsoft's sign-in redirects. SwiftUI keeps `application(_:open:)` for its own scenes, so take the event directly.
     func applicationWillFinishLaunching(_ notification: Notification) {
         NSAppleEventManager.shared().setEventHandler(
             self, andSelector: #selector(openURL(_:reply:)),
@@ -80,6 +80,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openURL(_ event: NSAppleEventDescriptor, reply: NSAppleEventDescriptor) {
         guard let url = event.paramDescriptor(forKeyword: keyDirectObject)?.stringValue.flatMap(URL.init(string:)) else { return }
-        MainActor.assumeIsolated { MenuBarPopover.handle(url) }
+        MainActor.assumeIsolated {
+            if BrowserSignIn.handle(url) { return }
+            MenuBarPopover.handle(url)
+        }
     }
 }

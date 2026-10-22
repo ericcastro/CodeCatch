@@ -29,7 +29,8 @@ struct AccountEditor: View {
                         if signIn.isBusy {
                             HStack {
                                 ProgressView().controlSize(.small)
-                                Text("Finish in the \(provider.name) window…").foregroundStyle(.secondary)
+                                Text("Finish signing in with \(provider.name) in your browser…").foregroundStyle(.secondary)
+                                Button("Cancel") { signIn.cancel() }
                             }
                         } else if signInExpired {
                             HStack {

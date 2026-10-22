@@ -17,6 +17,14 @@
             <key>CFBundleURLName</key><string>com.uros.codecatch</string>
             <key>CFBundleURLSchemes</key><array><string>codecatch</string></array>
         </dict>
+        <dict>
+            <key>CFBundleURLName</key><string>com.uros.codecatch.signin</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.googleusercontent.apps.374242175460-a4bpd97sclaa5k4bpc598ei64n67om6l</string>
+                <string>msauth.com.uros.codecatch</string>
+            </array>
+        </dict>
     </array>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
