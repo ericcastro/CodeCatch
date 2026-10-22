@@ -40,7 +40,7 @@ password.
 
 [Download CodeCatch.dmg](https://codecatch.app/download/CodeCatch.dmg). It is
 signed, notarized and updates itself. To build from source, run
-`scripts/install.sh`. You only need Apple's Command Line Tools.
+`scripts/install.sh`. You only need Apple's Command Line Tools 26 or later.
 
 For SMS codes, turn on **Text Message Forwarding** on your iPhone.
 

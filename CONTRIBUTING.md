@@ -1,7 +1,7 @@
 # Contributing
 
-CodeCatch is a macOS 15+ Swift package. Swift 6 and the Apple Command Line
-Tools are sufficient; Xcode also works. Use the checked-in `Package.resolved`.
+CodeCatch is a macOS 15+ Swift package. It builds with Xcode or the Apple
+Command Line Tools, 26 or later. Use the checked-in `Package.resolved`.
 
 ```sh
 scripts/test.sh --force-resolved-versions
