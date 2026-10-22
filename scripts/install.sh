@@ -56,7 +56,12 @@ BUILD_ARGS=(--force-resolved-versions -c release --scratch-path "$BUILD" --arch 
     -Xswiftc -file-prefix-map -Xswiftc "$PWD=/src")
 # The Command Line Tools stamp the binary as built with the deployment target's SDK (15.0),
 # and macOS then gives it the pre-Liquid Glass look and behaviour. Stamp the SDK really used.
-swift build "${BUILD_ARGS[@]}" -Xlinker -platform_version -Xlinker macos -Xlinker 15.0 -Xlinker "$(xcrun --show-sdk-version)"
+# Xcode's build system stamps it right already, and hands -Xlinker to clang too, which fails.
+LINK_ARGS=()
+if [[ "$(xcode-select -p)" == *CommandLineTools* ]]; then
+    LINK_ARGS=(-Xlinker -platform_version -Xlinker macos -Xlinker 15.0 -Xlinker "$(xcrun --show-sdk-version)")
+fi
+swift build "${BUILD_ARGS[@]}" ${LINK_ARGS[@]+"${LINK_ARGS[@]}"}
 # Generated resources stay in scratch space; a build never changes the source tree.
 swift scripts/make-icon.swift "$BUILD/AppIcon.icns"
 
