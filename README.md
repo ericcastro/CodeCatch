@@ -11,6 +11,14 @@
   <img src="site/assets/og.png" alt="CodeCatch banner showing a verification code ready to paste" width="720">
 </div>
 
+> **About this fork:** a build-from-source copy of
+> [ugzv/CodeCatch](https://github.com/ugzv/CodeCatch) with automatic updates
+> turned off (so a local build is never replaced by the official binary and
+> sends no install ID, OS or Mac model to codecatch.app), and service logos
+> off by default (so service domains aren't sent to Google or DuckDuckGo).
+> Install with `scripts/install.sh`; pull upstream changes yourself after
+> reviewing them.
+
 CodeCatch is a Mac menu bar app. When a 2FA verification code or sign-in link
 arrives in **Messages** or your **mail**, it copies it. Press ⌘V and you're in,
 in any browser or app.

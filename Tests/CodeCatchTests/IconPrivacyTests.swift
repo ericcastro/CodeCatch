@@ -11,7 +11,7 @@ import Testing
     let root = FileManager.default.temporaryDirectory.appendingPathComponent("IconPrivacyTests.\(UUID())")
     var folder: URL { root.appendingPathComponent("icons") }
 
-    init(enabled: Bool? = nil) throws {
+    init(enabled: Bool? = true) throws {
         defaults = try #require(UserDefaults(suiteName: suite))
         if let enabled { defaults.set(enabled, forKey: Prefs.serviceIcons) }
         Prefs.register(in: defaults)
@@ -91,7 +91,13 @@ struct IconProxyURLCase: Sendable {
         #expect(!FileManager.default.fileExists(atPath: fixture.root.path))
     }
 
-    @Test func defaultLookupUsesOneGoogleProxyRequestAndCachesTheIcon() async throws {
+    @Test func logosAreOffUntilTurnedOn() throws {
+        let fixture = try IconPrivacyFixture(enabled: nil)
+        defer { fixture.cleanUp() }
+        #expect(!fixture.defaults.bool(forKey: Prefs.serviceIcons))
+    }
+
+    @Test func lookupUsesOneGoogleProxyRequestAndCachesTheIcon() async throws {
         let fixture = try IconPrivacyFixture()
         defer { fixture.cleanUp() }
         var requests: [URL] = []

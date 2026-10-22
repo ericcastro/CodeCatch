@@ -19,10 +19,6 @@
         </dict>
     </array>
     <key>LSUIElement</key><true/>
-    <key>SUFeedURL</key><string>https://codecatch.app/appcast.xml</string>
-    <key>SUPublicEDKey</key><string>MG9tbdMX6jZD/piLqeKytwBvnEiN64r/OjilaaurqRw=</string>
-    <key>SUEnableAutomaticChecks</key><true/>
-    <key>SUAutomaticallyUpdate</key><true/>
     <key>NSHighResolutionCapable</key><true/>
     <key>NSHumanReadableCopyright</key><string>Uros Gazvoda</string>
 </dict>

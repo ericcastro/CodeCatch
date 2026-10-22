@@ -91,6 +91,7 @@ func linkNotice(sender: String, link: String, verified: Bool?, warns: Bool?) {
     let suite = "Origination.\(UUID())"
     let defaults = try #require(UserDefaults(suiteName: suite))
     defer { defaults.removePersistentDomain(forName: suite) }
+    defaults.set(true, forKey: Prefs.serviceIcons)
     let first = MailAccount(label: "Gmail", host: "imap.gmail.com", user: "first@gmail.com")
     let second = MailAccount(label: "Gmail", host: "imap.gmail.com", user: "second@gmail.com")
     let work = MailAccount(label: "Work", host: "imap.example.com", user: "me@example.com")

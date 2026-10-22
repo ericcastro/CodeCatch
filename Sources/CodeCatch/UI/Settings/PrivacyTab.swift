@@ -7,7 +7,7 @@ struct PrivacyTab: View {
     @AppStorage(Prefs.codeInMenuBar) private var codeInMenuBar = true
     @AppStorage(Prefs.showPreviews) private var showPreviews = true
     @AppStorage(Prefs.clearClipboard) private var clearClipboard = true
-    @AppStorage(Prefs.serviceIcons) private var serviceIcons = true
+    @AppStorage(Prefs.serviceIcons) private var serviceIcons = false
     @AppStorage(Prefs.historyDays) private var historyDays = 7
     @AppStorage(Prefs.clearOnLock) private var clearOnLock = false
 
